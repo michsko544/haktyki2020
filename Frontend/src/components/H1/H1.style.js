@@ -7,4 +7,5 @@ export const H1Styled = styled.h1`
     font-family: "Montserrat", sans-serif;
     font-weight: 400;
     font-size: 48px;
+    color: ${props => props.color};
 `
