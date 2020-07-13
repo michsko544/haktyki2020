@@ -1,11 +1,10 @@
 import React from 'react';
-import { Input } from './App.style.js'
+import Button from "../Button";
 
 function App() {
   return (
     <div className="App">
-      Hello world
-      <Input />
+      <Button text={"hello"} handleOnClick={() => { }} color={"#0A7FC2"} />
     </div>
   );
 }

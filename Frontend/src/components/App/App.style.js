@@ -1,6 +1,11 @@
+import { Field } from 'formik'
 import styled from 'styled-components'
 
-export const Input = styled.input.attrs({ type: "text" })`
+export const FieldStyled = styled(Field)`
     border: none;
-    height: 20px;
+    border-bottom: 1px solid ${props => props.borderColor};
 `;
+
+FieldStyled.defaultProps = {
+    borderColor: "white"
+}
