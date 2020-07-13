@@ -1,6 +1,6 @@
-<<<<<<< HEAD
+
 Frontend tutaj.
-=======
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -69,4 +69,3 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
->>>>>>> 582782d686efb5f9d01947d8608842d6e4e142b9
