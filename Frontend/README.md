@@ -1,1 +1,1 @@
-Frontend tutaj
+Frontend tutaj.
