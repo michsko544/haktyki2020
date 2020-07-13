@@ -1,11 +1,8 @@
-import { Field } from 'formik'
 import styled from 'styled-components'
 
-export const FieldStyled = styled(Field)`
-    border: none;
-    border-bottom: 1px solid ${props => props.borderColor};
+export const CenterStrechContainer = styled.div`
+    min-width: 311px;
+    max-width: 380px;
+    width: 100%;
+    margin: 0 auto;
 `;
-
-FieldStyled.defaultProps = {
-    borderColor: "white"
-}

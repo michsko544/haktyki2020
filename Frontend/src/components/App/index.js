@@ -1,2 +1,2 @@
 export { default } from "./App"
-export { FieldStyled } from "./App.style"
+export { CenterStrechContainer } from "./App.style"

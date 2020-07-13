@@ -1,12 +1,27 @@
 import React from 'react';
-import Button from "../Button";
+import Input from "../Input"
+import { withFormik, Form } from 'formik'
+import Button from '../Button'
 
-function App() {
+const App = () => {
   return (
     <div className="App">
-      <Button text={"hello"} handleOnClick={() => { }} color={"#0A7FC2"} />
+      <Form>
+        <Input type="text" name="user" label="Login" />
+        <Input type="password" name="password" label="Hasło" />
+      </Form>
+      <Button text="Zaloguj" handleOnClick={() => { }} />
     </div>
   );
 }
 
-export default App;
+const FormikApp = withFormik({
+  mapPropsToValues() {
+    return {
+      user: "",
+      password: ""
+    }
+  }
+})(App)
+
+export default FormikApp;
