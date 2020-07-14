@@ -12,7 +12,11 @@ export const ButtonStyled = styled.button`
     text-align: center;
     color: ${props => props.color};
     background: none;
-    cursor: pointer
+    cursor: pointer;
+
+    &:focus {
+        outline:0;
+    }
 `;
 
 ButtonStyled.defaultProps = {

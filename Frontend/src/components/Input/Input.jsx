@@ -1,39 +1,40 @@
 import React from 'react'
-import PropTypes from "prop-types"
-import { FieldStyled, Label, ErrorStyled, InputWrapper } from "./"
-import { CenterStrechContainer } from "../App"
+import PropTypes from 'prop-types'
+import { FieldStyled, Label, ErrorStyled } from './'
 
-const Input = ({ label, ...props }) => {
-    const [isDarkMode, setDarkMode] = React.useState(false)
-    const [borderColor, setBorderColor] = React.useState("#20DCE8")
+const Input = ({ label, error, ...props }) => {
+  const isDarkMode = false
+  const borderColor = '#20DCE8'
 
-    return (
-        <CenterStrechContainer>
-            <Label textColor={borderColor}>
-                {label}
-                <FieldStyled borderColor={borderColor} isDarkMode={isDarkMode} {...props} />
-            </Label>
-            <Error error="Wypełnij to pole" isDarkMode={isDarkMode} />
-        </CenterStrechContainer>
-    )
+  return (
+    <>
+      <Label textColor={borderColor}>
+        {label}
+        <FieldStyled
+          borderColor={borderColor}
+          isDarkMode={isDarkMode}
+          {...props}
+        />
+      </Label>
+      <Error error={error} isDarkMode={isDarkMode} />
+    </>
+  )
 }
 
 Input.propTypes = {
-    type: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  error: PropTypes.string,
 }
 
 const Error = ({ error, isDarkMode }) => {
-
-    return (
-        <ErrorStyled isDarkMode={isDarkMode}>{error}</ErrorStyled>
-    );
+  return <ErrorStyled isDarkMode={isDarkMode}>{error}</ErrorStyled>
 }
 
 Error.propTypes = {
-    error: PropTypes.string,
-    isDarkMode: PropTypes.bool
+  error: PropTypes.string,
+  isDarkMode: PropTypes.bool,
 }
 
 export default Input
