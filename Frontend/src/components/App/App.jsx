@@ -3,12 +3,23 @@ import { withFormik, Form } from 'formik'
 import Input from './../Input'
 import Button from '../Button'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { DebugLink } from './App.style'
 import AppRoutes from './App.routes'
 
 const App = () => {
+  const theme = React.useMemo(
+    () =>
+      createMuiTheme({
+        palette: {
+          type: 'dark',
+        }
+      })
+  );
+
   return (
     <div className="App">
+      <ThemeProvider theme={theme}>
       <Form>
         <Input type="text" name="user" label="Login" />
         <Input type="password" name="password" label="Hasło" />
@@ -19,6 +30,7 @@ const App = () => {
         <DebugLink to="/">Home</DebugLink>
         <AppRoutes />
       </Router>
+      </ThemeProvider>
     </div>
   )
 }

@@ -42,6 +42,7 @@ export const HeaderStyled = styled.header`
   }
 
   @media ${device.tablet} {
+    margin: 0 auto 16px;
     box-shadow: 1px 2px 9px rgba(4, 4, 4, 0.25);
     max-width: calc(100vw - 64px);
     border-radius: 0 0 7px 7px;
