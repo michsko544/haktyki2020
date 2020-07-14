@@ -1,14 +1,14 @@
 import React from 'react'
-import { Route, Switch, Link } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 
 import { Home, Login } from '../../views'
 
 const AppRoutes = () => {
   return (
-    <Route component="{App}">
+    <Switch>
       <Route exact path="/" component={Home}></Route>
       <Route path="/login" component={Login}></Route>
-    </Route>
+    </Switch>
   )
 }
 

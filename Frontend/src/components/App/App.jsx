@@ -2,9 +2,9 @@ import React from 'react'
 import { withFormik, Form } from 'formik'
 import Input from './../Input'
 import Button from '../Button'
-import { BrowserRouter as Router, Link } from 'react-router-dom'
-import AppRoutes from './App.routes'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { DebugLink } from './App.style'
+import AppRoutes from './App.routes'
 
 const App = () => {
   return (
@@ -14,10 +14,11 @@ const App = () => {
         <Input type="password" name="password" label="Hasło" />
       </Form>
       <Button text="Zaloguj" handleOnClick={() => {}} />
-      <DebugLink to="/login">Login</DebugLink>
-      <DebugLink to="/">Home</DebugLink>
-      <Router></Router>
-      <AppRoutes />
+      <Router>
+        <DebugLink to="/login">Login</DebugLink>
+        <DebugLink to="/">Home</DebugLink>
+        <AppRoutes />
+      </Router>
     </div>
   )
 }
