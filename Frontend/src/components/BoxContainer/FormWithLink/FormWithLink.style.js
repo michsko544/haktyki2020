@@ -5,7 +5,7 @@ export const FormWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 400px;
-  margin: 10px 0;
+  margin: 10px 0 80px;
 
   @media (min-width: 1024px) {
     width: 50%;
