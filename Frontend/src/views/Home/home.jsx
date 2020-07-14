@@ -1,22 +1,26 @@
 import React from 'react'
 
 import H1 from './../../components/H1'
-import H2 from './../../components/H2'
-import H3 from './../../components/H3'
 import HBold from './../../components/HeadingBold'
+import Header from '../../components/Header/header'
+
+import TuneIcon from '@material-ui/icons/Tune'
+import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
+import Button from './../../components/Button'
 
 const Home = () => {
   return (
     <>
-      <H1 color="#F0F0F0">
-        Team<HBold>Food</HBold>
-      </H1>
-      <H2 color="#CACAFF">
-        Po prostu zamów swoje <HBold>jedzenie</HBold>.
-      </H2>
-      <H3 color="#FFCA0C">
-        Po prostu zamów swoje <HBold>jedzenie</HBold>.
-      </H3>
+      <Header>
+        <H1 color="#F0F0F0">
+          Cześć <HBold>Tomek,</HBold>
+        </H1>
+        <div className="icons">
+          <NotificationsNoneOutlinedIcon />
+          <TuneIcon />
+        </div>
+        <Button text="Dodaj Zamówienie"></Button>
+      </Header>
     </>
   )
 }
