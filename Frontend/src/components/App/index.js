@@ -1,2 +1,2 @@
-export { default } from "./App"
-export { CenterStrechContainer } from "./App.style"
+export { default } from './App'
+export { CenterStrechContainer } from './App.style'

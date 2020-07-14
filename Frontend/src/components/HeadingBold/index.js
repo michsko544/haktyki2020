@@ -1,1 +1,1 @@
-export { default } from "./HeadingBold"
+export { default } from './HeadingBold'
