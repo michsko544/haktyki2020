@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { FieldStyled, Label, ErrorStyled } from './'
 
 const Input = ({ label, error, ...props }) => {
-  const isDarkMode = false
+  const isDarkMode = true
   const borderColor = '#20DCE8'
 
   return (
@@ -13,6 +13,7 @@ const Input = ({ label, error, ...props }) => {
         <FieldStyled
           borderColor={borderColor}
           isDarkMode={isDarkMode}
+          autocomplete="off"
           {...props}
         />
       </Label>
