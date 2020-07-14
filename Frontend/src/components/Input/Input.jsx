@@ -1,24 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FieldStyled, Label, ErrorStyled } from './'
+import { FieldStyled, Label, ErrorStyled, InputWrapper } from './'
 
 const Input = ({ label, error, ...props }) => {
   const isDarkMode = true
   const borderColor = '#20DCE8'
 
   return (
-    <>
+    <InputWrapper>
       <Label textColor={borderColor}>
         {label}
         <FieldStyled
           borderColor={borderColor}
           isDarkMode={isDarkMode}
-          autocomplete="off"
+          autoComplete="off"
           {...props}
         />
       </Label>
       <Error error={error} isDarkMode={isDarkMode} />
-    </>
+    </InputWrapper>
   )
 }
 

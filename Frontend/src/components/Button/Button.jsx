@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { ButtonStyled } from './'
-import { CenterStrechContainer } from '../App'
 
 const Button = ({ text, handleOnClick, ...props }) => {
   const color = '#20DCE8'
