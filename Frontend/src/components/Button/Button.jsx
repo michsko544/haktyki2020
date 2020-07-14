@@ -6,11 +6,11 @@ import { CenterStrechContainer } from '../App'
 const Button = ({ text, handleOnClick, ...props }) => {
   const [color, setColor] = React.useState('#20DCE8')
   return (
-    <CenterStrechContainer>
+    <>
       <ButtonStyled color={color} onClick={handleOnClick} {...props}>
         {text}
       </ButtonStyled>
-    </CenterStrechContainer>
+    </>
   )
 }
 
