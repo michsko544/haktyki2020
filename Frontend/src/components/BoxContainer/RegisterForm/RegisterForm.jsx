@@ -18,6 +18,7 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             type="text"
             name="user"
             label="Login"
+            placeholder="xxxTomekxxx2000"
             error={errorHandler('user')}
           />
         </InputStyled>
@@ -26,6 +27,7 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             type="password"
             name="password"
             label="Hasło"
+            placeholder="***********"
             error={errorHandler('password')}
           />
         </InputStyled>
@@ -46,10 +48,10 @@ const RegisterFormik = withFormik({
   },
 
   validationSchema: Yup.object().shape({
-    user: Yup.string().required('Nazwa użytkownika jest wymagana'),
+    user: Yup.string().required('Wypełnij to pole'),
     password: Yup.string()
       .min(8, 'Hasło musi mieć minimum 8 znaków')
-      .required('Hasło jest wymagane'),
+      .required('Wypełnij to pole'),
   }),
 
   handleSubmit(values, { resetForm, setSubmitting }) {
