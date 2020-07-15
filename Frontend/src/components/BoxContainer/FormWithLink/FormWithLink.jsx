@@ -1,5 +1,6 @@
 import React from 'react'
-import { FormWrapper, OptionLinkStyled } from './'
+import { OptionLinkStyled } from './'
+import { FormContainer } from '../BoxContainer.style'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 
@@ -7,12 +8,12 @@ const FormWithLink = ({ children, linkText, link }) => {
   const history = useHistory()
 
   return (
-    <FormWrapper>
+    <FormContainer>
       {children}
       {linkText && link && (
         <OptionLink text={linkText} onClick={() => history.replace(link)} />
       )}
-    </FormWrapper>
+    </FormContainer>
   )
 }
 

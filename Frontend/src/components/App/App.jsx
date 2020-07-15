@@ -10,6 +10,7 @@ const App = () => {
         <DebugLink to="/">Home</DebugLink>
         <DebugLink to="/login">Login</DebugLink>
         <DebugLink to="/register">Register</DebugLink>
+        <DebugLink to="/greeter">Greeter</DebugLink>
         <AppRoutes />
       </Router>
     </div>

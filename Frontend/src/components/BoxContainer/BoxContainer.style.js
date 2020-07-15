@@ -27,3 +27,16 @@ export const Box = styled.div`
     border-radius: 7px;
   }
 `
+
+export const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  margin: 10px 0 80px;
+
+  @media (min-width: 1024px) {
+    width: 50%;
+    padding-right: 80px;
+  }
+`
