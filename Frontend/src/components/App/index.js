@@ -1,2 +1,2 @@
 export { default } from './App'
-export { Container30 } from './App.style'
+export { Padding30 } from './App.style'
