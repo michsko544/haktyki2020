@@ -5,9 +5,9 @@ import Button from '../../Button'
 import { ButtonFormWrapper } from '../../Button'
 import Input from '../../Input'
 import { InputStyled } from '../../Input'
-import { FormWrapper } from './'
+import { FormWrapper } from '../LoginForm'
 
-const LoginForm = ({ errors, touched, isSubmitting }) => {
+const RegisterForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
 
   return (
@@ -30,14 +30,14 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
           />
         </InputStyled>
         <ButtonFormWrapper>
-          <Button disabled={isSubmitting} text="Zaloguj" type="submit" />
+          <Button disabled={isSubmitting} text="Rejestruj" type="submit" />
         </ButtonFormWrapper>
       </Form>
     </FormWrapper>
   )
 }
 
-const LoginFormik = withFormik({
+const RegisterFormik = withFormik({
   mapPropsToValues() {
     return {
       user: '',
@@ -47,7 +47,9 @@ const LoginFormik = withFormik({
 
   validationSchema: Yup.object().shape({
     user: Yup.string().required('Nazwa użytkownika jest wymagana'),
-    password: Yup.string().required('Hasło jest wymagane'),
+    password: Yup.string()
+      .min(8, 'Hasło musi mieć minimum 8 znaków')
+      .required('Hasło jest wymagane'),
   }),
 
   handleSubmit(values, { resetForm, setSubmitting }) {
@@ -57,6 +59,6 @@ const LoginFormik = withFormik({
       resetForm()
     }, 2000)
   },
-})(LoginForm)
+})(RegisterForm)
 
-export default LoginFormik
+export default RegisterFormik

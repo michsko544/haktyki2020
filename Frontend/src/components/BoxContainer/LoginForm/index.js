@@ -1,2 +1,2 @@
 export { default } from './LoginForm'
-export { LoginFormWrapper } from './LoginForm.style'
+export { FormWrapper } from './LoginForm.style'

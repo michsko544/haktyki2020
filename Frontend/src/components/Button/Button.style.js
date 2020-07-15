@@ -24,5 +24,5 @@ ButtonStyled.defaultProps = {
 }
 
 export const ButtonFormWrapper = styled.div`
-  margin-top: 8px;
+  margin-top: 25px;
 `

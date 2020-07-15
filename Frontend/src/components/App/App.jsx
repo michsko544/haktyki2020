@@ -7,8 +7,9 @@ const App = () => {
   return (
     <div className="App">
       <Router>
-        <DebugLink to="/login">Login</DebugLink>
         <DebugLink to="/">Home</DebugLink>
+        <DebugLink to="/login">Login</DebugLink>
+        <DebugLink to="/register">Register</DebugLink>
         <AppRoutes />
       </Router>
     </div>
