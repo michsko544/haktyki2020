@@ -10,3 +10,6 @@ export const HeaderStyled = styled.div`
     padding-right: 80px;
   }
 `
+export const H3Styled = styled.div`
+  margin-top: 10px;
+`

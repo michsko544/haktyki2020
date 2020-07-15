@@ -39,6 +39,6 @@ ErrorStyled.defaultProps = {
   isDarkMode: true,
 }
 
-export const InputWrapper = styled.div`
+export const InputStyled = styled.div`
   margin-bottom: 11px;
 `

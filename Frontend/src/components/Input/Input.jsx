@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FieldStyled, Label, ErrorStyled, InputWrapper } from './'
+import { FieldStyled, Label, ErrorStyled } from './'
 
 const Input = ({ label, error, ...props }) => {
   const isDarkMode = true
   const borderColor = '#20DCE8'
 
   return (
-    <InputWrapper>
+    <>
       <Label textColor={borderColor}>
         {label}
         <FieldStyled
@@ -18,7 +18,7 @@ const Input = ({ label, error, ...props }) => {
         />
       </Label>
       <Error error={error} isDarkMode={isDarkMode} />
-    </InputWrapper>
+    </>
   )
 }
 
