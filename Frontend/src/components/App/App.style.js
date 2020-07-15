@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 export const Container30 = styled.div`
   width: 100%;
@@ -8,4 +9,9 @@ export const Container30 = styled.div`
   @media (min-width: 1024px) {
     padding: 0 80px;
   }
+`
+
+export const DebugLink = styled(Link)`
+  color: #f0f0f0;
+  padding: 6px;
 `

@@ -1,19 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { HeadingBold } from "./HeadingBold.style"
+import { HeadingBold } from './HeadingBold.style'
 
 const HBold = ({ children }) => {
-    return (
-        <HeadingBold>{children}</HeadingBold>
-    )
+  return <HeadingBold>{children}</HeadingBold>
 }
 
 HBold.propTypes = {
-    children: PropTypes.any
+  children: PropTypes.any,
 }
 
 HBold.defaultProps = {
-    children: null
+  children: null,
 }
 
 export default HBold

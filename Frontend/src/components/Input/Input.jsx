@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+
 import { FieldStyled, Label, ErrorStyled } from './'
 
 const Input = ({ label, error, ...props }) => {
