@@ -15,11 +15,7 @@ export const removeTokenFromHeader = () => {
 
 const mock = new MockAdapter(axiosAPI)
 
-mock.onOptions('http://localhost:4200/*').reply(200, {}, {
-  'Access-Control-Allow-Origin': '*'
-})
-
-mock.onGet('http://localhost:4200/orders').reply(200, {
+mock.onGet(`${process.env.REACT_APP_API_URL}/orders`).reply(200, {
   orders: [
     {
       id: 1,
@@ -42,7 +38,7 @@ mock.onGet('http://localhost:4200/orders').reply(200, {
   ]
 })
 
-mock.onGet('http://localhost:4200/user/orders').reply(200, {
+mock.onGet(`${process.env.REACT_APP_API_URL}/user/orders`).reply(200, {
   orders: [
     {
       id: 0,

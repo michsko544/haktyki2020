@@ -37,7 +37,7 @@ const FoodCard = ({details, ...props}) => {
   }
 
   return (
-    <FoodCardStyled key={details.id} className={classes.root}>
+    <FoodCardStyled className={classes.root}>
       <CardActionArea>
         <CardMedia
           className={classes.media}
