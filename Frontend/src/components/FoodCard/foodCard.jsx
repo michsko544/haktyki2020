@@ -21,7 +21,6 @@ const FoodCard = ({details, ...props}) => {
   const classes = useStyles()
   
   const orderDetails = () => {
-    console.log(details.orderDetails)
     if (details.orderDetails) {
       return (
         <>
@@ -38,7 +37,7 @@ const FoodCard = ({details, ...props}) => {
   }
 
   return (
-    <FoodCardStyled className={classes.root}>
+    <FoodCardStyled key={details.id} className={classes.root}>
       <CardActionArea>
         <CardMedia
           className={classes.media}

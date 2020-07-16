@@ -10,63 +10,44 @@ import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneO
 import Button from './../../components/Button'
 import Card from '../../components/FoodCard/foodCard'
 import { IconLink } from './../../components/App/App.style'
+import { useFetch } from './../../API'
 
 const Home = () => {
-  const [orders, setOrders] = useState([
-    {
-      id: 0,
-      name: 'Zdrowa Krowa',
-      purchaser: 'Grzegorz',
-      date: '2020-07-16',
-      time: '18:30',
-      interested: '4',
-      image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
-      orderDetails: undefined,
-    },
-    {
-      id: 0,
-      name: 'Zdrowa Krowa',
-      purchaser: 'Grzegorz',
-      date: '2020-07-16',
-      time: '18:30',
-      interested: '4',
-      image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
-      orderDetails: undefined,
-    },
-    {
-      id: 0,
-      name: 'Zdrowa Krowa',
-      purchaser: 'Grzegorz',
-      date: '2020-07-16',
-      time: '18:30',
-      interested: '4',
-      image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
-      orderDetails: undefined,
-    },
-    {
-      id: 0,
-      name: 'Zdrowa Krowa',
-      purchaser: 'Grzegorz',
-      date: '2020-07-16',
-      time: '18:30',
-      interested: '4',
-      image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
-      orderDetails: undefined,
-    },
-  ])
+  const [orders, setOrders] = useState([])
 
-  const [myOrders, setMyOrders] = useState([
-    {
-      id: 0,
-      name: 'Zdrowa Krowa',
-      purchaser: 'Grzegorz',
-      date: '2020-07-16',
-      time: '18:30',
-      interested: '4',
-      image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
-      orderDetails: 'Duży mcBurger z frytkami i kalafiorem',
+  const [myOrders, setMyOrders] = useState([])
+
+  const fetchOrders = useFetch('/orders')
+  const fetchUserOrders = useFetch('/user/orders')
+
+  useEffect(() => {
+    fetchOrders.getData()
+    fetchUserOrders.getData()
+  }, [])
+
+  useEffect(() => {
+    /**
+     * TODO
+     * Za pierwszym razem response jest undefined z jakiegoś powodu? Przy pierwszym wywołaniu useEffect... 
+     * Gdy chcę zrobić w liście czułości isLoading to i tak muszę dodać response.data
+     * Co z tym zrobić?
+     * ~ Grzegorz
+     */
+    if(typeof fetchOrders.response.data !== 'undefined') {
+      setOrders(fetchOrders.response.data.orders)
     }
-  ])
+  }, [fetchOrders.response])
+
+  useEffect(() => {
+    /**
+     * TODO
+     * ~ Grzegorz
+     */
+    if(typeof fetchUserOrders.response.data !== 'undefined') {
+      setMyOrders(fetchUserOrders.response.data.orders)
+    }
+  }, [fetchUserOrders.response])
+
 
   return (
     <>
@@ -86,14 +67,14 @@ const Home = () => {
         <div className="your-order">
           <H3 color="#F0F0F0">Twoje zamówienia</H3>
           {myOrders.map((order) => (
-            <Card details={order} />
+            <Card key={order.id} details={order} />
           ))}
         </div>
         <div className="available-orders-wrapper">
           <H3 color="#F0F0F0">Dostępne zamówienia</H3>
           <div className="orders">
             {orders.map((order) => (
-              <Card details={order} />
+              <Card key={order.id} details={order} />
             ))}
           </div>
         </div>
