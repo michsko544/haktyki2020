@@ -15,3 +15,7 @@ export const DebugLink = styled(Link)`
   color: #f0f0f0;
   padding: 6px;
 `
+
+export const IconLink = styled(Link)`
+  color: #F0F0F0;
+`
