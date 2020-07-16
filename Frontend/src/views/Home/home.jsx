@@ -28,12 +28,12 @@ const Home = () => {
   useEffect(() => {
     /**
      * TODO
-     * Za pierwszym razem response jest undefined z jakiegoś powodu? Przy pierwszym wywołaniu useEffect... 
+     * Za pierwszym razem response jest undefined z jakiegoś powodu? Przy pierwszym wywołaniu useEffect...
      * Gdy chcę zrobić w liście czułości isLoading to i tak muszę dodać response.data
      * Co z tym zrobić?
      * ~ Grzegorz
      */
-    if(typeof fetchOrders.response.data !== 'undefined') {
+    if (typeof fetchOrders.response.data !== 'undefined') {
       setOrders(fetchOrders.response.data.orders)
     }
   }, [fetchOrders.response])
@@ -43,16 +43,15 @@ const Home = () => {
      * TODO
      * ~ Grzegorz
      */
-    if(typeof fetchUserOrders.response.data !== 'undefined') {
+    if (typeof fetchUserOrders.response.data !== 'undefined') {
       setMyOrders(fetchUserOrders.response.data.orders)
     }
   }, [fetchUserOrders.response])
 
-
   return (
     <>
       <Header>
-        <H1 color="#F0F0F0">
+        <H1 className="small" color="#F0F0F0">
           Cześć <HBold>Tomek,</HBold>
         </H1>
         <div className="icons">

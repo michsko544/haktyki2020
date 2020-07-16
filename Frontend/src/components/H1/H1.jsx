@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { H1Styled } from './H1.style'
 
-const H1 = ({ children, color }) => {
-  return <H1Styled color={color}>{children}</H1Styled>
+const H1 = ({ children, color, ...props }) => {
+  return <H1Styled {...props} color={color}>{children}</H1Styled>
 }
 
 H1.propTypes = {

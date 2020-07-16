@@ -20,6 +20,10 @@ export const HeaderStyled = styled.header`
     grid-area: heading;
   }
 
+  H4 {
+    grid-area: content;
+  }
+
   div.icons {
     align-self: center;
     grid-area: icons;
@@ -36,7 +40,7 @@ export const HeaderStyled = styled.header`
   }
 
   @media ${device.lessThanLaptop} {
-      H1 {
+      H1.small {
           font-size: 24px;
       }
   }
