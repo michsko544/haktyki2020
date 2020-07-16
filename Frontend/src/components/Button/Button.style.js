@@ -8,8 +8,9 @@ export const ButtonStyled = styled.button`
   justify-content:center;
   align-items:center;
   box-sizing: border-box;
-  
-  background-color: ${(props) => (props.isDarkMode ? '#232327' : '#FCFCFC')};
+  background: linear-gradient(162deg, ${(props) => props.firstColor} 0%, ${(
+  props
+) => props.secondColor} 100%);
   background-clip: padding-box;
   border: solid 2px transparent;
   border-radius: 9px;
@@ -17,19 +18,18 @@ export const ButtonStyled = styled.button`
   &:before {
     content: '';
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index:-1;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
+    z-index: 5;
     margin: -2px;
-    border-radius: inherit;
-    background: linear-gradient(162deg, ${(props) => props.firstColor} 0%, ${(
-  props
-) => props.secondColor} 100%);
+    border-radius: 6px;
+    background-color: ${(props) => (props.isDarkMode ? '#232327' : '#FCFCFC')};
   }
 
   &:after {
+    z-index: 10;
     content: "${(props) => props.text}";
     position: absolute;
     display:flex;
