@@ -16,6 +16,12 @@ export const ContainerStyled = styled.div`
       margin: 24px 0 16px;
   }
 
+  div.your-order {
+    & > * {
+      margin: 0 0 24px;
+    }
+  }
+
   div.orders {
       display: flex;
       flex-direction: row;
