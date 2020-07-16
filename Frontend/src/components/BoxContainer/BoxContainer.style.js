@@ -20,6 +20,7 @@ export const Box = styled.div`
   box-shadow: 1px 2px 9px rgba(4, 4, 4, 0.25);
   position: relative;
   flex-direction: column;
+  z-index: 1;
 
   @media (min-width: 1024px) {
     width: 965px;

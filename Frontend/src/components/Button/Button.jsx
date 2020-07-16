@@ -3,13 +3,20 @@ import PropTypes from 'prop-types'
 import { ButtonStyled } from './'
 
 const Button = ({ text, handleOnClick, ...props }) => {
-  const color = '#20DCE8'
+  const firstColor = '#46D3FF'
+  const secondColor = '#3687FF'
+  const isDarkMode = true
 
   return (
     <>
-      <ButtonStyled color={color} onClick={handleOnClick} {...props}>
-        {text}
-      </ButtonStyled>
+      <ButtonStyled
+        text={text}
+        firstColor={firstColor}
+        secondColor={secondColor}
+        isDarkMode={isDarkMode}
+        onClick={handleOnClick}
+        {...props}
+      />
     </>
   )
 }
