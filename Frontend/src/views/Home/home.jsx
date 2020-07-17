@@ -11,6 +11,7 @@ import Button from './../../components/Button'
 import Card from '../../components/FoodCard/foodCard'
 import { IconLink } from './../../components/App/App.style'
 import { useFetch } from './../../API'
+import OrderDetails from '../../components/OrderBox/OrderText/OrderDetails'
 
 const Home = () => {
   const [orders, setOrders] = useState([])
@@ -78,6 +79,7 @@ const Home = () => {
           </div>
         </div>
       </Container>
+      <OrderDetails />
     </>
   )
 }

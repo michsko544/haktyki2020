@@ -6,15 +6,18 @@ export const Container = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
+  position: relative;
 
   @media (min-width: 1024px) {
     height: 100vh;
+    position: fixed;
   }
 `
 
 export const Box = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   background-color: ${(props) => (props.isDarkMode ? '#232327' : '#FCFCFC')};
   display: flex;
   box-shadow: 1px 2px 9px rgba(4, 4, 4, 0.25);
@@ -24,6 +27,7 @@ export const Box = styled.div`
   @media (min-width: 1024px) {
     width: 965px;
     height: 607px;
+    min-height: unset;
     border-radius: 7px;
   }
 `

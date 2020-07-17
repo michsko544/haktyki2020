@@ -9,6 +9,7 @@ export const FormWrapper = styled.div`
 
   @media (min-width: 1024px) {
     width: 50%;
+    max-width: unset;
     padding-right: 80px;
   }
 `
