@@ -1,24 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { FieldStyled, Label, ErrorStyled } from './'
+import { FieldStyled, Label, ErrorStyled, Underline } from './'
 
 const Input = ({ label, error, ...props }) => {
   const isDarkMode = true
-  const borderColor = '#20DCE8'
+  const firstcolor = '#46D3FF'
+  const secondcolor = '#3687FF'
 
   return (
     <>
-      <Label textColor={borderColor}>
+      <Label firstcolor={firstcolor} secondcolor={secondcolor}>
         {label}
+      </Label>
+      <Underline firstcolor={firstcolor} secondcolor={secondcolor}>
         <FieldStyled
-          borderColor={borderColor}
-          isDarkMode={isDarkMode}
+          isdarkmode={isDarkMode.toString()}
           autoComplete="off"
           {...props}
         />
-      </Label>
-      <Error error={error} isDarkMode={isDarkMode} />
+      </Underline>
+      <Error error={error} isdarkmode={isDarkMode.toString()} />
     </>
   )
 }
@@ -30,8 +32,8 @@ Input.propTypes = {
   error: PropTypes.string,
 }
 
-const Error = ({ error, isDarkMode }) => {
-  return <ErrorStyled isDarkMode={isDarkMode}>{error}</ErrorStyled>
+const Error = ({ error, isdarkmode }) => {
+  return <ErrorStyled isdarkmode={isdarkmode}>{error}</ErrorStyled>
 }
 
 Error.propTypes = {

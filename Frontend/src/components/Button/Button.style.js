@@ -45,6 +45,7 @@ export const ButtonStyled = styled.button`
     text-transform: uppercase;
     background: -webkit-linear-gradient(162deg, ${(props) =>
       props.firstColor} 0%, ${(props) => props.secondColor} 100%);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     cursor: pointer;

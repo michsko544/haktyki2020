@@ -1,2 +1,8 @@
-export { FieldStyled, Label, ErrorStyled, InputStyled } from './Input.style'
+export {
+  FieldStyled,
+  Label,
+  ErrorStyled,
+  InputStyled,
+  Underline,
+} from './Input.style'
 export { default } from './Input'
