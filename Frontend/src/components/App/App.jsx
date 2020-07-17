@@ -20,6 +20,7 @@ const App = () => {
         <DebugLink to="/register">Register</DebugLink>
         <DebugLink to="/greeter">Greeter</DebugLink>
         <DebugLink to="/settings">Settings</DebugLink>
+        <DebugLink to="/teamfood">TeamFood</DebugLink>
         <AppRoutes />
       </Router>
       </ThemeProvider>

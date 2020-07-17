@@ -14,9 +14,7 @@ import { useFetch } from './../../API'
 
 const Home = () => {
   const [orders, setOrders] = useState([])
-
   const [myOrders, setMyOrders] = useState([])
-
   const fetchOrders = useFetch('/orders')
   const fetchUserOrders = useFetch('/user/orders')
 
