@@ -1,10 +1,13 @@
 package com.hacktyki.Backend.model.responses;
 
 import com.hacktyki.Backend.model.entity.UserEntity;
+import com.sun.istack.NotNull;
 
 public class UserSignInRestModel {
 
+    @NotNull
     private String login;
+    @NotNull
     private String password;
 
     public UserSignInRestModel() {
