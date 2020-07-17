@@ -22,17 +22,19 @@ public class JwtService {
         Date now = new Date(nowMillis);
         Date expirationTime = new Date(nowMillis + (1000 * 60)); // 1 min
 
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(apiKey);
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-
         JwtBuilder builder = Jwts.builder()
                 .setSubject(userLogin)
-                .claim("roles", "user")
+                .claim("roles", "USER")
                 .setIssuedAt(now)
                 .setExpiration(expirationTime)
-                .signWith(signingKey,signatureAlgorithm);
+                .signWith(getSigningKey(),signatureAlgorithm);
 
         return builder.compact();
+    }
+
+    public Key getSigningKey(){
+        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(apiKey);
+        return new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
     }
 
 }
