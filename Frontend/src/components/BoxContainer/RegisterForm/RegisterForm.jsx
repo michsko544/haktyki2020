@@ -27,7 +27,7 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             type="password"
             name="password"
             label="Hasło"
-            placeholder="***********"
+            placeholder="**************"
             error={errorHandler('password')}
           />
         </InputStyled>
