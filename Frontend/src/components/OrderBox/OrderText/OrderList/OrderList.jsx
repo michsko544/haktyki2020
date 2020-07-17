@@ -2,14 +2,13 @@ import React from 'react'
 import { SmallTitle } from '../Header'
 import { Name, Order } from './OrderList.style'
 
-const OrderList = ({ children }) => {
+const OrderList = ({ interested, children }) => {
   const isDarkMode = true
-  const willing = 3
 
   return (
     <>
       <SmallTitle isdarkmode={isDarkMode.toString()}>
-        {`Obecnie chętnych: ${willing}`}
+        {`Obecnie chętnych: ${interested}`}
       </SmallTitle>
       {children}
     </>

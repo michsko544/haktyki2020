@@ -14,10 +14,6 @@ import { useFetch } from './../../API'
 import OrderDetails from '../../components/OrderBox/OrderText/OrderDetails'
 
 const Home = () => {
-  const [orders, setOrders] = useState([])
-
-  const [myOrders, setMyOrders] = useState([])
-
   const fetchOrders = useFetch('/orders')
   const fetchUserOrders = useFetch('/user/orders')
 
@@ -25,29 +21,6 @@ const Home = () => {
     fetchOrders.getData()
     fetchUserOrders.getData()
   }, [])
-
-  useEffect(() => {
-    /**
-     * TODO
-     * Za pierwszym razem response jest undefined z jakiegoś powodu? Przy pierwszym wywołaniu useEffect...
-     * Gdy chcę zrobić w liście czułości isLoading to i tak muszę dodać response.data
-     * Co z tym zrobić?
-     * ~ Grzegorz
-     */
-    if (typeof fetchOrders.response.data !== 'undefined') {
-      setOrders(fetchOrders.response.data.orders)
-    }
-  }, [fetchOrders.response])
-
-  useEffect(() => {
-    /**
-     * TODO
-     * ~ Grzegorz
-     */
-    if (typeof fetchUserOrders.response.data !== 'undefined') {
-      setMyOrders(fetchUserOrders.response.data.orders)
-    }
-  }, [fetchUserOrders.response])
 
   return (
     <>
@@ -66,16 +39,20 @@ const Home = () => {
       <Container>
         <div className="your-order">
           <H3 color="#F0F0F0">Twoje zamówienia</H3>
-          {myOrders.map((order) => (
-            <Card key={order.id} details={order} />
-          ))}
+          {fetchUserOrders.response
+            ? fetchUserOrders.response.orders.map((order) => (
+                <Card key={order.id} details={order} />
+              ))
+            : fetchUserOrders.isLoading && <p>Ładowanie...</p>}
         </div>
         <div className="available-orders-wrapper">
           <H3 color="#F0F0F0">Dostępne zamówienia</H3>
           <div className="orders">
-            {orders.map((order) => (
-              <Card key={order.id} details={order} />
-            ))}
+            {fetchOrders.response
+              ? fetchOrders.response.orders.map((order) => (
+                  <Card key={order.id} details={order} />
+                ))
+              : fetchOrders.isLoading && <p>Ładowanie...</p>}
           </div>
         </div>
       </Container>

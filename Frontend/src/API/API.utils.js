@@ -4,19 +4,18 @@ import PropTypes from 'prop-types'
 
 const useFetch = (url) => {
   const [isLoading, setIsLoading] = React.useState(false)
-  const [response, setResponse] = React.useState({})
-  const [error, setError] = React.useState('')
+  const [response, setResponse] = React.useState(null)
+  const [error, setError] = React.useState(null)
 
   const getData = async () => {
     try {
       setIsLoading(true)
       const response = await axiosAPI(url)
-      setResponse({ ...response })
+      setResponse({ ...response.data })
+      console.log(response)
     } catch (error) {
-      if (typeof error.response !== 'undefined') {
-        const { status, statusText } = error.response
-        setError({ status, statusText, ...error.response })
-      }
+      setError(error.response.status.toString())
+      console.log(error.response.status)
     } finally {
       setIsLoading(false)
     }
