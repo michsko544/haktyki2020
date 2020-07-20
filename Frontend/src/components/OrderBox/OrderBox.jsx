@@ -5,7 +5,6 @@ import { Padding50 } from './OrderBox.style'
 import { OrderDetailsImg } from '../Heroimage/Heroimage.style'
 import img from '../../images/frytki.png'
 import { FixedContainer } from './OrderBox.style'
-import OrderText from './OrderText'
 
 const OrderBox = ({ restaurant, date, time, purchaser, children }) => {
   return (
@@ -13,12 +12,7 @@ const OrderBox = ({ restaurant, date, time, purchaser, children }) => {
       <BoxContainer>
         <OrderDetailsImg src={img} alt="food-order-photo" />
         <Padding50>
-          <OrderText
-            title={restaurant}
-            info={`Zamawia ${purchaser} - ${date} ${time}`}
-          >
             {children}
-          </OrderText>
         </Padding50>
       </BoxContainer>
     </FixedContainer>

@@ -2,8 +2,10 @@ import React from 'react'
 import OrderBox from '../../'
 import OrderList from '../OrderList'
 import { OrderRecord } from '../OrderList'
+import OrderText from '../'
 import Button from '../../../Button'
 import { useFetch } from '../../../../API'
+import {ButtonWrapper, TextDisplayer} from "../../"
 
 const OrderDetails = () => {
   const { response, getData, isLoading, error } = useFetch('/orders/1')
@@ -26,23 +28,32 @@ const OrderDetails = () => {
       />
     ))
 
+  const showLoaderIfLoading = () => isLoading && <p>Ładowanie...</p>
+
+  const showErrorIfError = () => error && <p>Error</p>
+
   return (
     <>
-      {response ? (
-        <OrderBox
-          restaurant={isLoading ? 'Ładowanie...' : response.order.restaurant}
-          date={response.order.date}
-          time={response.order.time}
-          purchaser={response.order.purchaser}
-        >
-          <OrderList interested={response.order.interested}>
-            {mapOrderDetails()}
-          </OrderList>
-          <Button text="Dołącz" />
-        </OrderBox>
-      ) : (
-        <>{isLoading && <OrderBox restaurant={'Ładowanie...'} />}</>
-      )}
+        <OrderBox>
+        <TextDisplayer>
+        {showLoaderIfLoading()}
+        {showErrorIfError()}
+          {response && 
+          <>
+            <OrderText
+              title={response.order.restaurant}
+              info={`Zamawia ${response.order.purchaser} - ${response.order.date} ${response.order.time}`}
+            >
+            <OrderList interested={response.order.interested}>
+              {mapOrderDetails()}
+            </OrderList>
+            </OrderText>
+            <ButtonWrapper>
+              <Button text="Dołącz" />
+            </ButtonWrapper>
+          </>}
+          </TextDisplayer>
+        </OrderBox> 
     </>
   )
 }

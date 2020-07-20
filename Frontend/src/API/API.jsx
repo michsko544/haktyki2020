@@ -66,6 +66,12 @@ mock.onGet(`${process.env.REACT_APP_API_URL}/orders/1`).reply(200, {
       { id: 1, who: 'Grzegorz', what: 'Duży mcBurger z frytkami i kalafiorem' },
       { id: 2, who: 'Tomek', what: 'Super Burger XL z serem' },
       { id: 3, who: 'Ania', what: 'Super Burger (mały) z frytkami' },
+      { id: 4, who: 'Hannah', what: 'Duży mcBurger z frytkami i kalafiorem' },
+      { id: 5, who: 'Tomek', what: 'Super Burger XL z serem' },
+      { id: 6, who: 'Basia', what: 'Super Burger (mały) z frytkami' },
+      { id: 7, who: 'Marcin', what: 'Duży mcBurger z frytkami i kalafiorem' },
+      { id: 8, who: 'Adrian', what: 'Super Burger XL z serem' },
+      { id: 9, who: 'Ania', what: 'Super Burger (mały) z frytkami' },
     ],
   },
 })

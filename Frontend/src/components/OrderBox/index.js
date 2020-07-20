@@ -1,2 +1,2 @@
 export { default } from './OrderBox'
-export { FixedContainer, Padding50, TextWrapper } from './OrderBox.style'
+export { FixedContainer, Padding50, TextWrapper,ButtonWrapper, TextDisplayer } from './OrderBox.style'
