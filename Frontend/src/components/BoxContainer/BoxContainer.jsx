@@ -1,13 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Container, Box } from './'
+import Store from './../App/App.store'
+import { AppBackgroundThemes } from './../App/App.themes'
 
 const BoxContainer = ({ children }) => {
-  const isDarkMode = true
+  const store = Store.useStore()
 
   return (
     <Container>
-      <Box isDarkMode={isDarkMode}> {children}</Box>
+      <Box background={AppBackgroundThemes[store.get('themeBackgroundId')].alternate}>{children}</Box>
     </Container>
   )
 }

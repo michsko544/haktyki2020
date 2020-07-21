@@ -15,7 +15,7 @@ export const FormWrapper = styled.div`
 
 export const OptionLinkStyled = styled.p`
   cursor: pointer;
-  color: ${(props) => (props.isDarkMode ? '#FCFCFC' : '#232327')};
+  color: ${props => props.color};
   font-size: 14px;
   width: 100%;
   text-align: center;

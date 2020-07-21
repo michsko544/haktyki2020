@@ -1,6 +1,5 @@
 import React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { DebugLink } from './App.style'
 import Store from './App.store'
 import AppRoutes from './App.routes'

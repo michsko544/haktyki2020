@@ -6,8 +6,6 @@ import { AppBackgroundThemes, AppThemes } from './../App/App.themes'
 import { FieldStyled, Label, ErrorStyled, Underline } from './'
 
 const Input = ({ label, error, ...props }) => {
-  const firstcolor = '#46D3FF'
-  const secondcolor = '#3687FF'
   const store = Store.useStore()
 
   return (

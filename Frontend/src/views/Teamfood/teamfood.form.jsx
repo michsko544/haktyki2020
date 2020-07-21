@@ -3,26 +3,25 @@ import { useState } from 'react'
 import * as Yup from 'yup'
 import { withFormik, Form } from 'formik'
 import { FormStyled } from './Container/form.style'
-import { default as Input, InputStyled } from './../../components/Input'
+import { default as Input, InputStyled } from '../../components/Input'
 import {
   ButtonFormWrapper,
   default as ButtonBig,
-} from './../../components/Button'
+} from '../../components/Button'
 
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormControl from '@material-ui/core/FormControl'
 import FormLabel from '@material-ui/core/FormLabel'
+import Button from '@material-ui/core/Button'
 
+import { useFetch } from '../../API'
 import { PhotoSelectionStyled } from './PhotoSelection/photo.selection.style'
 import { PhotoSelectionContainer } from './PhotoSelection/photo.selection.container.style'
-import Button from '@material-ui/core/Button'
-import { useFetch } from './../../API'
 import { DoubleInputStyled } from './Container/double.input.style'
 import { FormControlLabelStyled } from './form.control.label.style'
-import Store from './../../components/App/App.store'
-import { AppBackgroundThemes } from './../../components/App/App.themes'
+import Store from '../../components/App/App.store'
+import { AppBackgroundThemes } from '../../components/App/App.themes'
 
 const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
   const store = Store.useStore()
@@ -30,9 +29,7 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
   const [photos, setPhotos] = useState([])
   const fetchPhotos = useFetch('/photos')
 
-  useEffect(() => {
-    fetchPhotos.getData()
-  }, [])
+  useEffect(() => { fetchPhotos.getData() }, [])
 
   useEffect(() => {
     console.log('Response: ', fetchPhotos.response)

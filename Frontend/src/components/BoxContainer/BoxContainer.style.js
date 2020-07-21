@@ -15,7 +15,7 @@ export const Container = styled.section`
 export const Box = styled.div`
   width: 100%;
   height: 100%;
-  background-color: ${(props) => (props.isDarkMode ? '#232327' : '#FCFCFC')};
+  background-color: ${props => props.background};
   display: flex;
   box-shadow: 1px 2px 9px rgba(4, 4, 4, 0.25);
   position: relative;

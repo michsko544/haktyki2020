@@ -4,10 +4,10 @@ import { H3Styled } from './H3.style'
 import { AppBackgroundThemes } from './../App/App.themes'
 import Store from './../App/App.store'
 
-const H3 = ({ children, color }) => {
+const H3 = ({ children, ...props }) => {
   const store = Store.useStore()
 
-  return <H3Styled color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}>{children}</H3Styled>
+  return <H3Styled {...props} color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}>{children}</H3Styled>
 }
 
 H3.propTypes = {

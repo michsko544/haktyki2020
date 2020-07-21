@@ -12,7 +12,7 @@ import Card from '../../components/FoodCard/foodCard'
 import { IconLink } from './../../components/App/App.style'
 import { useFetch } from './../../API'
 import Store from './../../components/App/App.store'
-import { AppThemes, AppBackgroundThemes } from './../../components/App/App.themes'
+import { AppBackgroundThemes } from './../../components/App/App.themes'
 
 const Home = () => {
   const store = Store.useStore()
