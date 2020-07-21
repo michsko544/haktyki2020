@@ -30,7 +30,7 @@ const Input = ({ label, error, name, ...props }) => {
 Input.propTypes = {
   type: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   error: PropTypes.string,
 }
 

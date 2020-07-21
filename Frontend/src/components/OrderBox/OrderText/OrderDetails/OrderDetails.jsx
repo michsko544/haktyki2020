@@ -1,6 +1,7 @@
 import React from 'react'
 import OrderBox from '../../'
 import OrderList from '../OrderList'
+import OrderFormik from "../OrderForm"
 import { OrderRecord } from '../OrderList'
 import OrderText from '../'
 import Button from '../../../Button'
@@ -8,6 +9,7 @@ import { useFetch } from '../../../../API'
 import {ButtonWrapper, TextDisplayer} from "../../"
 
 const OrderDetails = () => {
+  const [wantOrder,setWantOrder] = React.useState(false);
   const { response, getData, isLoading, error } = useFetch('/orders/1')
 
   React.useEffect(() => {
@@ -44,12 +46,15 @@ const OrderDetails = () => {
               title={response.order.restaurant}
               info={`Zamawia ${response.order.purchaser} - ${response.order.date} ${response.order.time}`}
             >
-            <OrderList interested={response.order.interested}>
+            {wantOrder ? 
+            (
+              <OrderFormik/>
+            ):(<OrderList interested={response.order.interested}>
               {mapOrderDetails()}
-            </OrderList>
+            </OrderList>)}
             </OrderText>
             <ButtonWrapper>
-              <Button text="Dołącz" />
+              <Button text="Dołącz" handleOnClick={()=>setWantOrder(true)}/>
             </ButtonWrapper>
           </>}
           </TextDisplayer>
