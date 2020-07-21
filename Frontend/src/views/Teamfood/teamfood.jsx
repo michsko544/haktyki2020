@@ -12,7 +12,7 @@ const Teamfood = () => {
   return (
     <>
       <Header>
-        <H1 color="#F0F0F0">
+        <H1>
           Team<HBold>Food</HBold>
         </H1>
         <div className="icons">

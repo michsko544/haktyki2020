@@ -14,7 +14,7 @@ export const HeaderStyled = styled.header`
   box-sizing: border-box;
   padding: 32px;
 
-  background: #232327;
+  background: ${props => props.background};
 
   H1 {
     grid-area: heading;

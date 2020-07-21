@@ -7,7 +7,7 @@ export const FieldStyled = styled(Field)`
   background: none;
   outline: none;
   font-size: 18px;
-  color: ${({ isdarkmode }) => (isdarkmode === 'true' ? '#FCFCFC' : 'black')};
+  color: ${props => props.color};
   width: 100%;
   height: 100%;
   line-height: 22px;
@@ -17,8 +17,7 @@ export const FieldStyled = styled(Field)`
   }
 
   &::placeholder {
-    color: ${({ isdarkmode }) =>
-      isdarkmode === 'true' ? '#FCFCFC55' : '#00000077'};
+    color: ${props => props.color};
   }
 `
 
@@ -52,7 +51,7 @@ FieldStyled.defaultProps = {
 }
 
 export const Label = styled.label`
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   padding: 0px 9px;
   background: -webkit-linear-gradient(
@@ -73,7 +72,7 @@ Label.defaultProps = {
 export const ErrorStyled = styled.p`
   font-size: 12px;
   padding: 4px 17px;
-  color: ${({ isdarkmode }) => (isdarkmode === 'true' ? '#FCFCFC' : 'black')};
+  color: ${props => props.color};
   width: 100%;
 `
 
