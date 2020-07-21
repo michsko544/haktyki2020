@@ -1,20 +1,53 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useState } from 'react'
 import * as Yup from 'yup'
 import { withFormik, Form } from 'formik'
 import { FormStyled } from './Container/form.style'
 import { default as Input, InputStyled } from './../../components/Input'
-import { ButtonFormWrapper, default as ButtonBig } from './../../components/Button'
+import {
+  ButtonFormWrapper,
+  default as ButtonBig,
+} from './../../components/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControl from '@material-ui/core/FormControl'
 import FormLabel from '@material-ui/core/FormLabel'
-import PhotoSelection from './PhotoSelection/photo.selection'
+import { PhotoSelectionStyled } from './PhotoSelection/photo.selection.style'
 import { PhotoSelectionContainer } from './PhotoSelection/photo.selection.container.style'
-import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button'
+import { useFetch } from './../../API'
+import { DoubleInputStyled } from './Container/double.input.style'
 
 const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
+  const [photos, setPhotos] = useState([])
+  const fetchPhotos = useFetch('/photos')
+
+  useEffect(() => {
+    fetchPhotos.getData()
+  }, [])
+
+  useEffect(() => {
+    console.log('Response: ', fetchPhotos.response)
+    if (typeof fetchPhotos.response.data !== 'undefined') {
+      setPhotos(fetchPhotos.response.data.pictures)
+    }
+  }, [fetchPhotos.response])
+
+  const photoSelectionHandler = (photo, event) => {
+    let photocopy = [...photos]
+    photocopy = photocopy.map((p) => {
+      p.selected = p.id === photo.id
+      return p
+    })
+
+    setPhotos(photocopy)
+  }
+
+  const newPhotosHandler = (e) => {
+    fetchPhotos.getData()
+  }
 
   return (
     <FormStyled>
@@ -28,24 +61,26 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
             error={errorHandler('where')}
           />
         </InputStyled>
-        <InputStyled>
-          <Input
-            type="date"
-            name="when"
-            label="Kiedy?"
-            placeholder="Dzisiaj"
-            error={errorHandler('when')}
-          />
-        </InputStyled>
-        <InputStyled>
-          <Input
-            type="time"
-            name="whenHour"
-            label="O której?"
-            placeholder="17:00"
-            error={errorHandler('when-hour')}
-          />
-        </InputStyled>
+        <DoubleInputStyled>
+          <InputStyled>
+            <Input
+              type="date"
+              name="when"
+              label="Kiedy?"
+              placeholder="Dzisiaj"
+              error={errorHandler('when')}
+            />
+          </InputStyled>
+          <InputStyled>
+            <Input
+              type="time"
+              name="whenHour"
+              label="O której?"
+              placeholder="17:00"
+              error={errorHandler('when-hour')}
+            />
+          </InputStyled>
+        </DoubleInputStyled>
         <InputStyled>
           <Input
             type="text"
@@ -77,13 +112,15 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
       </div>
       <div>
         <PhotoSelectionContainer>
-        <PhotoSelection/>
-        <PhotoSelection/>
-        <PhotoSelection/>
-        <PhotoSelection/>
-        <PhotoSelection/>
-        <PhotoSelection/>
-        <Button>Wylosuj nowe</Button>
+          {photos.map((photo) => (
+            <PhotoSelectionStyled
+              onClick={(e) => photoSelectionHandler(photo, e)}
+              key={photo.id}
+              selected={photo.selected}
+              url={photo.url}
+            />
+          ))}
+          <Button onClick={newPhotosHandler}>Wylosuj nowe</Button>
         </PhotoSelectionContainer>
       </div>
     </FormStyled>
