@@ -16,6 +16,9 @@ public class JwtService {
     private String apiKey = "EkW36ZMJNPlBsDeJf7VGNYbi1PSIQrL2POmmiezlICCGQaSvN-wcDsIpMycslFJ3R2thY4-io6aGb7NCAC5HQQ";
     private SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
+    public JwtService() {
+    }
+
     public String createJwt(String userLogin){
 
         long nowMillis = System.currentTimeMillis();

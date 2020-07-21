@@ -21,11 +21,11 @@ import java.util.Set;
 
 public class JwtFilter extends BasicAuthenticationFilter {
 
-    @Autowired
     private JwtService jwtService;
 
-    public JwtFilter(AuthenticationManager authenticationManager) {
+    public JwtFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
         super(authenticationManager);
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -41,8 +41,8 @@ public class JwtFilter extends BasicAuthenticationFilter {
         Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(jwtService.getSigningKey())
                 .build().parseClaimsJws(header.replace("Bearer ", ""));
 
-        String username = claimsJws.getBody().get("name").toString();
-        String role = claimsJws.getBody().get("role").toString();
+        String username = claimsJws.getBody().get("sub").toString();
+        String role = claimsJws.getBody().get("roles").toString();
         Set<SimpleGrantedAuthority> simpleGrantedAuthorities = Collections.singleton(new SimpleGrantedAuthority((role)));
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
