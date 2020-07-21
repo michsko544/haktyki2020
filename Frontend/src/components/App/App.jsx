@@ -8,6 +8,13 @@ const App = () => {
   const theme = createMuiTheme({
     palette: {
       type: 'dark',
+      main: '#20B0E8',
+      primary: {
+        main: '#20B0E8'
+      },
+      secondary: {
+        main: '#20B0E8'
+      }
     }
   })
 
@@ -20,6 +27,7 @@ const App = () => {
         <DebugLink to="/register">Register</DebugLink>
         <DebugLink to="/greeter">Greeter</DebugLink>
         <DebugLink to="/settings">Settings</DebugLink>
+        <DebugLink to="/teamfood">TeamFood</DebugLink>
         <AppRoutes />
       </Router>
       </ThemeProvider>

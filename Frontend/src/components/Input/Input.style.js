@@ -12,6 +12,10 @@ export const FieldStyled = styled(Field)`
   height: 100%;
   line-height: 22px;
 
+  &[type="time"]::-webkit-calendar-picker-indicator, &[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1)
+  }
+
   &::placeholder {
     color: ${({ isdarkmode }) =>
       isdarkmode === 'true' ? '#FCFCFC55' : '#00000077'};

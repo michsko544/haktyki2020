@@ -14,6 +14,7 @@ export const Padding30 = styled.div`
 export const DebugLink = styled(Link)`
   color: #f0f0f0;
   padding: 6px;
+  display: block;
 `
 
 export const IconLink = styled(Link)`
