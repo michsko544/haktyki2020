@@ -3,30 +3,33 @@ import { useState } from 'react'
 import * as Yup from 'yup'
 import { withFormik, Form } from 'formik'
 import { FormStyled } from './Container/form.style'
-import { default as Input, InputStyled } from './../../components/Input'
+import { default as Input, InputStyled } from '../../components/Input'
 import {
   ButtonFormWrapper,
   default as ButtonBig,
-} from './../../components/Button'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
+} from '../../components/Button'
+
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControl from '@material-ui/core/FormControl'
 import FormLabel from '@material-ui/core/FormLabel'
+import Button from '@material-ui/core/Button'
+
+import { useFetch } from '../../API'
 import { PhotoSelectionStyled } from './PhotoSelection/photo.selection.style'
 import { PhotoSelectionContainer } from './PhotoSelection/photo.selection.container.style'
-import Button from '@material-ui/core/Button'
-import { useFetch } from './../../API'
 import { DoubleInputStyled } from './Container/double.input.style'
+import { FormControlLabelStyled } from './form.control.label.style'
+import Store from '../../components/App/App.store'
+import { AppBackgroundThemes } from '../../components/App/App.themes'
 
 const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
+  const store = Store.useStore()
   const errorHandler = (name) => touched[name] && errors[name]
   const [photos, setPhotos] = useState([])
   const fetchPhotos = useFetch('/photos')
 
-  useEffect(() => {
-    fetchPhotos.getData()
-  }, [])
+  useEffect(() => { fetchPhotos.getData() }, [])
 
   useEffect(() => {
     console.log('Response: ', fetchPhotos.response)
@@ -93,13 +96,26 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
         <FormControl component="fieldset">
           <FormLabel component="legend">Forma Płatności</FormLabel>
           <RadioGroup aria-label="gender" name="gender1">
-            <FormControlLabel value="blik" control={<Radio />} label="BLIK" />
-            <FormControlLabel
+            <FormControlLabelStyled
+              color={
+                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
+              }
+              value="blik"
+              control={<Radio />}
+              label="BLIK"
+            />
+            <FormControlLabelStyled
+              color={
+                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
+              }
               value="transfer"
               control={<Radio />}
               label="Przelew"
             />
-            <FormControlLabel
+            <FormControlLabelStyled
+              color={
+                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
+              }
               value="cash"
               control={<Radio />}
               label="Gotówka"
@@ -139,7 +155,7 @@ const TeamfoodFormik = withFormik({
 
   handleSubmit(values, { resetForm, setSubmitting }) {
     setTimeout(() => {
-      console.log(values)
+      console.log('Values: ', values)
       setSubmitting(false)
       resetForm()
     }, 500)

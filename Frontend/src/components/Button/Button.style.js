@@ -25,7 +25,7 @@ export const ButtonStyled = styled.button`
     z-index: 5;
     margin: -2px;
     border-radius: 6px;
-    background-color: ${(props) => (props.isDarkMode ? '#232327' : '#FCFCFC')};
+    background-color: ${props => props.background};
   }
 
   &:after {

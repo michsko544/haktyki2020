@@ -1,1 +1,1 @@
-export { default } from './H4.style'
+export { default } from './H4'
