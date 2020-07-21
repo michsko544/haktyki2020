@@ -42,7 +42,7 @@ const Settings = () => {
         <H4>Po prostu zmień swoje dane.</H4>
         <div className="icons">
           <IconLink to="/">
-            <CloseIcon />
+            <CloseIcon style={{ color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor }} />
           </IconLink>
         </div>
       </Header>
@@ -66,10 +66,10 @@ const Settings = () => {
             <GradientBoxContainerStyled>
               {AppBackgroundThemes.map((theme) => (
                 <GradientBoxStyled
-                key={theme.id}
-                from={theme.from}
-                to={theme.to}
-                onClick={(e) => backgroundClick(theme, e)}
+                  key={theme.id}
+                  from={theme.from}
+                  to={theme.to}
+                  onClick={(e) => backgroundClick(theme, e)}
               />
               ))}
             </GradientBoxContainerStyled>

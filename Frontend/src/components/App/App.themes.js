@@ -33,14 +33,16 @@ export const AppBackgroundThemes = [
         alternate: '#232327',
         from: '#505050',
         to: '#292929',
-        fontColor: '#F0F0F0'
+        fontColor: '#F0F0F0',
+        cardBackground: '#1D1D1D'
     },
     {
         id: 1,
         background: '#FFFFFF',
-        alternate: '#F0F0F0',
+        alternate: '#FCFCFC',
         from: '#FFFFFF',
         to: '#D0D0D0',
-        fontColor: '#171719'
+        fontColor: '#171719',
+        cardBackground: '#FFFFFF'
     },
 ]

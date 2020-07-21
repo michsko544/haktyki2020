@@ -11,8 +11,11 @@ import Button from './../../components/Button'
 import Card from '../../components/FoodCard/foodCard'
 import { IconLink } from './../../components/App/App.style'
 import { useFetch } from './../../API'
+import Store from './../../components/App/App.store'
+import { AppThemes, AppBackgroundThemes } from './../../components/App/App.themes'
 
 const Home = () => {
+  const store = Store.useStore()
   const [orders, setOrders] = useState([])
   const [myOrders, setMyOrders] = useState([])
   const fetchOrders = useFetch('/orders')
@@ -49,26 +52,26 @@ const Home = () => {
   return (
     <>
       <Header>
-        <H1 className="small" color="#F0F0F0">
+        <H1 className="small">
           Cześć <HBold>Tomek,</HBold>
         </H1>
         <div className="icons">
-          <NotificationsNoneOutlinedIcon />
+          <NotificationsNoneOutlinedIcon style={{ color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor }} />
           <IconLink to="/settings">
-            <TuneIcon />
+            <TuneIcon style={{ color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor }} />
           </IconLink>
         </div>
         <Button text="Dodaj Zamówienie"></Button>
       </Header>
       <Container>
         <div className="your-order">
-          <H3 color="#F0F0F0">Twoje zamówienia</H3>
+          <H3>Twoje zamówienia</H3>
           {myOrders.map((order) => (
             <Card key={order.id} details={order} />
           ))}
         </div>
         <div className="available-orders-wrapper">
-          <H3 color="#F0F0F0">Dostępne zamówienia</H3>
+          <H3>Dostępne zamówienia</H3>
           <div className="orders">
             {orders.map((order) => (
               <Card key={order.id} details={order} />

@@ -5,7 +5,6 @@ import Store from './../App/App.store'
 import { AppThemes, AppBackgroundThemes } from './../App/App.themes'
 
 const Button = ({ text, handleOnClick, ...props }) => {
-  const isDarkMode = true
   const store = Store.useStore()
 
   return (

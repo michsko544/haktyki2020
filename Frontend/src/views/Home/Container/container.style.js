@@ -10,7 +10,7 @@ export const ContainerStyled = styled.div`
   grid-template-rows: auto auto;
   box-sizing: border-box;
   padding: 0 32px 32px;
-  background: #232327;
+  background: ${props => props.background};
 
   H3 {
       margin: 24px 0 16px;
