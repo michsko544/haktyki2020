@@ -13,6 +13,7 @@ import { IconLink } from './../../components/App/App.style'
 import { useFetch } from './../../API'
 import Store from './../../components/App/App.store'
 import { AppBackgroundThemes } from './../../components/App/App.themes'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
   const store = Store.useStore()
@@ -56,12 +57,24 @@ const Home = () => {
           Cześć <HBold>Tomek,</HBold>
         </H1>
         <div className="icons">
-          <NotificationsNoneOutlinedIcon style={{ color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor }} />
+          <NotificationsNoneOutlinedIcon
+            style={{
+              color:
+                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+            }}
+          />
           <IconLink to="/settings">
-            <TuneIcon style={{ color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor }} />
+            <TuneIcon
+              style={{
+                color:
+                  AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+              }}
+            />
           </IconLink>
         </div>
-        <Button text="Dodaj Zamówienie"></Button>
+        <Link className="button" to="/teamfood">
+          <Button text="Dodaj Zamówienie"></Button>
+        </Link>
       </Header>
       <Container>
         <div className="your-order">

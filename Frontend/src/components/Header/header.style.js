@@ -34,7 +34,7 @@ export const HeaderStyled = styled.header`
     }
   }
 
-  button {
+  .button {
     margin-top: 20px;
     grid-area: content;
   }
@@ -50,7 +50,7 @@ export const HeaderStyled = styled.header`
     box-shadow: 1px 2px 9px rgba(4, 4, 4, 0.25);
     max-width: calc(100vw - 64px);
     border-radius: 0 0 7px 7px;
-    button {
+    .button {
         max-width: 340px;
     }
   }
