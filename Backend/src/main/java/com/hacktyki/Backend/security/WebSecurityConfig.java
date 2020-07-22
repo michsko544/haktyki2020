@@ -4,13 +4,14 @@ import com.hacktyki.Backend.model.service.JwtService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import static com.hacktyki.Backend.security.SecurityConstants.LOG_IN_URL;
 import static com.hacktyki.Backend.security.SecurityConstants.SING_UP_URL;
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -20,7 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest().authenticated()
             .and()
             .antMatcher("/users/**")
-            .addFilter(new JwtFilter(authenticationManager(), new JwtService()))
+            .addFilter(new JwtFilter(authenticationManager()))
             .csrf().disable();
     }
 

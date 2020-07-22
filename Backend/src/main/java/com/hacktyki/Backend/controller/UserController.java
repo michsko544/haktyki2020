@@ -1,5 +1,6 @@
 package com.hacktyki.Backend.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.hacktyki.Backend.model.responses.UserSignInRestModel;
@@ -23,5 +24,15 @@ public class UserController {
         return ResponseEntity.ok(allUsersList);
     }
 
+    @GetMapping(path = "me")
+    public ResponseEntity<String> getMyLogin(){
+
+        final String username = userService.getAuthenticatedLogin();
+
+        if(username != null) {
+            return new ResponseEntity<>(username, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Idk who I am", HttpStatus.NOT_FOUND);
+    }
 
 }

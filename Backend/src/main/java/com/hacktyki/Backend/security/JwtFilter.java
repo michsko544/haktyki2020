@@ -24,11 +24,11 @@ import static com.hacktyki.Backend.security.SecurityConstants.TOKEN_PREFIX;
 
 public class JwtFilter extends BasicAuthenticationFilter {
 
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
-    public JwtFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
+    public JwtFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.jwtService = jwtService;
+        this.jwtService = new JwtService();
     }
 
     @Override
@@ -56,7 +56,8 @@ public class JwtFilter extends BasicAuthenticationFilter {
 
                 String username = claimsJws.getBody().get("sub").toString();
                 String role = claimsJws.getBody().get("roles").toString();
-                Set<SimpleGrantedAuthority> simpleGrantedAuthorities = Collections.singleton(new SimpleGrantedAuthority((role)));
+                Set<SimpleGrantedAuthority> simpleGrantedAuthorities
+                        = Collections.singleton(new SimpleGrantedAuthority((role)));
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                         = new UsernamePasswordAuthenticationToken(username, null, simpleGrantedAuthorities);
@@ -64,10 +65,11 @@ public class JwtFilter extends BasicAuthenticationFilter {
                 return usernamePasswordAuthenticationToken;
             }
             catch (JwtException e){
+                logger.error("JWT Filter JWTException error: " + e.getMessage());
                 return null;
             }
             catch (Exception e){
-                System.out.println("JWT FILTER UNEXPECTED ERROR! - EXCEPTION MESSAGE: " + e.getMessage());
+                logger.error("JWT Filter unexpected error: " + e.getMessage());
                 return null;
             }
         }
