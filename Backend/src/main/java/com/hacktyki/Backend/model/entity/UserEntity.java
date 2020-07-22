@@ -1,4 +1,4 @@
-package com.hacktyki.Backend.Entity;
+package com.hacktyki.Backend.model.entity;
 
 import javax.persistence.*;
 
@@ -31,6 +31,10 @@ public class UserEntity {
         this.lastName = lastName;
         this.login = login;
         this.password = password;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getLogin() {
