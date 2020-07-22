@@ -22,7 +22,7 @@ public class LoginController {
 
     @PostMapping(path = "register",
             consumes = "application/json")
-    public ResponseEntity<String> addUser(@RequestBody UserSignInRestModel user)
+    public ResponseEntity<String> signUp(@RequestBody UserSignInRestModel user)
     {
         return ResponseEntity.ok(loginService.addNewUser(user));
     }
