@@ -28,13 +28,13 @@ const Input = ({ label, error, name, ...props }) => {
 }
 
 Input.propTypes = {
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.string.isRequired,
   error: PropTypes.string,
 }
 
-const Error = ({ error, isdarkmode }) => {
+export const Error = ({ error, isdarkmode }) => {
   return <ErrorStyled isdarkmode={isdarkmode}>{error}</ErrorStyled>
 }
 

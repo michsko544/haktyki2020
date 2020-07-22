@@ -20,14 +20,13 @@ export const Padding50 = styled.div`
 export const TextDisplayer = styled.div`
   width: 100%;
 
-@media (min-width: 1024px) {
-  width: 50%;
-  height:100%;
-  overflow-y:unset;
-  max-height: 400px;
-  max-width: unset;
-  padding-right: 50px;
-}
+  @media (min-width: 1024px) {
+    width: 50%;
+    height: 100%;
+    max-height: ${(props) => (props.wantOrder === 'true' ? '520px' : '400px')};
+    max-width: unset;
+    padding-right: 50px;
+  }
 `
 
 export const TextWrapper = styled.div`
@@ -39,8 +38,8 @@ export const TextWrapper = styled.div`
 
   @media (min-width: 1024px) {
     margin-top: 64px;
-    height:100%;
-    overflow-y: scroll;
+    height: 100%;
+    overflow-y: auto;
     max-width: unset;
     margin-bottom: 40px;
   }
@@ -53,7 +52,7 @@ export const ButtonWrapper = styled.div`
   width: 100%;
   padding: 0 28px;
 
-  @media(min-width: 1024px){
+  @media (min-width: 1024px) {
     margin-top: 20px;
     margin-bottom: 40px;
     position: unset;

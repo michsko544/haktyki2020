@@ -7,10 +7,11 @@ export const FieldStyled = styled(Field)`
   background: none;
   outline: none;
   font-size: 18px;
+  font-family: 'Montserrat';
   color: ${({ isdarkmode }) => (isdarkmode === 'true' ? '#FCFCFC' : 'black')};
   width: 100%;
-  height: 100%;
   line-height: 22px;
+  resize: vertical;
 
   &::placeholder {
     color: ${({ isdarkmode }) =>
@@ -25,7 +26,6 @@ FieldStyled.defaultProps = {
 export const Underline = styled.div`
   position: relative;
   width: 100%;
-  height: 33px;
 
   &:after {
     content: '';
