@@ -1,14 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Store from '../../../App/App.store'
+import { AppBackgroundThemes } from '../../../App/App.themes'
 import { Title, Info } from './Header.style'
 
 const Header = ({ title, info }) => {
-  const isDarkMode = true
+  const store = Store.useStore()
 
+  const fontcolor =
+    AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
   return (
     <>
-      <Title isdarkmode={isDarkMode.toString()}>{title}</Title>
-      <Info isdarkmode={isDarkMode.toString()}>{info}</Info>
+      <Title fontcolor={fontcolor}>{title}</Title>
+      <Info fontcolor={fontcolor}>{info}</Info>
     </>
   )
 }

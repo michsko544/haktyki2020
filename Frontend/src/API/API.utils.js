@@ -14,7 +14,11 @@ const useFetch = (url) => {
       setResponse({ ...response.data })
       console.log(response.data)
     } catch (error) {
-      setError(error.response.status.toString())
+      console.log(error.response)
+      setError({
+        code: error.response.status.toString(),
+        text: error.response.statusText?.toString(),
+      })
       console.log(error.response.status)
     } finally {
       setIsLoading(false)

@@ -4,6 +4,7 @@ export const Name = styled.p`
   font-size: 14px;
   line-height: 17px;
   margin-top: 10px;
+  color: ${(props) => props.color};
 
   @media (min-width: 1024px) {
     font-size: 18px;

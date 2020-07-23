@@ -1,16 +1,21 @@
 import React from 'react'
 import * as Yup from 'yup'
 import { withFormik, Form } from 'formik'
+import Store from '../../../App/App.store'
+import { AppBackgroundThemes } from '../../../App/App.themes'
 import Checkbox from '@material-ui/core/Checkbox'
 import { SmallTitle } from '../Header'
-import { CheckboxStyled } from './OrderForm.style'
+import { CheckboxStyled, CheckboxLabel } from './OrderForm.style'
 import Input from '../../../Input'
 import Button from '../../../Button'
 import { ButtonWrapper } from '../../'
 
 const OrderForm = ({ values, touched, errors, handleChange, handleBlur }) => {
-  const isDarkMode = true
+  const store = Store.useStore()
   const [hasCoupon, setHasCoupon] = React.useState(false)
+
+  const fontcolor =
+    AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
 
   const showCouponInput = () =>
     !hasCoupon ? (
@@ -20,7 +25,7 @@ const OrderForm = ({ values, touched, errors, handleChange, handleBlur }) => {
           onClick={() => setHasCoupon(true)}
           checked={hasCoupon}
         />
-        {'Mam kupon'}
+        <CheckboxLabel fontcolor={fontcolor}>Mam kupon</CheckboxLabel>
       </CheckboxStyled>
     ) : (
       <Input type="text" label="Kod kuponu" name="coupon" />
@@ -28,9 +33,7 @@ const OrderForm = ({ values, touched, errors, handleChange, handleBlur }) => {
 
   return (
     <Form>
-      <SmallTitle isdarkmode={isDarkMode.toString()}>
-        {`Co chcesz zamówić?`}
-      </SmallTitle>
+      <SmallTitle fontcolor={fontcolor}>Co chcesz zamówić?</SmallTitle>
       <Input
         name="orderContent"
         as="textarea"

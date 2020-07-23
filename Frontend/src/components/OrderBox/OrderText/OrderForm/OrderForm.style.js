@@ -5,3 +5,7 @@ export const CheckboxStyled = styled.div`
   width: 100%;
   align-items: center;
 `
+
+export const CheckboxLabel = styled.p`
+  color: ${({ fontcolor }) => fontcolor};
+`

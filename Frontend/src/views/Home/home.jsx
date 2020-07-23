@@ -14,6 +14,7 @@ import { useFetch } from './../../API'
 import Store from './../../components/App/App.store'
 import { AppBackgroundThemes } from './../../components/App/App.themes'
 import { Link } from 'react-router-dom'
+import OrderDetails from '../../components/OrderBox/OrderText/OrderDetails'
 
 const Home = () => {
   const store = Store.useStore()
@@ -71,6 +72,9 @@ const Home = () => {
           </div>
         </div>
       </Container>
+      {/* <OrderDetails orderId={3} /> */}
+      {/* <OrderDetails orderId={2} /> */}
+      {/* <OrderDetails orderId={1} /> */}
     </>
   )
 }
