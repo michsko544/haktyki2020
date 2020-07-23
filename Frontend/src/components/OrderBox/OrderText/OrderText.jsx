@@ -12,7 +12,7 @@ const OrderText = ({ title, info, children }) => {
   )
 }
 
-Header.PropTypes = {
+OrderText.propTypes = {
   title: PropTypes.string.isRequired,
   info: PropTypes.string.isRequired,
   children: PropTypes.any,

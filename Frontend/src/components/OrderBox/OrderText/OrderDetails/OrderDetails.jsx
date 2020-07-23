@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import OrderBox from '../../'
 import OrderList from '../OrderList'
 import OrderFormik from '../OrderForm'
@@ -7,36 +8,31 @@ import OrderText from '../'
 import Button from '../../../Button'
 import { useFetch } from '../../../../API'
 import { ButtonWrapper, TextDisplayer } from '../../'
+import { recognizeCreator } from './'
 
-const OrderDetails = () => {
+const OrderDetails = ({ orderId }) => {
   const [wantOrder, setWantOrder] = React.useState(false)
-  const { response, getData, isLoading, error } = useFetch('/orders/1')
+  const { response, getData, isLoading, error } = useFetch(`/orders/${orderId}`)
 
   React.useEffect(() => {
     getData()
   }, [])
 
-  const isCreator = (person) => response.order.purchaser === person
-
-  const generateName = (person) =>
-    isCreator(person) ? person + ' (Założyciel)' : person
-
   const mapOrderDetails = () =>
     response.order.orderDetails.map((order) => (
       <OrderRecord
         key={order.id}
-        name={generateName(order.who)}
+        name={recognizeCreator(order.who, response.order.purchaser)}
         order={order.what}
       />
     ))
 
   const showLoaderIfLoading = () => isLoading && <p>Ładowanie...</p>
-
   const showErrorIfError = () => error && <p>Error</p>
 
   return (
     <>
-      <OrderBox>
+      <OrderBox image={response?.order.image}>
         <TextDisplayer wantOrder={wantOrder.toString()}>
           {showLoaderIfLoading()}
           {showErrorIfError()}
@@ -68,6 +64,10 @@ const OrderDetails = () => {
       </OrderBox>
     </>
   )
+}
+
+OrderDetails.propTypes = {
+  orderId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 }
 
 export default OrderDetails

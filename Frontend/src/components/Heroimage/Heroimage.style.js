@@ -25,6 +25,7 @@ export const HeroimageStyled = styled.img`
 
 export const OrderDetailsImg = styled(HeroimageStyled)`
   border-radius: 0;
+  height: 200px;
   margin: 0;
   max-width: 420px;
 `

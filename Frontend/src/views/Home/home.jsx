@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 import H1 from './../../components/H1'
 import H3 from './../../components/H3'
@@ -11,7 +11,6 @@ import Button from './../../components/Button'
 import Card from '../../components/FoodCard/foodCard'
 import { IconLink } from './../../components/App/App.style'
 import { useFetch } from './../../API'
-import OrderDetails from '../../components/OrderBox/OrderText/OrderDetails'
 
 const Home = () => {
   const fetchOrders = useFetch('/orders')
@@ -56,7 +55,6 @@ const Home = () => {
           </div>
         </div>
       </Container>
-      <OrderDetails />
     </>
   )
 }
