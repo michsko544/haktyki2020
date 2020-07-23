@@ -17,7 +17,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers(HttpMethod.POST, LOG_IN_URL, SING_UP_URL).permitAll()
+            .antMatchers(HttpMethod.POST,
+     LOG_IN_URL,
+                SING_UP_URL,
+                "/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .antMatcher("/users/**")
@@ -26,5 +34,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
-
 }
