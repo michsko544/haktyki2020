@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 
-import { Home, Login, Register, Greeter, Settings } from '../../views'
+import { Home, Login, Register, Greeter, Settings, NotFound } from '../../views'
 import Teamfood from '../../views/Teamfood/teamfood'
 
 import Store from './App.store'
@@ -41,7 +41,9 @@ const AppRoutes = () => {
   })
 
   return (
-    <ThemeProvider theme={store.get('themeBackgroundId') === 0 ? darkTheme : lightTheme}>
+    <ThemeProvider
+      theme={store.get('themeBackgroundId') === 0 ? darkTheme : lightTheme}
+    >
       <Switch>
         <Route exact path="/" component={Home}></Route>
         <Route path="/login" component={Login}></Route>
@@ -49,6 +51,7 @@ const AppRoutes = () => {
         <Route path="/greeter" component={Greeter}></Route>
         <Route path="/settings" component={Settings}></Route>
         <Route path="/teamfood" component={Teamfood}></Route>
+        <Route path="*" component={NotFound}></Route>
       </Switch>
     </ThemeProvider>
   )
