@@ -7,6 +7,9 @@ import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import { FoodCardStyled } from './foodCard.style'
 
+import Store from './../App/App.store'
+import { AppBackgroundThemes } from './../App/App.themes'
+
 const useStyles = makeStyles({
   root: {
     maxWidth: 340,
@@ -18,6 +21,7 @@ const useStyles = makeStyles({
 })
 
 const FoodCard = ({details, ...props}) => {
+  const store = Store.useStore()
   const classes = useStyles()
   
   const orderDetails = () => {
@@ -37,7 +41,7 @@ const FoodCard = ({details, ...props}) => {
   }
 
   return (
-    <FoodCardStyled className={classes.root}>
+    <FoodCardStyled background={AppBackgroundThemes[store.get('themeBackgroundId')].cardBackground} className={classes.root}>
       <CardActionArea>
         <CardMedia
           className={classes.media}

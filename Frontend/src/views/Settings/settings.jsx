@@ -10,6 +10,8 @@ import { GradientBoxStyled } from './GradientBox/gradientbox.style'
 import { GradientBoxContainerStyled } from './GradientBox/gradientbox.container.style'
 import { ThemeContainerStyled } from './ThemeContainer/theme.container.style'
 import { IconLink } from './../../components/App/App.style'
+import Store from './../../components/App/App.store'
+import { AppThemes, AppBackgroundThemes } from './../../components/App/App.themes'
 
 /**
  * TODO
@@ -19,67 +21,57 @@ import { IconLink } from './../../components/App/App.style'
  * ~ Grzegorz
  */
 const Settings = () => {
-  const gradientClick = (event) => {
-    console.log('Hello there', event)
+  const store = Store.useStore()
+  const setThemeId = store.set('themeId')
+  const setBackgroundThemeId = store.set('themeBackgroundId')
+
+  const gradientClick = (theme, event) => {
+    setThemeId(theme.id)
   }
+
+  const backgroundClick=(theme, event) => {
+    setBackgroundThemeId(theme.id)
+  }
+
   return (
     <>
       <Header>
-        <H1 color="#F0F0F0">
+        <H1>
           <HBold>Ustawienia</HBold>
         </H1>
-        <H4 color="#F0F0F0">Po prostu zmień swoje dane.</H4>
+        <H4>Po prostu zmień swoje dane.</H4>
         <div className="icons">
           <IconLink to="/">
-            <CloseIcon />
+            <CloseIcon style={{ color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor }} />
           </IconLink>
         </div>
       </Header>
-      <ContainerStyled>
+      <ContainerStyled background={AppBackgroundThemes[store.get('themeBackgroundId')].alternate}>
         <ThemeContainerStyled>
           <div>
-            <H4 color="#F0F0F0">Motyw Aplikacji</H4>
+            <H4>Motyw Aplikacji</H4>
             <GradientBoxContainerStyled>
-              <GradientBoxStyled
-                from="#36B7FF"
-                to="#A736FF"
-                onClick={gradientClick}
-              />
-              <GradientBoxStyled
-                from="#46D3FF"
-                to="#3687FF"
-                onClick={gradientClick}
-              />
-              <GradientBoxStyled
-                from="#20B0E8"
-                to="#20DCE8"
-                onClick={gradientClick}
-              />
-              <GradientBoxStyled
-                from="#20B0E8"
-                to="#20E888"
-                onClick={gradientClick}
-              />
-              <GradientBoxStyled
-                from="#46D3FF"
-                to="#3687FF"
-                onClick={gradientClick}
-              />
+              {AppThemes.map((theme) => (
+                <GradientBoxStyled
+                  key={theme.id}
+                  from={theme.from}
+                  to={theme.to}
+                  onClick={(e) => gradientClick(theme, e)}
+                />
+              ))}
             </GradientBoxContainerStyled>
           </div>
           <div>
-            <H4 color="#F0F0F0">Kolor Tła</H4>
+            <H4>Kolor Tła</H4>
             <GradientBoxContainerStyled>
-              <GradientBoxStyled
-                from="#FFFFFF"
-                to="#D0D0D0"
-                onClick={gradientClick}
+              {AppBackgroundThemes.map((theme) => (
+                <GradientBoxStyled
+                  key={theme.id}
+                  from={theme.from}
+                  to={theme.to}
+                  onClick={(e) => backgroundClick(theme, e)}
               />
-              <GradientBoxStyled
-                from="#505050"
-                to="#292929"
-                onClick={gradientClick}
-              />
+              ))}
             </GradientBoxContainerStyled>
           </div>
         </ThemeContainerStyled>

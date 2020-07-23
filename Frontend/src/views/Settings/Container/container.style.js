@@ -10,7 +10,7 @@ export const ContainerStyled = styled.div`
   grid-template-rows: 1fr;
   box-sizing: border-box;
   padding: 0 32px 32px;
-  background: #232327;
+  background: ${props => props.background};
 
   @media ${device.tablet} {
     padding: 32px;

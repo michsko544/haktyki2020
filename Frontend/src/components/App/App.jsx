@@ -1,29 +1,24 @@
 import React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { DebugLink } from './App.style'
+import Store from './App.store'
 import AppRoutes from './App.routes'
 
 const App = () => {
-  const theme = createMuiTheme({
-    palette: {
-      type: 'dark',
-    }
-  })
-
   return (
-    <div className="App">
-      <ThemeProvider theme={theme}>
-      <Router>
-        <DebugLink to="/">Home</DebugLink>
-        <DebugLink to="/login">Login</DebugLink>
-        <DebugLink to="/register">Register</DebugLink>
-        <DebugLink to="/greeter">Greeter</DebugLink>
-        <DebugLink to="/settings">Settings</DebugLink>
-        <AppRoutes />
-      </Router>
-      </ThemeProvider>
-    </div>
+    <Store.Container>
+      <div className="App">
+        <Router>
+          <DebugLink to="/">Home</DebugLink>
+          <DebugLink to="/login">Login</DebugLink>
+          <DebugLink to="/register">Register</DebugLink>
+          <DebugLink to="/greeter">Greeter</DebugLink>
+          <DebugLink to="/settings">Settings</DebugLink>
+          <DebugLink to="/teamfood">TeamFood</DebugLink>
+          <AppRoutes />
+        </Router>
+      </div>
+    </Store.Container>
   )
 }
 

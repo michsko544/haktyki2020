@@ -9,5 +9,3 @@ export const H4Styled = styled.h4`
   font-size: 18px;
   color: ${(props) => props.color};
 `
-
-export default H4Styled

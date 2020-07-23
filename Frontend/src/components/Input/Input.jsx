@@ -1,28 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
+import Store from './../App/App.store'
+import { AppBackgroundThemes, AppThemes } from './../App/App.themes'
 import { FieldStyled, Label, ErrorStyled, Underline } from './'
 
-const Input = ({ label, error, name, ...props }) => {
-  const isDarkMode = true
-  const firstcolor = '#46D3FF'
-  const secondcolor = '#3687FF'
+const Input = ({ label, error, name ...props }) => {
+  const store = Store.useStore()
 
   return (
     <>
-      <Label htmlFor={name} firstcolor={firstcolor} secondcolor={secondcolor}>
+      <Label htmlFor={name} firstcolor={AppThemes[store.get('themeId')].from} secondcolor={AppThemes[store.get('themeId')].to}>
         {label}
       </Label>
-      <Underline firstcolor={firstcolor} secondcolor={secondcolor}>
+      <Underline firstcolor={AppThemes[store.get('themeId')].from} secondcolor={AppThemes[store.get('themeId')].to}>
         <FieldStyled
-          isdarkmode={isDarkMode.toString()}
           autoComplete="off"
           name={name}
           id={name}
+          color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}
           {...props}
         />
       </Underline>
-      <Error error={error} isdarkmode={isDarkMode.toString()} />
+      <Error error={error} color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor} />
     </>
   )
 }
@@ -35,8 +34,8 @@ Input.propTypes = {
   error: PropTypes.string,
 }
 
-export const Error = ({ error, isdarkmode }) => {
-  return <ErrorStyled isdarkmode={isdarkmode}>{error}</ErrorStyled>
+const Error = ({ error, color }) => {
+  return <ErrorStyled color={color}>{error}</ErrorStyled>
 }
 
 Error.propTypes = {
