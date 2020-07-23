@@ -9,12 +9,16 @@ const App = () => {
     <Store.Container>
       <div className="App">
         <Router>
-          <DebugLink to="/">Home</DebugLink>
-          <DebugLink to="/login">Login</DebugLink>
-          <DebugLink to="/register">Register</DebugLink>
-          <DebugLink to="/greeter">Greeter</DebugLink>
-          <DebugLink to="/settings">Settings</DebugLink>
-          <DebugLink to="/teamfood">TeamFood</DebugLink>
+          <div
+            style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}
+          >
+            <DebugLink to="/">Home</DebugLink>
+            <DebugLink to="/login">Login</DebugLink>
+            <DebugLink to="/register">Register</DebugLink>
+            <DebugLink to="/greeter">Greeter</DebugLink>
+            <DebugLink to="/settings">Settings</DebugLink>
+            <DebugLink to="/teamfood">TeamFood</DebugLink>
+          </div>
           <AppRoutes />
         </Router>
       </div>

@@ -4,15 +4,22 @@ import Store from './../App/App.store'
 import { AppBackgroundThemes, AppThemes } from './../App/App.themes'
 import { FieldStyled, Label, ErrorStyled, Underline } from './'
 
-const Input = ({ label, error, name ...props }) => {
+const Input = ({ label, error, name, ...props }) => {
   const store = Store.useStore()
 
   return (
     <>
-      <Label htmlFor={name} firstcolor={AppThemes[store.get('themeId')].from} secondcolor={AppThemes[store.get('themeId')].to}>
+      <Label
+        htmlFor={name}
+        firstcolor={AppThemes[store.get('themeId')].from}
+        secondcolor={AppThemes[store.get('themeId')].to}
+      >
         {label}
       </Label>
-      <Underline firstcolor={AppThemes[store.get('themeId')].from} secondcolor={AppThemes[store.get('themeId')].to}>
+      <Underline
+        firstcolor={AppThemes[store.get('themeId')].from}
+        secondcolor={AppThemes[store.get('themeId')].to}
+      >
         <FieldStyled
           autoComplete="off"
           name={name}
@@ -21,7 +28,10 @@ const Input = ({ label, error, name ...props }) => {
           {...props}
         />
       </Underline>
-      <Error error={error} color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor} />
+      <Error
+        error={error}
+        color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}
+      />
     </>
   )
 }

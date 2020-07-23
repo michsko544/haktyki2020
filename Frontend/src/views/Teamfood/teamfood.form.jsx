@@ -29,17 +29,12 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
   const [photos, setPhotos] = useState([])
   const fetchPhotos = useFetch('/photos')
 
-  useEffect(() => { fetchPhotos.getData() }, [])
-
   useEffect(() => {
-    console.log('Response: ', fetchPhotos.response)
-    if (typeof fetchPhotos.response.data !== 'undefined') {
-      setPhotos(fetchPhotos.response.data.pictures)
-    }
-  }, [fetchPhotos.response])
+    fetchPhotos.getData()
+  }, [])
 
   const photoSelectionHandler = (photo, event) => {
-    let photocopy = [...photos]
+    let photocopy = [...fetchPhotos.response.pictures]
     photocopy = photocopy.map((p) => {
       p.selected = p.id === photo.id
       return p
@@ -128,14 +123,15 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
       </div>
       <div>
         <PhotoSelectionContainer>
-          {photos.map((photo) => (
-            <PhotoSelectionStyled
-              onClick={(e) => photoSelectionHandler(photo, e)}
-              key={photo.id}
-              selected={photo.selected}
-              url={photo.url}
-            />
-          ))}
+          {fetchPhotos.response &&
+            fetchPhotos.response.pictures.map((photo) => (
+              <PhotoSelectionStyled
+                onClick={(e) => photoSelectionHandler(photo, e)}
+                key={photo.id}
+                selected={photo.selected}
+                url={photo.url}
+              />
+            ))}
           <Button onClick={newPhotosHandler}>Wylosuj nowe</Button>
         </PhotoSelectionContainer>
       </div>

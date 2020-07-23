@@ -12,7 +12,7 @@ const useFetch = (url) => {
       setIsLoading(true)
       const response = await axiosAPI(url)
       setResponse({ ...response.data })
-      console.log(response)
+      console.log(response.data)
     } catch (error) {
       setError(error.response.status.toString())
       console.log(error.response.status)
