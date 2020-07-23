@@ -13,7 +13,7 @@ const FormWithLink = ({ children, linkText, link }) => {
     <FormContainer>
       {children}
       {linkText && link && (
-        <OptionLink text={linkText} onClick={() => history.replace(link)} />
+        <OptionLink text={linkText} onClick={() => history.push(link)} />
       )}
     </FormContainer>
   )
@@ -29,7 +29,10 @@ const OptionLink = ({ text, ...props }) => {
   const store = Store.useStore()
 
   return (
-    <OptionLinkStyled color={ AppBackgroundThemes[store.get('themeBackgroundId')].fontColor } {...props}>
+    <OptionLinkStyled
+      color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}
+      {...props}
+    >
       {text}
     </OptionLinkStyled>
   )
