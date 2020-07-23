@@ -9,12 +9,9 @@ export const HeroimageStyled = styled.img`
   object-position: center;
   margin: 20px 0;
 
-  @media (min-width: 768px) {
-    height: 100%;
-  }
-
   @media (min-width: 1024px) {
     width: 50%;
+    height: 100%;
     max-width: unset;
     position: absolute;
     right: 0;
@@ -24,4 +21,11 @@ export const HeroimageStyled = styled.img`
     border-bottom-right-radius: 7px;
     margin: 0;
   }
+`
+
+export const OrderDetailsImg = styled(HeroimageStyled)`
+  border-radius: 0;
+  height: 200px;
+  margin: 0;
+  max-width: 420px;
 `

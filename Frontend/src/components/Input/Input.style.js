@@ -7,10 +7,11 @@ export const FieldStyled = styled(Field)`
   background: none;
   outline: none;
   font-size: 18px;
+  font-family: 'Montserrat';
   color: ${props => props.color};
   width: 100%;
-  height: 100%;
   line-height: 22px;
+  resize: vertical;
 
   &[type="time"]::-webkit-calendar-picker-indicator, &[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1)
@@ -28,7 +29,6 @@ FieldStyled.defaultProps = {
 export const Underline = styled.div`
   position: relative;
   width: 100%;
-  height: 33px;
 
   &:after {
     content: '';

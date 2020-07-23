@@ -5,4 +5,4 @@ export {
   InputStyled,
   Underline,
 } from './Input.style'
-export { default } from './Input'
+export { default, Error } from './Input'
