@@ -13,8 +13,7 @@ public class UserEntity {
     private String login;
     @Column(nullable = false)
     private String password;
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String phoneNumber;
     private String creditCardNumber;
 
@@ -26,11 +25,12 @@ public class UserEntity {
         this.password = password;
     }
 
-    public UserEntity(String firstName, String lastName, String login, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public UserEntity(String login, String password, String fullName, String phoneNumber, String creditCardNumber) {
         this.login = login;
         this.password = password;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.creditCardNumber = creditCardNumber;
     }
 
     public long getId() {
@@ -41,10 +41,6 @@ public class UserEntity {
         return login;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -53,20 +49,12 @@ public class UserEntity {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPhoneNumber() {

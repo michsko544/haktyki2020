@@ -1,11 +1,13 @@
 package com.hacktyki.Backend.model.service;
 
+import com.hacktyki.Backend.model.entity.UserEntity;
 import com.hacktyki.Backend.model.repository.UserRepository;
-import com.hacktyki.Backend.model.responses.UserSignInRestModel;
+import com.hacktyki.Backend.model.responses.UserDetailsRestModel;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,15 +20,28 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // Change to UserRestModel ASAP
-    public List<UserSignInRestModel> getAll() {
+    public List<UserDetailsRestModel> getAll() {
         return userRepository.findAll().stream()
-                .map(UserSignInRestModel::new)
+                .map(UserDetailsRestModel::new)
                 .collect(Collectors.toList());
     }
 
-    public String getAuthenticatedLogin(){
+    public UserDetailsRestModel getMyDetails() {
+        return new UserDetailsRestModel(userRepository.findByLogin(getAuthenticatedLogin()));
+    }
 
+    @Transactional
+    public boolean changeDetails(UserDetailsRestModel userDetails){
+        if(userDetails != null){
+
+            userRepository.save(mapDetailsRestModel(userDetails));
+            return true;
+        }
+
+        return false;
+    }
+
+    public String getAuthenticatedLogin(){
         SecurityContext securityContext = SecurityContextHolder.getContext();
 
         if(null != securityContext.getAuthentication()) {
@@ -36,4 +51,13 @@ public class UserService {
         return null;
     }
 
+    private UserEntity mapDetailsRestModel(UserDetailsRestModel userDetails){
+        UserEntity user = userRepository.findByLogin(getAuthenticatedLogin());
+
+        user.setFullName(userDetails.getFullName());
+        user.setPhoneNumber(userDetails.getPhoneNumber());
+        user.setCreditCardNumber(userDetails.getCreditCardNumber());
+
+        return user;
+    }
 }
