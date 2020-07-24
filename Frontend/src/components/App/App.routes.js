@@ -53,6 +53,9 @@ const AppRoutes = () => {
     return store.get('themeBackgroundId') === 0 ? darkTheme : lightTheme
   }
 
+  /**
+   * For /login & /register
+   */
   const isLogged = () => {
     return store.get('authToken') !== ''
   }
