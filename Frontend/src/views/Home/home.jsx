@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-
 import H1 from './../../components/H1'
 import H3 from './../../components/H3'
 import HBold from './../../components/HeadingBold'
@@ -25,11 +24,15 @@ const Home = () => {
     fetchUserOrders.getData()
   }, [])
 
+  const getFirstname = () => {
+    return store.get('user').split(' ')[0]
+  }
+
   return (
     <>
       <Header>
         <H1 className="small">
-          Cześć <HBold>Tomek,</HBold>
+          Cześć <HBold>{getFirstname()},</HBold>
         </H1>
         <div className="icons">
           <NotificationsNoneOutlinedIcon
