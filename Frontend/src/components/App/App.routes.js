@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { GuardedRoute } from './../GuardedRoute'
+import { CustomRoute } from './../CustomRoute'
 import { Home, Login, Register, Greeter, Settings, NotFound } from '../../views'
 import Teamfood from '../../views/Teamfood/teamfood'
 
@@ -11,9 +12,17 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
 const AppRoutes = () => {
   const store = Store.useStore()
-  window.document.body.style.background =
-    AppBackgroundThemes[store.get('themeBackgroundId')].background
 
+  const styleBackground = () => {
+    window.document.body.style.background =
+      AppBackgroundThemes[store.get('themeBackgroundId')].background
+  }
+
+  /**
+   * To pewnie można zrobić lepiej, ale nie do końca wiem jak
+   * Przeczytałem dokumentację, ale ona nie określa jak inaczej zmieniać styl dynamicznie w aplikacji
+   * Więc jeśli masz inny pomysł to ja chętnie przyjmę :v
+   */
   const darkTheme = createMuiTheme({
     palette: {
       type: 'dark',
@@ -40,16 +49,34 @@ const AppRoutes = () => {
     },
   })
 
+  const chooseTheme = () => {
+    return store.get('themeBackgroundId') === 0 ? darkTheme : lightTheme
+  }
+
+  const isLogged = () => {
+    return store.get('authToken') !== ''
+  }
+
   return (
-    <ThemeProvider theme={store.get('themeBackgroundId') === 0 ? darkTheme : lightTheme}>
+    <ThemeProvider theme={chooseTheme()}>
       <Switch>
-        <GuardedRoute exact path="/" component={Home}></GuardedRoute>
-        <Route path="/login" component={Login}></Route>
-        <Route path="/register" component={Register}></Route>
-        <GuardedRoute path="/greeter" component={Greeter}></GuardedRoute>
-        <GuardedRoute path="/settings" component={Settings}></GuardedRoute>
-        <GuardedRoute path="/teamfood" component={Teamfood}></GuardedRoute>
-        <Route path="*" component={NotFound}></Route>
+        <GuardedRoute exact path="/" component={Home} />
+        <CustomRoute
+          customGuard={!isLogged()}
+          redirectTo="/"
+          path="/login"
+          component={Login}
+        />
+        <CustomRoute
+          customGuard={!isLogged()}
+          redirectTo="/"
+          path="/register"
+          component={Register}
+        />
+        <GuardedRoute path="/greeter" component={Greeter} />
+        <GuardedRoute path="/settings" component={Settings} />
+        <GuardedRoute path="/teamfood" component={Teamfood} />
+        <Route path="*" component={NotFound} />
       </Switch>
     </ThemeProvider>
   )
