@@ -28,4 +28,8 @@ export const OrderDetailsImg = styled(HeroimageStyled)`
   height: 200px;
   margin: 0;
   max-width: 420px;
+
+  @media (min-width: 480px) {
+    margin: 0 auto;
+  }
 `

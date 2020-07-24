@@ -14,6 +14,8 @@ import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControl from '@material-ui/core/FormControl'
 import FormLabel from '@material-ui/core/FormLabel'
 import Button from '@material-ui/core/Button'
+import Loader from '../../components/Loader'
+import ErrorMessage from '../../components/ErrorMessage'
 
 import { useFetch } from '../../API'
 import { PhotoSelectionStyled } from './PhotoSelection/photo.selection.style'
@@ -46,6 +48,16 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
   const newPhotosHandler = (e) => {
     fetchPhotos.getData()
   }
+
+  const showLoaderIfLoading = () => fetchPhotos.isLoading && <Loader />
+
+  const showErrorIfError = () =>
+    fetchPhotos.error && (
+      <ErrorMessage
+        error={fetchPhotos.error.code}
+        advice={fetchPhotos.error.text}
+      />
+    )
 
   return (
     <FormStyled>
@@ -123,6 +135,8 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
       </div>
       <div>
         <PhotoSelectionContainer>
+          {showLoaderIfLoading()}
+          {showErrorIfError()}
           {fetchPhotos.response &&
             fetchPhotos.response.pictures.map((photo) => (
               <PhotoSelectionStyled

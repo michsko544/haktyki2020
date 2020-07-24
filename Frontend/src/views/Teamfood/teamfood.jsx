@@ -21,13 +21,22 @@ const Teamfood = () => {
         </H1>
         <div className="icons">
           <IconLink to="/">
-            <CloseIcon style={{ color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor }} />
+            <CloseIcon
+              style={{
+                color:
+                  AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+              }}
+            />
           </IconLink>
         </div>
         <H4>Po prostu zamów swoje jedzenie.</H4>
       </Header>
-      <ContainerStyled background={AppBackgroundThemes[store.get('themeBackgroundId')].alternate}>
-          <TeamfoodFormik/>
+      <ContainerStyled
+        background={
+          AppBackgroundThemes[store.get('themeBackgroundId')].alternate
+        }
+      >
+        <TeamfoodFormik />
       </ContainerStyled>
     </>
   )
