@@ -6,8 +6,6 @@ import { ButtonFormWrapper } from '../../Button'
 import Input from '../../Input'
 import { InputStyled } from '../../Input'
 import { FormWrapper } from './'
-import Store from './../../App/App.store'
-import { useHistory } from 'react-router-dom'
 
 /**
  * Dopisać history/login

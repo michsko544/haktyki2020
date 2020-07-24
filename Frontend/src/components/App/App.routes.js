@@ -18,6 +18,8 @@ const AppRoutes = () => {
       AppBackgroundThemes[store.get('themeBackgroundId')].background
   }
 
+  styleBackground()
+
   /**
    * To pewnie można zrobić lepiej, ale nie do końca wiem jak
    * Przeczytałem dokumentację, ale ona nie określa jak inaczej zmieniać styl dynamicznie w aplikacji
