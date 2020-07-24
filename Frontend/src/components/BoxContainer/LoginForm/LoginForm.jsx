@@ -6,6 +6,7 @@ import { ButtonFormWrapper } from '../../Button'
 import Input from '../../Input'
 import { InputStyled } from '../../Input'
 import { FormWrapper } from './'
+import Store from './../../App/App.store'
 
 /**
  * Dopisać history/login
@@ -16,6 +17,7 @@ import { FormWrapper } from './'
  */
 const LoginForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
+  const store = Store.useStore()
 
   return (
     <FormWrapper>
