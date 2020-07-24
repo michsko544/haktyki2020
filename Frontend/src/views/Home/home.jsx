@@ -11,6 +11,8 @@ import { useFetch } from './../../API'
 import Store from './../../components/App/App.store'
 import { AppBackgroundThemes } from './../../components/App/App.themes'
 import { Link } from 'react-router-dom'
+import OrderDetails from '../../components/OrderDetails'
+import Loader from '../../components/Loader'
 
 const Home = () => {
   const store = Store.useStore()
@@ -59,7 +61,7 @@ const Home = () => {
             ? fetchUserOrders.response.orders.map((order) => (
                 <Card key={order.id} details={order} />
               ))
-            : fetchUserOrders.isLoading && <p>Ładowanie...</p>}
+            : fetchUserOrders.isLoading && <Loader />}
         </div>
         <div className="available-orders-wrapper">
           <H3>Dostępne zamówienia</H3>
@@ -68,7 +70,7 @@ const Home = () => {
               ? fetchOrders.response.orders.map((order) => (
                   <Card key={order.id} details={order} />
                 ))
-              : fetchOrders.isLoading && <p>Ładowanie...</p>}
+              : fetchOrders.isLoading && <Loader />}
           </div>
         </div>
       </Container>

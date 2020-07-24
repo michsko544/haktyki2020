@@ -1,4 +1,5 @@
 import React from 'react'
+import { useHistory } from 'react-router-dom'
 import { withFormik, Form } from 'formik'
 import * as Yup from 'yup'
 import Button from '../../Button'
@@ -48,25 +49,35 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
   )
 }
 
-const LoginFormik = withFormik({
-  mapPropsToValues() {
-    return {
-      user: '',
-      password: '',
-    }
-  },
+const LoginFormik = () => {
+  const history = useHistory()
 
-  validationSchema: Yup.object().shape({
-    user: Yup.string().required('Wypełnij to pole'),
-    password: Yup.string().required('Wypełnij to pole'),
-  }),
-
-  handleSubmit(values, { resetForm, setSubmitting }) {
+  const handleSubmit = (values, { resetForm, setSubmitting }) => {
     setTimeout(() => {
       console.log(values)
       setSubmitting(false)
+      resetForm()
+      history.replace('/')
     }, 2000)
-  },
-})(LoginForm)
+  }
+
+  const LoginWithFormik = withFormik({
+    mapPropsToValues() {
+      return {
+        user: '',
+        password: '',
+      }
+    },
+
+    validationSchema: Yup.object().shape({
+      user: Yup.string().required('Wypełnij to pole'),
+      password: Yup.string().required('Wypełnij to pole'),
+    }),
+
+    handleSubmit: handleSubmit,
+  })(LoginForm)
+
+  return <LoginWithFormik />
+}
 
 export default LoginFormik

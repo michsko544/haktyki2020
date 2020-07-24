@@ -8,17 +8,19 @@ export const FieldStyled = styled(Field)`
   outline: none;
   font-size: 18px;
   font-family: 'Montserrat';
-  color: ${props => props.color};
+  color: ${(props) => props.color};
   width: 100%;
   line-height: 22px;
   resize: vertical;
 
-  &[type="time"]::-webkit-calendar-picker-indicator, &[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1)
+  &[type='time']::-webkit-calendar-picker-indicator,
+  &[type='date']::-webkit-calendar-picker-indicator {
+    filter: invert(1);
   }
 
   &::placeholder {
-    color: ${props => props.color};
+    color: ${(props) => props.color};
+    opacity: 0.6;
   }
 `
 
@@ -72,7 +74,7 @@ Label.defaultProps = {
 export const ErrorStyled = styled.p`
   font-size: 12px;
   padding: 4px 17px;
-  color: ${props => props.color};
+  color: ${(props) => props.color};
   width: 100%;
 `
 
