@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { H1Styled } from './H1.style'
-import { AppBackgroundThemes } from './../App/App.themes'
-import Store from './../App/App.store'
+import { AppBackgroundThemes } from './../../App/App.themes'
+import Store from './../../App/App.store'
 
 const H1 = ({ children, ...props }) => {
   const store = Store.useStore()

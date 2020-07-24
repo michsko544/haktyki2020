@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
-import H1 from './../../components/H1'
-import H3 from './../../components/H3'
-import HBold from './../../components/HeadingBold'
+import { H1, H3, HBold } from './../../components/Headings'
 import Header from '../../components/Header/header'
 import Container from './Container'
 import TuneIcon from '@material-ui/icons/Tune'
