@@ -18,12 +18,10 @@ const H4 = ({ children, ...props }) => {
 }
 
 H4.propTypes = {
-  color: PropTypes.string,
   children: PropTypes.any,
 }
 
 H4.defaultProps = {
-  color: '#000000',
   children: null,
 }
 

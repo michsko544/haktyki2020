@@ -9,6 +9,9 @@ const size = {
   desktop: '2560px',
 }
 
+/**
+ * Breakpoints used in custom elements inside the app
+ */
 export const device = {
   mobileS: `(min-width: ${size.mobileS})`,
   mobileM: `(min-width: ${size.mobileM})`,

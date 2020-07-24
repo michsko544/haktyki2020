@@ -11,12 +11,10 @@ const H2 = ({ children, ...props }) => {
 }
 
 H2.propTypes = {
-  color: PropTypes.string,
   children: PropTypes.any,
 }
 
 H2.defaultProps = {
-  color: '#000000',
   children: null,
 }
 
