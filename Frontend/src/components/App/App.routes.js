@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
-
+import { GuardedRoute } from './../GuardedRoute'
 import { Home, Login, Register, Greeter, Settings, NotFound } from '../../views'
 import Teamfood from '../../views/Teamfood/teamfood'
 
@@ -41,16 +41,14 @@ const AppRoutes = () => {
   })
 
   return (
-    <ThemeProvider
-      theme={store.get('themeBackgroundId') === 0 ? darkTheme : lightTheme}
-    >
+    <ThemeProvider theme={store.get('themeBackgroundId') === 0 ? darkTheme : lightTheme}>
       <Switch>
-        <Route exact path="/" component={Home}></Route>
+        <GuardedRoute exact path="/" component={Home}></GuardedRoute>
         <Route path="/login" component={Login}></Route>
         <Route path="/register" component={Register}></Route>
-        <Route path="/greeter" component={Greeter}></Route>
-        <Route path="/settings" component={Settings}></Route>
-        <Route path="/teamfood" component={Teamfood}></Route>
+        <GuardedRoute path="/greeter" component={Greeter}></GuardedRoute>
+        <GuardedRoute path="/settings" component={Settings}></GuardedRoute>
+        <GuardedRoute path="/teamfood" component={Teamfood}></GuardedRoute>
         <Route path="*" component={NotFound}></Route>
       </Switch>
     </ThemeProvider>
