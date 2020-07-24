@@ -1,10 +1,11 @@
 import React from 'react'
 import Header from './../../components/Header'
-import H1 from './../../components/H1'
+import { H1, H4, HBold } from './../../components/Headings'
+
 import CloseIcon from '@material-ui/icons/Close'
-import H4 from './../../components/H4'
+
 import { ContainerStyled } from './Container/container.style'
-import HBold from '../../components/HeadingBold'
+
 import SettingsFormik from './SettingsForm/settings.form'
 import { GradientBoxStyled } from './GradientBox/gradientbox.style'
 import { GradientBoxContainerStyled } from './GradientBox/gradientbox.container.style'

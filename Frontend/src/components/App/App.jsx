@@ -1,24 +1,14 @@
 import React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { DebugLink } from './App.style'
 import Store from './App.store'
 import AppRoutes from './App.routes'
-
+import { AppDebug } from './App.debug'
 const App = () => {
   return (
     <Store.Container>
       <div className="App">
         <Router>
-          <div
-            style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}
-          >
-            <DebugLink to="/">Home</DebugLink>
-            <DebugLink to="/login">Login</DebugLink>
-            <DebugLink to="/register">Register</DebugLink>
-            <DebugLink to="/greeter">Greeter</DebugLink>
-            <DebugLink to="/settings">Settings</DebugLink>
-            <DebugLink to="/teamfood">TeamFood</DebugLink>
-          </div>
+          <AppDebug />
           <AppRoutes />
         </Router>
       </div>

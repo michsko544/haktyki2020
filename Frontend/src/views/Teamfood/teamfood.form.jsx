@@ -47,6 +47,7 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
 
   const newPhotosHandler = (e) => {
     fetchPhotos.getData()
+    console.log('Refresh photos: ', fetchPhotos)
   }
 
   const showLoaderIfLoading = () => fetchPhotos.isLoading && <Loader />

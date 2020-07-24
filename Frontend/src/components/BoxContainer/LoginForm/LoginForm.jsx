@@ -7,9 +7,18 @@ import { ButtonFormWrapper } from '../../Button'
 import Input from '../../Input'
 import { InputStyled } from '../../Input'
 import { FormWrapper } from './'
+import Store from './../../App/App.store'
 
+/**
+ * Dopisać history/login
+ * Nie do końca wiem jak przy pomocy withFormik
+ * Ale wszędzie w tutorialach do formika widziałem useFormik
+ * i tak wykorzystanie jest trochę inne
+ * ~ Grzegorz
+ */
 const LoginForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
+  const store = Store.useStore()
 
   return (
     <FormWrapper>
@@ -19,7 +28,7 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
             type="text"
             name="user"
             label="Login"
-            placeholder="xxxTomekxxx2000"
+            placeholder="xx_Tomek_xx2000"
             error={errorHandler('user')}
           />
         </InputStyled>
