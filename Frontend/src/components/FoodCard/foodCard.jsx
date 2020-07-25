@@ -13,17 +13,17 @@ import { AppBackgroundThemes } from './../App/App.themes'
 const useStyles = makeStyles({
   root: {
     maxWidth: 340,
-    width: 300
+    width: 300,
   },
   media: {
     height: 200,
   },
 })
 
-const FoodCard = ({details, ...props}) => {
+const FoodCard = ({ details, openCallback, ...props }) => {
   const store = Store.useStore()
   const classes = useStyles()
-  
+
   const orderDetails = () => {
     if (details.orderDetails) {
       return (
@@ -41,8 +41,13 @@ const FoodCard = ({details, ...props}) => {
   }
 
   return (
-    <FoodCardStyled background={AppBackgroundThemes[store.get('themeBackgroundId')].cardBackground} className={classes.root}>
-      <CardActionArea>
+    <FoodCardStyled
+      background={
+        AppBackgroundThemes[store.get('themeBackgroundId')].cardBackground
+      }
+      className={classes.root}
+    >
+      <CardActionArea onClick={openCallback}>
         <CardMedia
           className={classes.media}
           image={details.image}
@@ -66,7 +71,8 @@ const FoodCard = ({details, ...props}) => {
 }
 
 FoodCard.propTypes = {
-  details: PropTypes.any
+  details: PropTypes.any,
+  openCallback: PropTypes.func,
 }
 
 export default FoodCard
