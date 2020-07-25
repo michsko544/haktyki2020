@@ -7,6 +7,7 @@ const details = {
     time: '18:30',
     interested: 9,
     image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
+    loggedUserOrder: { order: 'Super Burger XL z serem', coupon: '123' },
     orderDetails: [
       { id: 1, who: 'Grzegorz', what: 'Duży mcBurger z frytkami i kalafiorem' },
       { id: 2, who: 'Tomek', what: 'Super Burger XL z serem' },

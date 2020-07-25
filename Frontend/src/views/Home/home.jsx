@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { H1, H3, HBold } from './../../components/Headings'
 import Header from '../../components/Header/header'
 import Container from './Container'
@@ -19,6 +19,9 @@ const Home = () => {
   const fetchOrders = useFetch('/orders')
   const fetchUserOrders = useFetch('/user/orders')
 
+  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [detailsVisibility, setDetailsVisibility] = useState(false)
+
   useEffect(() => {
     fetchOrders.getData()
     fetchUserOrders.getData()
@@ -26,6 +29,20 @@ const Home = () => {
 
   const getFirstname = () => {
     return store.get('user').split(' ')[0]
+  }
+
+  const toggleDetailsVisibility = () => {
+    setDetailsVisibility(!detailsVisibility)
+  }
+
+  const handleShowCard = (id) => {
+    toggleDetailsVisibility()
+    setSelectedOrder(id)
+  }
+
+  const handleCloseCard = () => {
+    toggleDetailsVisibility()
+    setSelectedOrder(null)
   }
 
   return (
@@ -59,7 +76,11 @@ const Home = () => {
           <H3>Twoje zamówienia</H3>
           {fetchUserOrders.response
             ? fetchUserOrders.response.orders.map((order) => (
-                <Card key={order.id} details={order} />
+                <Card
+                  key={order.id}
+                  details={order}
+                  openCallback={() => handleShowCard(order.id)}
+                />
               ))
             : fetchUserOrders.isLoading && <Loader />}
         </div>
@@ -68,12 +89,19 @@ const Home = () => {
           <div className="orders">
             {fetchOrders.response
               ? fetchOrders.response.orders.map((order) => (
-                  <Card key={order.id} details={order} />
+                  <Card
+                    key={order.id}
+                    details={order}
+                    openCallback={() => handleShowCard(order.id)}
+                  />
                 ))
               : fetchOrders.isLoading && <Loader />}
           </div>
         </div>
       </Container>
+      {detailsVisibility && (
+        <OrderDetails orderId={selectedOrder} closeCallback={handleCloseCard} />
+      )}
     </>
   )
 }

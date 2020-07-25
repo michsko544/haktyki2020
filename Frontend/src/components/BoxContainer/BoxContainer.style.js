@@ -18,11 +18,11 @@ export const Container = styled.section`
 export const Box = styled.div`
   width: 100%;
   min-height: 100vh;
-  background-color: ${props => props.background};
+  background-color: ${(props) => props.background};
   display: flex;
   box-shadow: 1px 2px 9px rgba(4, 4, 4, 0.25);
   position: fixed;
-  top: 20px;
+  top: 0;
   left: 0;
   overflow-y: scroll;
   height: 100%;

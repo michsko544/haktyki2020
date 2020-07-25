@@ -7,6 +7,7 @@ const details = {
     time: '12:30',
     interested: 5,
     image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
+    loggedUserOrder: { order: '', coupon: '' },
     orderDetails: [
       {
         id: 1,
