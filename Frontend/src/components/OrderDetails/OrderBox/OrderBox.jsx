@@ -17,7 +17,7 @@ const OrderBox = ({ children, image, closeCallback }) => {
 
   return (
     <FixedContainer>
-      <BoxContainer>
+      <BoxContainer closeCallback={closeCallback}>
         <CloseBtnBackground onClick={closeCallback} background={background}>
           <CloseIcon
             style={{

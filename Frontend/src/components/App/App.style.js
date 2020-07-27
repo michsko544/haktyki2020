@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 export const Padding30 = styled.div`
   margin: 0 auto;
@@ -20,3 +21,12 @@ export const DebugLink = styled(Link)`
 export const IconLink = styled(Link)`
   color: #f0f0f0;
 `
+
+export const BlurChildren = styled.div`
+  filter: ${({ shouldBlur }) => (shouldBlur ? 'blur(6px)' : 'none')};
+  transition: 0.5s ease-out;
+`
+
+BlurChildren.propTypes = {
+  shouldBlur: PropTypes.bool.isRequired,
+}
