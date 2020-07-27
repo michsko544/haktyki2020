@@ -13,7 +13,7 @@ import Loader from '../Loader'
 import ErrorMessage from '../ErrorMessage'
 
 const OrderDetails = ({ orderId, closeCallback }) => {
-  const [firstStage, setFirstStage] = React.useState(true)
+  const [isFirstStage, setFirstStage] = React.useState(true)
   const { response, getData, isLoading, error } = useFetch(`/orders/${orderId}`)
 
   React.useEffect(() => {
@@ -34,8 +34,8 @@ const OrderDetails = ({ orderId, closeCallback }) => {
   const showErrorIfError = () =>
     error && <ErrorMessage error={error.code} advice={error.text} />
 
-  const showButtonJoinIfFirstStage = () =>
-    firstStage && (
+  const showButtonIfFirstStage = () =>
+    isFirstStage && (
       <ButtonWrapper>
         <Button
           text={response.order.loggedUserOrder.order ? 'Edytuj' : 'Dołącz'}
@@ -45,7 +45,7 @@ const OrderDetails = ({ orderId, closeCallback }) => {
     )
 
   const displayCurrentStage = () =>
-    !firstStage ? (
+    !isFirstStage ? (
       <OrderFormik
         order={response.order.loggedUserOrder.order}
         coupon={response.order.loggedUserOrder.coupon}
@@ -56,24 +56,30 @@ const OrderDetails = ({ orderId, closeCallback }) => {
       </OrderList>
     )
 
+  const handleDisplay = () => {
+    return (
+      <TextDisplayer isFirstStage={isFirstStage.toString()}>
+        {showLoaderIfLoading()}
+        {showErrorIfError()}
+        {response && (
+          <>
+            <OrderText
+              title={response.order.restaurant}
+              info={`Zamawia ${response.order.purchaser} - ${response.order.date} ${response.order.time}`}
+            >
+              {displayCurrentStage()}
+            </OrderText>
+            {showButtonIfFirstStage()}
+          </>
+        )}
+      </TextDisplayer>
+    )
+  }
+
   return (
     <>
       <OrderBox image={response?.order.image} closeCallback={closeCallback}>
-        <TextDisplayer firstStage={firstStage.toString()}>
-          {showLoaderIfLoading()}
-          {showErrorIfError()}
-          {response && (
-            <>
-              <OrderText
-                title={response.order.restaurant}
-                info={`Zamawia ${response.order.purchaser} - ${response.order.date} ${response.order.time}`}
-              >
-                {displayCurrentStage()}
-              </OrderText>
-              {showButtonJoinIfFirstStage()}
-            </>
-          )}
-        </TextDisplayer>
+        {handleDisplay()}
       </OrderBox>
     </>
   )
