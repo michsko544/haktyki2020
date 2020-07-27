@@ -13,6 +13,11 @@ export const FieldStyled = styled(Field)`
   line-height: 22px;
   resize: vertical;
 
+  &[type='time'],
+  &[type='date'] {
+    resize: none;
+  }
+
   &[type='time']::-webkit-calendar-picker-indicator,
   &[type='date']::-webkit-calendar-picker-indicator {
     filter: invert(1);

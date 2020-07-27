@@ -2,8 +2,7 @@ import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { GuardedRoute } from './../GuardedRoute'
 import { CustomRoute } from './../CustomRoute'
-import { Home, Login, Register, Greeter, Settings, NotFound } from '../../views'
-import Teamfood from '../../views/Teamfood/teamfood'
+import { Home, Login, Register, Greeter, Settings, NotFound, Teamfood } from '../../views'
 import Store from './App.store'
 
 const AppRoutes = () => {
