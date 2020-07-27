@@ -9,12 +9,10 @@ const App = () => {
   return (
     <Store.Container>
       <AppInit />
-      <div className="App">
         <Router>
           <AppDebug />
           <AppRoutes />
         </Router>
-      </div>
     </Store.Container>
   )
 }

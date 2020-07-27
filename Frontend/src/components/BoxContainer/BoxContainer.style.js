@@ -52,3 +52,9 @@ export const FormContainer = styled.div`
     padding-right: 80px;
   }
 `
+
+export const BackgroundSpaceToClick = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+`

@@ -13,6 +13,7 @@ import { AppBackgroundThemes } from './../../components/App/App.themes'
 import { Link } from 'react-router-dom'
 import OrderDetails from '../../components/OrderDetails'
 import Loader from '../../components/Loader'
+import { BlurChildren } from '../../components/App'
 
 const Home = () => {
   const store = Store.useStore()
@@ -20,7 +21,7 @@ const Home = () => {
   const fetchUserOrders = useFetch('/user/orders')
 
   const [selectedOrder, setSelectedOrder] = useState(null)
-  const [detailsVisibility, setDetailsVisibility] = useState(false)
+  const [isDetailsVisibile, setDetailsVisibile] = useState(false)
 
   useEffect(() => {
     fetchOrders.getData()
@@ -32,7 +33,7 @@ const Home = () => {
   }
 
   const toggleDetailsVisibility = () => {
-    setDetailsVisibility(!detailsVisibility)
+    setDetailsVisibile(!isDetailsVisibile)
   }
 
   const handleShowCard = (id) => {
@@ -47,59 +48,62 @@ const Home = () => {
 
   return (
     <>
-      <Header>
-        <H1 className="small">
-          Cześć <HBold>{getFirstname()},</HBold>
-        </H1>
-        <div className="icons">
-          <NotificationsNoneOutlinedIcon
-            style={{
-              color:
-                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
-            }}
-          />
-          <IconLink to="/settings">
-            <TuneIcon
+      <BlurChildren shouldBlur={isDetailsVisibile}>
+        <Header>
+          <H1 className="small">
+            Cześć <HBold>{getFirstname()},</HBold>
+          </H1>
+          <div className="icons">
+            <NotificationsNoneOutlinedIcon
               style={{
                 color:
                   AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
               }}
             />
-          </IconLink>
-        </div>
-        <Link className="button" to="/teamfood">
-          <Button text="Dodaj Zamówienie"></Button>
-        </Link>
-      </Header>
-      <Container>
-        <div className="your-order">
-          <H3>Twoje zamówienia</H3>
-          {fetchUserOrders.response
-            ? fetchUserOrders.response.orders.map((order) => (
-                <Card
-                  key={order.id}
-                  details={order}
-                  openCallback={() => handleShowCard(order.id)}
-                />
-              ))
-            : fetchUserOrders.isLoading && <Loader />}
-        </div>
-        <div className="available-orders-wrapper">
-          <H3>Dostępne zamówienia</H3>
-          <div className="orders">
-            {fetchOrders.response
-              ? fetchOrders.response.orders.map((order) => (
+            <IconLink to="/settings">
+              <TuneIcon
+                style={{
+                  color:
+                    AppBackgroundThemes[store.get('themeBackgroundId')]
+                      .fontColor,
+                }}
+              />
+            </IconLink>
+          </div>
+          <Link className="button" to="/teamfood">
+            <Button text="Dodaj Zamówienie"></Button>
+          </Link>
+        </Header>
+        <Container>
+          <div className="your-order">
+            <H3>Twoje zamówienia</H3>
+            {fetchUserOrders.response
+              ? fetchUserOrders.response.orders.map((order) => (
                   <Card
                     key={order.id}
                     details={order}
                     openCallback={() => handleShowCard(order.id)}
                   />
                 ))
-              : fetchOrders.isLoading && <Loader />}
+              : fetchUserOrders.isLoading && <Loader />}
           </div>
-        </div>
-      </Container>
-      {detailsVisibility && (
+          <div className="available-orders-wrapper">
+            <H3>Dostępne zamówienia</H3>
+            <div className="orders">
+              {fetchOrders.response
+                ? fetchOrders.response.orders.map((order) => (
+                    <Card
+                      key={order.id}
+                      details={order}
+                      openCallback={() => handleShowCard(order.id)}
+                    />
+                  ))
+                : fetchOrders.isLoading && <Loader />}
+            </div>
+          </div>
+        </Container>
+      </BlurChildren>
+      {isDetailsVisibile && (
         <OrderDetails orderId={selectedOrder} closeCallback={handleCloseCard} />
       )}
     </>

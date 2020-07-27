@@ -30,7 +30,8 @@ export const TextDisplayer = styled.div`
     width: 50%;
     height: 100%;
     margin: 64px 0 40px;
-    max-height: ${(props) => (props.firstStage === 'true' ? '400px' : '520px')};
+    max-height: ${(props) =>
+      props.isFirstStage === 'true' ? '400px' : '520px'};
     max-width: unset;
     padding-right: 50px;
   }
