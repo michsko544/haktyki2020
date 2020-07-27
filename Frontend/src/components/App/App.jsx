@@ -3,9 +3,12 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import Store from './App.store'
 import AppRoutes from './App.routes'
 import { AppDebug } from './App.debug'
+import AppInit from './App.init'
+
 const App = () => {
   return (
     <Store.Container>
+      <AppInit />
       <div className="App">
         <Router>
           <AppDebug />
