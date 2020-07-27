@@ -78,7 +78,10 @@ const OrderDetails = ({ orderId, closeCallback }) => {
 
   return (
     <>
-      <OrderBox image={response?.order.image} closeCallback={closeCallback}>
+      <OrderBox
+        image={!isLoading && response && response.order.image}
+        closeCallback={closeCallback}
+      >
         {handleDisplay()}
       </OrderBox>
     </>
