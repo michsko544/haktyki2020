@@ -18,7 +18,7 @@ const OrderDetails = ({ orderId, closeCallback }) => {
 
   React.useEffect(() => {
     getData()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const mapOrderDetails = () =>
     response.order.orderDetails.map((order) => (

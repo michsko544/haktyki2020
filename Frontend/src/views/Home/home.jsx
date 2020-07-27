@@ -22,10 +22,13 @@ const Home = () => {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [detailsVisibility, setDetailsVisibility] = useState(false)
 
+  /**
+   * CDM
+   */
   useEffect(() => {
     fetchOrders.getData()
     fetchUserOrders.getData()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const getFirstname = () => {
     return store.get('user').split(' ')[0]
@@ -52,12 +55,6 @@ const Home = () => {
           Cześć <HBold>{getFirstname()},</HBold>
         </H1>
         <div className="icons">
-          <NotificationsNoneOutlinedIcon
-            style={{
-              color:
-                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
-            }}
-          />
           <IconLink to="/settings">
             <TuneIcon
               style={{

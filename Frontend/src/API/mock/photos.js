@@ -21,8 +21,6 @@ const photos = {
 }
 
 const randomPhotos = () => {
-  console.log('Random')
-  
   photos.pictures.length = 0
   for (let i = 0; i < 6; i++) {
     photos.pictures.push({

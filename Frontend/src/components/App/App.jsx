@@ -4,16 +4,19 @@ import Store from './App.store'
 import AppRoutes from './App.routes'
 import { AppDebug } from './App.debug'
 import AppInit from './App.init'
+import { AppTheme } from './App.theme'
 
 const App = () => {
   return (
     <Store.Container>
       <AppInit />
       <div className="App">
-        <Router>
-          <AppDebug />
-          <AppRoutes />
-        </Router>
+        <AppTheme>
+          <Router>
+            <AppDebug />
+            <AppRoutes />
+          </Router>
+        </AppTheme>
       </div>
     </Store.Container>
   )
