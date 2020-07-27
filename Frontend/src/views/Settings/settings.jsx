@@ -18,7 +18,6 @@ import { AppThemes, AppBackgroundThemes } from './../../components/App/App.theme
  * TODO
  * Add store for user settings locally
  * Populate data form API (user, blik, account)
- * Settings persistence
  * ~ Grzegorz
  */
 const Settings = () => {
@@ -28,10 +27,12 @@ const Settings = () => {
 
   const gradientClick = (theme, event) => {
     setThemeId(theme.id)
+    localStorage.setItem('themeId', theme.id)
   }
 
   const backgroundClick=(theme, event) => {
     setBackgroundThemeId(theme.id)
+    localStorage.setItem('themeBackgroundId', theme.id)
   }
 
   return (
