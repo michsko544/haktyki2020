@@ -5,6 +5,9 @@ import { mockUserOrders } from './mock/user.orders'
 import { mockOrdersOne } from './mock/orders.one'
 import { mockOrdersTwo } from './mock/orders.two'
 import { mockPhotos } from './mock/photos'
+import { mockOrder } from './mock/order'
+import { mockRegister } from './mock/register'
+import { mockLogin } from './mock/login'
 
 const axiosAPI = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -20,6 +23,9 @@ export const removeTokenFromHeader = () => {
 
 const mock = new MockAdapter(axiosAPI)
 
+mockRegister(mock)
+mockLogin(mock)
+mockOrder(mock)
 mockOrders(mock)
 mockUserOrders(mock)
 mockOrdersOne(mock)
