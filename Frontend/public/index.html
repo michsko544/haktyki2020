@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1D1D1D" />
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#1D1D1D" />
+    <title>Wspólne obiady</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap&subset=latin-ext');
 
-  <title>Wspólne obiady</title>
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap&subset=latin-ext");
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        letter-spacing: 0;
+      }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      letter-spacing: 0;
-    }
+      body {
+        margin: 0;
+        font-family: 'Montserrat', 'Times New Roman', Arial, Helvetica;
+        font-style: normal;
+        background: #1d1d1d;
+        /* color: #FCFCFC; */
+      }
+    </style>
+  </head>
 
-    body {
-      margin: 0;
-      font-family: "Montserrat", "Times New Roman", Arial, Helvetica;
-      font-style: normal;
-      background: #1D1D1D;
-      /* color: #FCFCFC; */
-    }
-  </style>
-</head>
-
-<body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-  <!--
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
 
@@ -42,6 +47,30 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-</body>
 
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: 'AIzaSyDCsve-0cIPkEyeribEuLmZJf5T8mu3IWg',
+        authDomain: 'hacktyki2020.firebaseapp.com',
+        databaseURL: 'https://hacktyki2020.firebaseio.com',
+        projectId: 'hacktyki2020',
+        storageBucket: 'hacktyki2020.appspot.com',
+        messagingSenderId: '1046227462480',
+        appId: '1:1046227462480:web:8384f419b26c1accc6e455',
+        measurementId: 'G-1B23RZJ8HT',
+      }
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig)
+      firebase.analytics()
+    </script>
+  </body>
 </html>
