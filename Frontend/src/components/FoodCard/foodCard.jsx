@@ -13,7 +13,6 @@ import { AppBackgroundThemes } from './../App/App.themes'
 const useStyles = makeStyles({
   root: {
     maxWidth: 340,
-    width: 300,
   },
   media: {
     height: 200,

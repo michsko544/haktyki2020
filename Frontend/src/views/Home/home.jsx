@@ -57,7 +57,6 @@ const Home = () => {
             Cześć <HBold>{getFirstname()},</HBold>
           </H1>
           <div className="icons">
-
             <IconLink to="/settings">
               <TuneIcon
                 style={{

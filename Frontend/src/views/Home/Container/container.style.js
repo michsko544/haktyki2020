@@ -10,23 +10,30 @@ export const ContainerStyled = styled.div`
   grid-template-rows: auto auto;
   box-sizing: border-box;
   padding: 0 32px 32px;
-  background: ${props => props.background};
+  background: ${(props) => props.background};
 
   H3 {
-      margin: 24px 0 16px;
+    margin: 24px 0 16px;
   }
 
   div.your-order {
-    & > * {
-      margin: 0 0 24px;
+    & > *:not(h3) {
+      margin: 0 0 24px 0;
     }
   }
 
   div.orders {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 24px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    --gap: 24px;
+    margin: calc(-1 * var(--gap)) 0 0 calc(-1 * var(--gap));
+    width: calc(100% + var(--gap));
+
+    & > * {
+      margin: var(--gap) 0 0 var(--gap);
+      width: 100%;
+    }
   }
 
   @media ${device.tablet} {
@@ -36,10 +43,13 @@ export const ContainerStyled = styled.div`
     grid-template-columns: 300px 1fr;
     max-width: calc(100vw - 64px);
     border-radius: 7px 7px 0 0;
-    gap: 24px;
 
     H3 {
-        margin: 0 0 16px;
+      margin: 0 0 16px;
+    }
+
+    div.your-order {
+      margin-right: 24px;
     }
   }
 

@@ -2,15 +2,11 @@ import styled from 'styled-components'
 import { device } from './../../../responsive.breakpoints'
 
 export const DoubleInputStyled = styled.div`
-    display: flex;
-    flex-direction: column;
-    
-    & > * {
-        flex: 1;
-    }
+    display: grid;
+    grid-template-columns: 1fr;
 
     @media ${device.tablet} {
-        flex-direction: row;
+        grid-template-columns: 1fr 1fr;
         gap: 12px;
     }
 `

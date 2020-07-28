@@ -11,9 +11,9 @@ export const GradientBoxStyled = styled.div`
   border-radius: 7px;
   box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.11);
   cursor: pointer;
-  transition: .2s cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  transition: .1s cubic-bezier(0.55, 0.085, 0.68, 0.53);
 
   &:hover {
-    transform: scale(1.25);
+    transform: scale(1.15);
   }
 `
