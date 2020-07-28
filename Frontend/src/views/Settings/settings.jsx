@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from './../../components/Header'
-import { H1, H4, HBold } from './../../components/Headings'
+import { H1, H3, H4, HBold } from './../../components/Headings'
 
 import CloseIcon from '@material-ui/icons/Close'
 
@@ -12,11 +12,16 @@ import { GradientBoxContainerStyled } from './GradientBox/gradientbox.container.
 import { ThemeContainerStyled } from './ThemeContainer/theme.container.style'
 import { IconLink } from './../../components/App/App.style'
 import Store from './../../components/App/App.store'
-import { AppThemes, AppBackgroundThemes } from './../../components/App/App.themes'
+import {
+  AppThemes,
+  AppBackgroundThemes,
+} from './../../components/App/App.themes'
+import { NotificationStyled } from './Notifications/notifications.style'
+import firebase from './../../firebase'
+import { ButtonFormWrapper, default as Button } from './../../components/Button'
 
 /**
  * TODO
- * Add store for user settings locally
  * Populate data form API (user, blik, account)
  * ~ Grzegorz
  */
@@ -25,14 +30,45 @@ const Settings = () => {
   const setThemeId = store.set('themeId')
   const setBackgroundThemeId = store.set('themeBackgroundId')
 
-  const gradientClick = (theme, event) => {
+  const gradientClick = (theme) => {
     setThemeId(theme.id)
     localStorage.setItem('themeId', theme.id)
   }
 
-  const backgroundClick=(theme, event) => {
+  const backgroundClick = (theme) => {
     setBackgroundThemeId(theme.id)
     localStorage.setItem('themeBackgroundId', theme.id)
+  }
+
+  const grantNotificationPermission = () => {
+    const messaging = firebase.messaging()
+    messaging
+      .requestPermission()
+      .then(() => {
+        return messaging.getToken()
+      })
+      .then((token) => {
+        console.log('Token: ', token)
+      })
+      .catch((e) => {
+        console.warn('Error: ', e)
+      })
+
+    messaging.onMessage((msg) => {
+      console.log('Message: ', msg)
+    })
+  }
+
+  const notificationGrantedElement = () => {
+    if (Notification.permission === 'granted') {
+      return <H3>Powiadomienia Włączone</H3>
+    }
+
+    return (
+      <ButtonFormWrapper>
+        <Button onClick={grantNotificationPermission} text="Włącz powiadomienia" />
+      </ButtonFormWrapper>
+    )
   }
 
   return (
@@ -44,11 +80,24 @@ const Settings = () => {
         <H4>Po prostu zmień swoje dane.</H4>
         <div className="icons">
           <IconLink to="/">
-            <CloseIcon style={{ color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor }} />
+            <CloseIcon
+              style={{
+                color:
+                  AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+              }}
+            />
           </IconLink>
         </div>
       </Header>
-      <ContainerStyled background={AppBackgroundThemes[store.get('themeBackgroundId')].alternate}>
+      <ContainerStyled
+        background={
+          AppBackgroundThemes[store.get('themeBackgroundId')].alternate
+        }
+      >
+        <NotificationStyled>
+          <H4>Powiadomienia</H4>
+          {notificationGrantedElement()}
+        </NotificationStyled>
         <ThemeContainerStyled>
           <div>
             <H4>Motyw Aplikacji</H4>
@@ -72,7 +121,7 @@ const Settings = () => {
                   from={theme.from}
                   to={theme.to}
                   onClick={(e) => backgroundClick(theme, e)}
-              />
+                />
               ))}
             </GradientBoxContainerStyled>
           </div>
