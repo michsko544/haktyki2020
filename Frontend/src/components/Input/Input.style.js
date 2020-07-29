@@ -12,6 +12,7 @@ export const FieldStyled = styled(Field)`
   width: 100%;
   line-height: 22px;
   resize: vertical;
+  box-shadow: none;
 
   &[type='time'],
   &[type='date'] {

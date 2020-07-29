@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { withFormik, Form } from 'formik'
 import * as Yup from 'yup'
@@ -7,6 +7,8 @@ import { ButtonFormWrapper } from '../../Button'
 import Input from '../../Input'
 import { InputStyled } from '../../Input'
 import { FormWrapper } from './'
+import Store from './../../App/App.store'
+import usePost from './../../../API/usePost.API'
 
 const LoginForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -16,15 +18,17 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
       <Form>
         <InputStyled>
           <Input
-            type="text"
+            disabled={isSubmitting}
+            type="email"
             name="user"
-            label="Login"
-            placeholder="xx_Tomek_xx2000"
+            label="eMail"
+            placeholder="XxTomekXx@gmail.com"
             error={errorHandler('user')}
           />
         </InputStyled>
         <InputStyled>
           <Input
+            disabled={isSubmitting}
             type="password"
             name="password"
             label="Hasło"
@@ -42,26 +46,31 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
 
 const LoginFormik = () => {
   const history = useHistory()
+  const store = Store.useStore()
+  const login = usePost('/login')
 
-  const handleSubmit = (values, { resetForm, setSubmitting }) => {
-    setTimeout(() => {
-      console.log(values)
-      setSubmitting(false)
-      resetForm()
-      history.replace('/')
-    }, 2000)
+  const handleSubmit = (values, ...rest) => {
+    console.log(rest)
+    login.sendData(values)
   }
 
+  useEffect(() => {
+    console.log('LoginEffect: ', login.response)
+    store.set('authToken')(login.response.authToken)
+    store.set('user')(login.response.fullname)
+    store.set('userId')(login.response.userId)
+  }, [login.response])
+
   const LoginWithFormik = withFormik({
-    mapPropsToValues() {
+    mapPropsToValues({user, password}) {
       return {
-        user: '',
-        password: '',
+        user: user || '',
+        password: password || '',
       }
     },
 
     validationSchema: Yup.object().shape({
-      user: Yup.string().required('Wypełnij to pole'),
+      user: Yup.string().email('Podaj poprawny email').required('Wypełnij to pole'),
       password: Yup.string().required('Wypełnij to pole'),
     }),
 

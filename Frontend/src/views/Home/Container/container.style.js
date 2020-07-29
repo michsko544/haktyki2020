@@ -42,7 +42,7 @@ export const ContainerStyled = styled.div`
     box-shadow: 1px 2px 9px rgba(4, 4, 4, 0.25);
     grid-template-columns: 300px 1fr;
     max-width: calc(100vw - 64px);
-    border-radius: 7px 7px 0 0;
+    border-radius: 7px 7px 7px 7px;
 
     H3 {
       margin: 0 0 16px;

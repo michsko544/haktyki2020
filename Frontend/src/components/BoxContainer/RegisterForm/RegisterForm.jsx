@@ -6,6 +6,7 @@ import { ButtonFormWrapper } from '../../Button'
 import Input from '../../Input'
 import { InputStyled } from '../../Input'
 import { FormWrapper } from '../LoginForm'
+import usePost from './../../../API/usePost.API'
 
 const RegisterForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -15,10 +16,10 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
       <Form>
         <InputStyled>
           <Input
-            type="text"
+            type="email"
             name="user"
-            label="Login"
-            placeholder="xxxTomekxxx2000"
+            label="eMail"
+            placeholder="xxxTomekxxx2000@gmail.com"
             error={errorHandler('user')}
           />
         </InputStyled>
@@ -48,12 +49,14 @@ const RegisterFormik = () => {
       }
     },
 
-    validationSchema: Yup.object().shape({
-      user: Yup.string().required('Wypełnij to pole'),
-      password: Yup.string()
-        .min(8, 'Hasło musi mieć minimum 8 znaków')
-        .required('Wypełnij to pole'),
-    }),
+  validationSchema: Yup.object().shape({
+    user: Yup.string()
+      .email('Podaj prawidłowy adres email')
+      .required('Wypełnij to pole'),
+    password: Yup.string()
+      .min(6, 'Hasło musi mieć minimum 6 znaków')
+      .required('Wypełnij to pole'),
+  }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {
       setTimeout(() => {
