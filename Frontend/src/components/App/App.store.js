@@ -4,5 +4,6 @@ export default createConnectedStore({
     authToken: '',
     themeId: 0,
     themeBackgroundId: 0,
-    user: 'Tomek Adamczyk'
+    user: 'Tomek Adamczyk',
+    userId: 0
 })

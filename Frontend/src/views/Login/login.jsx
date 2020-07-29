@@ -13,7 +13,7 @@ const Login = () => {
     <BoxContainer>
       <Padding30>
         <HeaderStyled>
-          <Header title="Logowanie" subtitle="Podaj login i hasło" />
+          <Header title="Logowanie" subtitle="Podaj email i hasło" />
         </HeaderStyled>
         <Heroimage image={img} />
         <FormWithLink linkText={'Chce dołączyć'} link="/register">
