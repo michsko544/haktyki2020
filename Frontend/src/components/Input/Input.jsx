@@ -4,7 +4,7 @@ import Store from './../App/App.store'
 import { AppBackgroundThemes, AppThemes } from './../App/App.themes'
 import { FieldStyled, Label, ErrorStyled, Underline } from './'
 
-const Input = ({ label, error, name, ...props }) => {
+const Input = ({ label, error, name, children, ...props }) => {
   const store = Store.useStore()
 
   return (
@@ -38,7 +38,7 @@ const Input = ({ label, error, name, ...props }) => {
 
 Input.propTypes = {
   type: PropTypes.string,
-  as: PropTypes.string,
+  component: PropTypes.string,
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   error: PropTypes.string,

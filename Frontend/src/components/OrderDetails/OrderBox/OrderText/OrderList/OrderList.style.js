@@ -30,3 +30,14 @@ export const Order = styled.p`
     line-height: 17px;
   }
 `
+
+export const Coupon = styled.p`
+  font-size: 12px;
+  line-height: 17px;
+  color: ${(props) => props.color};
+
+  @media (min-width: 1024px) {
+    font-size: 14px;
+    line-height: 22px;
+  }
+`

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import BoxContainer from '../../BoxContainer'
-import { Padding50 } from './OrderBox.style'
+import { TextDisplayer } from './OrderBox.style'
 import CloseIcon from '@material-ui/icons/Close'
 import { OrderDetailsImg } from '../../Heroimage/Heroimage.style'
 import defaultImage from '../../../images/frytki.png'
@@ -27,14 +27,14 @@ const OrderBox = ({ children, image, closeCallback }) => {
           />
         </CloseBtnBackground>
         <OrderDetailsImg src={image || defaultImage} alt="food-order-photo" />
-        <Padding50>{children}</Padding50>
+        {children}
       </BoxContainer>
     </FixedContainer>
   )
 }
 
 OrderBox.propTypes = {
-  image: PropTypes.string,
+  image: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   closeCallback: PropTypes.func,
   children: PropTypes.any,
 }

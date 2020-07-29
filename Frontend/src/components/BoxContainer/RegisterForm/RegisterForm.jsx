@@ -40,13 +40,14 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
   )
 }
 
-const RegisterFormik = withFormik({
-  mapPropsToValues() {
-    return {
-      user: '',
-      password: '',
-    }
-  },
+const RegisterFormik = () => {
+  const RegisterWithFormik = withFormik({
+    mapPropsToValues() {
+      return {
+        user: '',
+        password: '',
+      }
+    },
 
   validationSchema: Yup.object().shape({
     user: Yup.string()
@@ -57,13 +58,15 @@ const RegisterFormik = withFormik({
       .required('Wypełnij to pole'),
   }),
 
-  handleSubmit(values, { resetForm, setSubmitting }) {
-    setTimeout(() => {
-      console.log(values)
-      setSubmitting(false)
-      resetForm()
-    }, 2000)
-  },
-})(RegisterForm)
+    handleSubmit(values, { resetForm, setSubmitting }) {
+      setTimeout(() => {
+        console.log(values)
+        setSubmitting(false)
+        resetForm()
+      }, 2000)
+    },
+  })(RegisterForm)
 
+  return <RegisterWithFormik />
+}
 export default RegisterFormik
