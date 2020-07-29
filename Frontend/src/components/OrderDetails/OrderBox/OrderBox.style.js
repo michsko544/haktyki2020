@@ -2,38 +2,39 @@ import styled from 'styled-components'
 
 export const FixedContainer = styled.div`
   position: fixed;
-  top: 20px;
+  top: 0;
   left: 0;
   z-index: 10;
 `
 
-export const Padding50 = styled.div`
+export const Margins = styled.div`
   width: 100%;
-  margin: 0 auto;
-  padding: 0 30px;
+  height: fit-content;
+  padding: 30px 30px 130px;
 
   @media (min-width: 420px) {
     width: 420px;
+    margin: 0 auto;
   }
 
   @media (min-width: 1024px) {
-    width: 100%;
-    padding: 0 50px;
+    margin: unset;
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 64px 50px 40px;
+    width: 50%;
   }
 `
 
 export const TextDisplayer = styled.div`
+  height: 100%;
   width: 100%;
-  margin: 30px 0 130px;
 
   @media (min-width: 1024px) {
-    width: 50%;
-    height: 100%;
-    margin: 64px 0 40px;
-    max-height: ${(props) =>
-      props.isFirstStage === 'true' ? '400px' : '520px'};
-    max-width: unset;
-    padding-right: 50px;
+    height: fit-content;
+    max-height: 100%;
+    overflow-y: auto;
   }
 `
 
@@ -65,7 +66,8 @@ export const ButtonWrapper = styled.div`
 
   @media (min-width: 1024px) {
     margin-top: 20px;
-    margin-bottom: 40px;
+    /* margin-bottom: 40px; */
+    padding: 0;
     max-width: unset;
     position: unset;
     transform: unset;

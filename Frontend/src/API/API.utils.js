@@ -16,10 +16,10 @@ const useFetch = (url) => {
     } catch (error) {
       console.log(error.response)
       setError({
-        code: error.response.status.toString(),
-        text: error.response.statusText?.toString(),
+        code: error.response?.status.toString(),
+        text: error.response?.statusText?.toString(),
       })
-      console.log(error.response.status)
+      console.log(error.response?.status)
     } finally {
       setIsLoading(false)
     }

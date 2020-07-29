@@ -1,3 +1,3 @@
 export { default } from './OrderList'
-export { OrderRecord } from './OrderList'
-export { Name, Order } from './OrderList.style'
+export { Name, Order, Coupon } from './OrderList.style'
+export { recognizeUser } from './OrderList.utils'
