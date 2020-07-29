@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/**").permitAll()
             .anyRequest().authenticated()
             .and()
-            .antMatcher("/users/**")
+            .antMatcher("/**")
             .addFilter(new JwtFilter(authenticationManager()))
             .csrf().disable()
             .sessionManagement()
