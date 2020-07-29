@@ -5,5 +5,5 @@ export default createConnectedStore({
   themeId: 0,
   themeBackgroundId: 0,
   userId: 0,
-  user: 'Tomek Adamczyk',
+  user: '',
 })

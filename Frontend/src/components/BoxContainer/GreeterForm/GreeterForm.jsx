@@ -37,24 +37,28 @@ const GreeterForm = ({ errors, touched, isSubmitting }) => {
   )
 }
 
-const GreeterFormik = withFormik({
-  mapPropsToValues() {
-    return {
-      name: '',
-    }
-  },
+const GreeterFormik = () => {
+  const GreeterWithFormik = withFormik({
+    mapPropsToValues() {
+      return {
+        name: '',
+      }
+    },
 
-  validationSchema: Yup.object().shape({
-    name: Yup.string().required('Wypełnij to pole'),
-  }),
+    validationSchema: Yup.object().shape({
+      name: Yup.string().required('Wypełnij to pole'),
+    }),
 
-  handleSubmit(values, { resetForm, setSubmitting }) {
-    setTimeout(() => {
-      console.log(values)
-      setSubmitting(false)
-      resetForm()
-    }, 2000)
-  },
-})(GreeterForm)
+    handleSubmit(values, { resetForm, setSubmitting }) {
+      setTimeout(() => {
+        console.log(values)
+        setSubmitting(false)
+        resetForm()
+      }, 2000)
+    },
+  })(GreeterForm)
+
+  return <GreeterWithFormik />
+}
 
 export default GreeterFormik
