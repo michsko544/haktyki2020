@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import Store from './App.store'
 import AppRoutes from './App.routes'

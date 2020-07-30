@@ -2,6 +2,7 @@ import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import { mockOrders } from './mock/orders'
 import { mockUserOrders } from './mock/user.orders'
+import { mockOrdersFour } from './mock/orders.four'
 import { mockOrdersZero } from './mock/orders.zero'
 import { mockOrdersOne } from './mock/orders.one'
 import { mockOrdersTwo } from './mock/orders.two'
@@ -32,6 +33,7 @@ mockUserOrders(mock)
 mockOrdersZero(mock)
 mockOrdersOne(mock)
 mockOrdersTwo(mock)
+mockOrdersFour(mock)
 mockPhotos(mock)
 
 export default axiosAPI
