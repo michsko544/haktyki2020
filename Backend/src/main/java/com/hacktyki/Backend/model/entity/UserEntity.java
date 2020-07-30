@@ -3,21 +3,21 @@ package com.hacktyki.Backend.model.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table( name = "user" )
 public class UserEntity {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "login", nullable = false)
+    @Column(name = "login", nullable = false, length = 50)
     private String login;
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 30)
     private String password;
-    @Column(name = "full_name")
+    @Column(name = "fullname", length = 80)
     private String fullName;
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
-    @Column(name = "credit_card_number")
+    @Column(name = "credit_card_number", length = 40)
     private String creditCardNumber;
 
     public UserEntity() {

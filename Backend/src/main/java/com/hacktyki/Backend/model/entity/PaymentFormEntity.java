@@ -7,13 +7,13 @@ import javax.persistence.*;
 
 @Entity
 @Immutable
-@Table(name = "payment_form")
+@Table( name = "payment_form" )
 public class PaymentFormEntity {
 
     @Id
     private long id;
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_form_name")
+    @Column(name = "payment_form_name", length = 20)
     private PaymentFormEnum paymentFormName;
 
     public PaymentFormEntity() {

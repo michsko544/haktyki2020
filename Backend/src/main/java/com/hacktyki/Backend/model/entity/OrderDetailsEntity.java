@@ -7,9 +7,12 @@ import java.io.Serializable;
 @Table( name = "order_details")
 public class OrderDetailsEntity implements Serializable {
 
+    // properties
     @EmbeddedId
     private OrderDetailsIdentity id;
-    @Column(name = "description", nullable = false)
+    @Column(name = "coupon_id")
+    private long couponId;
+    @Column(name = "description", nullable = false, length = 200)
     private String description;
     @Column(name = "order_owner", nullable = false)
     private boolean orderOwner;
@@ -17,11 +20,21 @@ public class OrderDetailsEntity implements Serializable {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity userEntity;
 
+    // joined coupon entity
+    @OneToOne
+    @JoinColumn(name = "coupon_id", insertable = false, updatable = false)
+    private DiscountCouponEntity discountCoupon;
+
+
     public OrderDetailsEntity() {
     }
 
     public OrderDetailsIdentity getId() {
         return id;
+    }
+
+    public long getCouponId() {
+        return couponId;
     }
 
     public String getDescription() {
@@ -42,5 +55,9 @@ public class OrderDetailsEntity implements Serializable {
 
     public UserEntity getUserEntity() {
         return userEntity;
+    }
+
+    public DiscountCouponEntity getDiscountCoupon() {
+        return discountCoupon;
     }
 }

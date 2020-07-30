@@ -6,13 +6,14 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Entity
-@Table(name = "order_base")
+@Table( name = "order_base" )
 public class OrderEntity {
 
+    // properties
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "restaurant", nullable = false)
+    @Column(name = "restaurant", nullable = false, length = 50)
     private String restaurant;
     @Column(name = "order_date", nullable = false)
     private LocalDate orderDate;
@@ -24,8 +25,10 @@ public class OrderEntity {
     private long paymentFormId;
     @Column(name = "discount_coupon_id") // temporary without other table connection
     private long DiscountCouponId;
+    @Column(name = "image_source", length = 80)
+    private String imageSource;
 
-    // joined column of payment and list of orders
+    // joined column of payment, list of discount coupons and list of orders
     @ManyToOne // eager
     @JoinColumn(name = "payment_form_id", insertable = false, updatable = false)
     private PaymentFormEntity paymentForm;
@@ -64,16 +67,24 @@ public class OrderEntity {
         this.paymentFormId = paymentFormId;
     }
 
-    public PaymentFormEntity getPaymentForm() {
-        return paymentForm;
-    }
-
     public long getDiscountCouponId() {
         return DiscountCouponId;
     }
 
     public void setDiscountCouponId(long discountCouponId) {
         DiscountCouponId = discountCouponId;
+    }
+
+    public String getImageSource() {
+        return imageSource;
+    }
+
+    public void setImageSource(String imageSource) {
+        this.imageSource = imageSource;
+    }
+
+    public PaymentFormEntity getPaymentForm() {
+        return paymentForm;
     }
 
     public List<OrderDetailsEntity> getOrderDetailsList() {
