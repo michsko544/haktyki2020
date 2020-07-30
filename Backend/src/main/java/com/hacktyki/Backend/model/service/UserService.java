@@ -26,12 +26,25 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public String getMyFullname() {
+        return userRepository.findByLogin(getAuthenticatedLogin()).getFullName();
+    }
+
+    public Boolean setMyFullname(String fullname) {
+        UserEntity user = userRepository.findByLogin(getAuthenticatedLogin());
+        if(user != null){
+            user.setFullName(fullname);
+            return true;
+        }
+        return false;
+    }
+
     public UserDetailsRestModel getMyDetails() {
         return new UserDetailsRestModel(userRepository.findByLogin(getAuthenticatedLogin()));
     }
 
     @Transactional
-    public boolean changeDetails(UserDetailsRestModel userDetails){
+    public boolean changeMyDetails(UserDetailsRestModel userDetails){
         if(userDetails != null){
 
             userRepository.save(mapDetailsRestModel(userDetails));
