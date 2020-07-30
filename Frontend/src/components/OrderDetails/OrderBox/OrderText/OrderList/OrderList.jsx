@@ -3,15 +3,23 @@ import PropTypes from 'prop-types'
 import Store from '../../../../App/App.store'
 import { AppThemes, AppBackgroundThemes } from '../../../../App/App.themes'
 import { SmallTitle } from '../Header'
-import { Name, Order, Coupon } from './OrderList.style'
+import {
+  Name,
+  Order,
+  Coupon,
+  RecordStyled,
+  CouponInfo,
+} from './OrderList.style'
 import { recognizeUser } from './OrderList.utils'
 import { TextDisplayer } from '../../'
 
 const OrderList = ({ orders, purchaserId, isPurchaser }) => {
   const store = Store.useStore()
 
-  const fontcolor =
-    AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
+  const backgroundTheme = AppBackgroundThemes[store.get('themeBackgroundId')]
+
+  const fontcolor = backgroundTheme.fontColor
+  const backgroundcolor = backgroundTheme.background
 
   const OrderRecord = ({ name, order }) => {
     const store = Store.useStore()
@@ -21,15 +29,26 @@ const OrderList = ({ orders, purchaserId, isPurchaser }) => {
     const secondcolor = theme.to
 
     return (
-      <>
+      <RecordStyled hascoupon={isPurchaser && order.coupon}>
         <Name color={fontcolor}>{name}</Name>
         <Order firstcolor={firstcolor} secondcolor={secondcolor}>
           {order.what}
         </Order>
         {isPurchaser && order.coupon && (
-          <Coupon color={fontcolor}>{`Posiada kupon: ${order.coupon}`}</Coupon>
+          <>
+            <Coupon
+              color={fontcolor}
+            >{`Posiada kupon: ${order.coupon.code}`}</Coupon>
+
+            <CouponInfo color={backgroundcolor}>
+              <Name color={fontcolor}>Kod kuponu: {order.coupon.code}</Name>
+              <Coupon color={fontcolor}>
+                Dodatkowe informacje: {order.coupon.description}
+              </Coupon>
+            </CouponInfo>
+          </>
         )}
-      </>
+      </RecordStyled>
     )
   }
 

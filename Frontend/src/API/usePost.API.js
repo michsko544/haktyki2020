@@ -3,9 +3,9 @@ import axiosAPI from './API'
 import PropTypes from 'prop-types'
 
 const defaultResponse = {
-    authToken: '',
-    userId: 0,
-    fullname: ''
+  authToken: '',
+  userId: 0,
+  fullname: '',
 }
 
 const usePost = (url) => {
@@ -23,11 +23,12 @@ const usePost = (url) => {
       console.log('Response: ', response)
     } catch (error) {
       console.log('Error', error.response)
-      setIsLoading(false)
       setError({
-        code: error.response.status,
-        text: error.response.statusText,
+        code: error.response?.status,
+        text: error.response?.statusText,
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 

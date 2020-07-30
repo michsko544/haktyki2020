@@ -7,7 +7,7 @@ import OrderText from './OrderBox/OrderText'
 import Button from '../Button'
 import { useFetch } from '../../API'
 import { ButtonWrapper, Margins } from './OrderBox'
-import Loader from '../Loader'
+import Skeleton from '@material-ui/lab/Skeleton'
 import ErrorMessage from '../ErrorMessage'
 import Store from '../App/App.store'
 
@@ -42,7 +42,7 @@ const OrderDetails = ({ orderId, closeCallback }) => {
     const orderDate = new Date(...dateSplited)
     const dateNow = new Date(Date.now())
 
-    //comparison dates in miliseconds from 1970
+    //comparison order and now dates in miliseconds from 1970
     if (orderDate - dateNow.setHours(0, 0, 0, 0) >= 48 * 3600 * 1000) {
       return date
     } else if (orderDate - dateNow.setHours(0, 0, 0, 0) >= 24 * 3600 * 1000) {
@@ -73,24 +73,20 @@ const OrderDetails = ({ orderId, closeCallback }) => {
 
   const recognizePurchaser = () => {
     if (isLoggedUserPurchaser()) {
-      return 'Zamawiasz Ty'
+      return 'Ty'
     } else {
-      return `Zamawia ${findPurchaser().who}`
+      return findPurchaser().who
     }
   }
 
   const displayPurchaser = () => {
+    const who = recognizePurchaser()
     if (!isOrderClosed()) {
-      return recognizePurchaser()
+      return who === 'Ty' ? `Zamawiasz ${who}` : `Zamawia ${who}`
     } else {
-      return `Zamawiał/a ${findPurchaser().who}`
+      return who === 'Ty' ? `Zamawiałeś/aś ${who}` : `Zamawiał/a ${who}`
     }
   }
-
-  const showLoaderIfLoading = () => isLoading && <Loader />
-
-  const showErrorIfError = () =>
-    error && <ErrorMessage error={error.code} advice={error.text} />
 
   const showSuitableButton = () => {
     if (isFirstStage && !isOrderClosed())
@@ -102,18 +98,16 @@ const OrderDetails = ({ orderId, closeCallback }) => {
           />
         </ButtonWrapper>
       )
-    else if (isFirstStage && isOrderClosed)
+    else if (isFirstStage && isOrderClosed() && isLoggedUserPurchaser())
       return (
-        store.get('userId') === response.order.purchaserId && (
-          <ButtonWrapper>
-            <Button
-              text={'Powiadom o dotarciu jedzenia'}
-              handleOnClick={() =>
-                console.log('Call API that order arrived to company')
-              }
-            />
-          </ButtonWrapper>
-        )
+        <ButtonWrapper>
+          <Button
+            text={'Powiadom o dotarciu jedzenia'}
+            handleOnClick={() =>
+              console.log('Call API that order arrived to company')
+            }
+          />
+        </ButtonWrapper>
       )
     else return ''
   }
@@ -123,6 +117,7 @@ const OrderDetails = ({ orderId, closeCallback }) => {
       <OrderFormik
         order={findLoggedPerson()?.what}
         coupon={findLoggedPerson()?.coupon}
+        payment={response.order.payment}
         isPurchaser={isLoggedUserPurchaser()}
         closeCallback={closeCallback}
       />
@@ -153,6 +148,31 @@ const OrderDetails = ({ orderId, closeCallback }) => {
       </Margins>
     )
   }
+
+  const showLoaderIfLoading = () =>
+    isLoading && (
+      <>
+        <Skeleton variant="text" animation="wave" height={35} width={'50%'} />
+        <Skeleton variant="text" animation="wave" height={22} width={'80%'} />
+        <br />
+        <Skeleton variant="text" animation="wave" height={22} width={'60%'} />
+        <br />
+        <Skeleton variant="text" animation="wave" height={22} width={'50%'} />
+        <Skeleton variant="text" animation="wave" height={17} width={'70%'} />
+        <br />
+        <Skeleton variant="text" animation="wave" height={22} width={'35%'} />
+        <Skeleton variant="text" animation="wave" height={17} width={'90%'} />
+        <br />
+        <Skeleton variant="text" animation="wave" height={22} width={'29%'} />
+        <Skeleton variant="text" animation="wave" height={17} width={'75%'} />
+        <br />
+        <Skeleton variant="text" animation="wave" height={22} width={'40%'} />
+        <Skeleton variant="text" animation="wave" height={17} width={'60%'} />
+      </>
+    )
+
+  const showErrorIfError = () =>
+    error && <ErrorMessage error={error.code} advice={error.text} />
 
   return (
     <>

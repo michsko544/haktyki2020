@@ -7,30 +7,26 @@ const details = {
     time: '14:30',
     image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
     orderDetails: [
-      { userId: 2, who: 'Tomek', what: 'Super Burger XL z serem', coupon: '' },
+      { userId: 2, who: 'Tomek', what: 'Super Burger XL z serem' },
       {
         userId: 3,
         who: 'Ania',
         what: 'Super Burger (mały) z frytkami',
-        coupon: '',
       },
       {
         userId: 4,
         who: 'Hannah',
         what: 'Duży mcBurger z frytkami i kalafiorem',
-        coupon: '',
       },
       {
         userId: 5,
         who: 'Atomek',
         what: 'Super Burger XL z serem i pieczarkami',
-        coupon: '',
       },
       {
         userId: 6,
         who: 'Basia',
         what: 'Super Burger (mały) z frytkami',
-        coupon: '',
       },
     ],
   },

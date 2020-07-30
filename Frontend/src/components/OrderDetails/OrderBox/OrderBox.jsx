@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import BoxContainer from '../../BoxContainer'
-import { TextDisplayer } from './OrderBox.style'
 import CloseIcon from '@material-ui/icons/Close'
 import { OrderDetailsImg } from '../../Heroimage/Heroimage.style'
 import defaultImage from '../../../images/frytki.png'

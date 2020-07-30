@@ -1,6 +1,6 @@
 import React from 'react'
 import * as Yup from 'yup'
-import { withFormik, Form, useField } from 'formik'
+import { withFormik, Form, useField, Field } from 'formik'
 import Store from '../../../../App/App.store'
 import { AppBackgroundThemes } from '../../../../App/App.themes'
 import Checkbox from '@material-ui/core/Checkbox'
@@ -9,11 +9,17 @@ import { CheckboxStyled, CheckboxLabel } from './OrderForm.style'
 import Input from '../../../../Input'
 import Button from '../../../../Button'
 import { ButtonWrapper, TextDisplayer } from '../../'
+import RadioGroupFormik from '../../../../RadioGroup'
 
-const OrderForm = ({ values, touched, errors, isSubmitting, handleChange }) => {
+const OrderForm = ({
+  values,
+  touched,
+  errors,
+  isSubmitting,
+  handleChange,
+  isPurchaser,
+}) => {
   const store = Store.useStore()
-  // const [field, meta] = useField({ ...props, type })
-
   const fontcolor =
     AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
 
@@ -29,8 +35,35 @@ const OrderForm = ({ values, touched, errors, isSubmitting, handleChange }) => {
         <CheckboxLabel fontcolor={fontcolor}>Mam kupon</CheckboxLabel>
       </CheckboxStyled>
     ) : (
-      <Input type="text" label="Kod kuponu" name="coupon" />
+      <>
+        <Input type="text" label="Kod kuponu" name="coupon" />
+        <Input
+          component="textarea"
+          placeholder="Kupon obejmuje zamówienie za minimum 40zł i daje zniżkę 10%"
+          label="Informacje o kuponie"
+          name="couponDescription"
+          error={errors.couponDescription}
+        />
+      </>
     )
+
+  const showPaymentFormIfPurchaser = () => {
+    return (
+      isPurchaser && (
+        <Field
+          name="payment"
+          options={[
+            { value: 'BLIK', label: 'BLIK' },
+            { value: 'TRANSFER', label: 'Przelew' },
+            { value: 'CASH', label: 'Gotówka' },
+          ]}
+          label={'Forma Płatności'}
+          component={RadioGroupFormik}
+          aria-label="payment"
+        />
+      )
+    )
+  }
 
   return (
     <Form>
@@ -40,11 +73,12 @@ const OrderForm = ({ values, touched, errors, isSubmitting, handleChange }) => {
           name="orderContent"
           component="textarea"
           label="Treść zamówienia"
-          style={{ height: 80 }}
+          style={{ height: 77 }}
           error={touched.orderContent && errors.orderContent}
           placeholder="Penne z boczkiem i brokułami w sosie śmietanowym, kompot, zestaw sztućców"
         />
         {showCouponInput()}
+        {showPaymentFormIfPurchaser()}
       </TextDisplayer>
       <ButtonWrapper>
         <Button text="Zapisz" type="submit" disabled={isSubmitting} />
@@ -53,13 +87,21 @@ const OrderForm = ({ values, touched, errors, isSubmitting, handleChange }) => {
   )
 }
 
-const OrderFormik = ({ order, coupon, isPurchaser, closeCallback }) => {
+const OrderFormik = ({
+  order,
+  coupon,
+  payment,
+  isPurchaser,
+  closeCallback,
+}) => {
   const OrderWithFormik = withFormik({
-    mapPropsToValues({ order, coupon }) {
+    mapPropsToValues({ order, coupon, payment }) {
       return {
         orderContent: order || '',
-        hasCoupon: coupon ? true : false,
-        coupon: coupon || '',
+        hasCoupon: coupon?.code ? true : false,
+        coupon: coupon?.code || '',
+        couponDescription: coupon?.description || '',
+        payment: payment || '',
       }
     },
 
@@ -67,6 +109,7 @@ const OrderFormik = ({ order, coupon, isPurchaser, closeCallback }) => {
       orderContent: Yup.string()
         .max(255, 'Maksymalnie 255 znaków')
         .required('Wypełnij to pole'),
+      couponDescription: Yup.string().max(100, 'Maksymalnie 100 znaków'),
     }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {
@@ -78,7 +121,14 @@ const OrderFormik = ({ order, coupon, isPurchaser, closeCallback }) => {
       }, 2000)
     },
   })(OrderForm)
-  return <OrderWithFormik order={order} coupon={coupon} />
+  return (
+    <OrderWithFormik
+      order={order}
+      coupon={coupon}
+      payment={payment}
+      isPurchaser={isPurchaser}
+    />
+  )
 }
 
 export default OrderFormik

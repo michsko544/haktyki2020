@@ -54,7 +54,7 @@ const Home = () => {
       <BlurChildren shouldBlur={isDetailsVisibile}>
         <Header>
           <H1 className="small">
-            Cześć <HBold>{getFirstname()},</HBold>
+            Cześć <HBold>{getFirstname() || 'Nieznajomy'},</HBold>
           </H1>
           <div className="icons">
             <IconLink to="/settings">
