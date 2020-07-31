@@ -49,8 +49,7 @@ const LoginFormik = () => {
   const store = Store.useStore()
   const login = usePost('/login')
 
-  const handleSubmit = (values, ...rest) => {
-    console.log(rest)
+  const handleSubmit = (values) => {
     login.sendData(values)
   }
 
@@ -60,6 +59,10 @@ const LoginFormik = () => {
     store.set('user')(login.response.fullname)
     store.set('userId')(login.response.userId)
   }, [login.response])
+
+  useEffect(() => {
+    console.log('ErrorEffect: ', login.error)
+  }, [login.error])
 
   const LoginWithFormik = withFormik({
     mapPropsToValues({ user, password }) {

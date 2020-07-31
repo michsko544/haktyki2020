@@ -19,7 +19,7 @@ const usePost = (url) => {
       console.log(`Posting data on ${url}`, data)
       const response = await axiosAPI.post(url, data)
       setIsLoading(false)
-      setResponse({ ...response.data })
+      setResponse({ ...response.data, statusCode: response.status })
       console.log('Response: ', response)
     } catch (error) {
       console.log('Error', error.response)

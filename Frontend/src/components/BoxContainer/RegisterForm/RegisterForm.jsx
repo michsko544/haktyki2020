@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { withFormik, Form } from 'formik'
 import * as Yup from 'yup'
 import Button from '../../Button'
@@ -41,11 +42,25 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
 }
 
 const RegisterFormik = () => {
+  const history = useHistory()
+  const register = usePost("/register")
+
+  useEffect(() => {
+    console.log('ErrorEffect: ', register.error)
+  }, [register.error])
+
+  useEffect(() => {
+    console.log('RegisterEffect: ', register.response)
+    // What do? Po prostu redirect?
+    if(!register.isLoading && register.response.statusCode === 201)
+      history.replace('/');
+  }, [register.response, register.isLoading])
+
   const RegisterWithFormik = withFormik({
-    mapPropsToValues() {
+    mapPropsToValues({ user, password }) {
       return {
-        user: '',
-        password: '',
+        user: user || '',
+        password: password || '',
       }
     },
 
@@ -59,11 +74,7 @@ const RegisterFormik = () => {
     }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {
-      setTimeout(() => {
-        console.log(values)
-        setSubmitting(false)
-        resetForm()
-      }, 2000)
+      register.sendData(values)
     },
   })(RegisterForm)
 
