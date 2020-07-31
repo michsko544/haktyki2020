@@ -7,5 +7,5 @@ const loginToken = {
 export const mockLogin = (mockAdapter) => {
     mockAdapter
         .onPost(`${process.env.REACT_APP_API_URL}/login`)
-        .reply(400, loginToken)
+        .reply(200, loginToken)
 }

@@ -18,7 +18,7 @@ import { PhotoSelectionStyled } from './PhotoSelection/photo.selection.style'
 import { PhotoSelectionContainer } from './PhotoSelection/photo.selection.container.style'
 import { DoubleInputStyled } from './Container/double.input.style'
 import Store from '../../components/App/App.store'
-import { AppBackgroundThemes } from '../../components/App/App.themes'
+import { AppBackgroundThemes, AppThemes } from '../../components/App/App.themes'
 
 const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
   const store = Store.useStore()
@@ -123,6 +123,8 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
                 key={photo.id}
                 selected={photo.selected}
                 url={photo.url}
+                from={AppThemes[store.get('themeId')].from}
+                to={AppThemes[store.get('themeId')].to}
               />
             ))}
           <Button onClick={newPhotosHandler}>Wylosuj nowe</Button>
