@@ -1,7 +1,7 @@
 import React from 'react'
 import * as Yup from 'yup'
 import { withFormik, Form } from 'formik'
-import { default as Input, InputStyled } from './../../../components/Input'
+import { Input, InputStyled } from './../../../components/Inputs'
 import {
   ButtonFormWrapper,
   default as Button,
