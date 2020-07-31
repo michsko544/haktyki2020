@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import * as Yup from 'yup'
 import { withFormik, Form } from 'formik'
 import { Input, InputStyled } from './../../../components/Inputs'
@@ -7,8 +7,9 @@ import {
   default as Button,
 } from './../../../components/Button'
 import Store from './../../../components/App/App.store'
+import useFetch from './../../../API/useFetch.API';
 
-const SettingsForm = ({ errors, touched, isSubmitting }) => {
+const SettingsForm = ({ errors, touched, isSubmitting, isLoading }) => {
   const errorHandler = (name) => touched[name] && errors[name]
 
   return (
@@ -21,6 +22,7 @@ const SettingsForm = ({ errors, touched, isSubmitting }) => {
             label="Imię i nazwisko"
             placeholder="Tomek Adamczyk"
             error={errorHandler('user')}
+            disabled={isLoading ? 'disabled' : ''}
           />
         </InputStyled>
         <InputStyled>
@@ -30,6 +32,7 @@ const SettingsForm = ({ errors, touched, isSubmitting }) => {
             label="Numer telefonu do BLIK"
             placeholder="603 424 420"
             error={errorHandler('blik')}
+            disabled={isLoading}
           />
         </InputStyled>
         <InputStyled>
@@ -39,6 +42,7 @@ const SettingsForm = ({ errors, touched, isSubmitting }) => {
             label="Numer konta do przelewów"
             placeholder="78 2323 4333 1234 2333 0000"
             error={errorHandler('account')}
+            disabled={isLoading}
           />
         </InputStyled>
         <ButtonFormWrapper>
@@ -51,6 +55,19 @@ const SettingsForm = ({ errors, touched, isSubmitting }) => {
 
 const SettingsFormik = () => {
   const store = Store.useStore()
+  const userData = useFetch('/user/me')
+
+  useEffect(() => {
+    /**
+     * Fetch data from userData to model
+     */
+
+     userData.getData()
+  }, [])
+
+  useEffect(() => {
+    console.log('Response: ', userData.response)
+  }, [userData.response])
 
   const SettingsWithFormik = withFormik({
     mapPropsToValues() {
@@ -74,6 +91,8 @@ const SettingsFormik = () => {
         resetForm()
       }, 200)
     },
+
+    isLoading: userData.isLoading
   })(SettingsForm)
 
   return <SettingsWithFormik />

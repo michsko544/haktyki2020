@@ -10,6 +10,7 @@ import { mockPhotos } from './mock/photos'
 import { mockOrder } from './mock/order'
 import { mockRegister } from './mock/register'
 import { mockLogin } from './mock/login'
+import { mockSettings } from './mock/settings';
 
 const axiosAPI = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -23,7 +24,7 @@ export const removeTokenFromHeader = () => {
   delete axiosAPI.defaults.headers.common['Authorization']
 }
 
-const mock = new MockAdapter(axiosAPI)
+const mock = new MockAdapter(axiosAPI, { delayResponse: 2000 })
 
 mockRegister(mock)
 mockLogin(mock)
@@ -35,5 +36,6 @@ mockOrdersOne(mock)
 mockOrdersTwo(mock)
 mockOrdersFour(mock)
 mockPhotos(mock)
+mockSettings(mock)
 
 export default axiosAPI
