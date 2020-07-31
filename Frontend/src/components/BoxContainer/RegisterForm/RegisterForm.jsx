@@ -3,8 +3,8 @@ import { withFormik, Form } from 'formik'
 import * as Yup from 'yup'
 import Button from '../../Button'
 import { ButtonFormWrapper } from '../../Button'
-import Input from '../../Input'
-import { InputStyled } from '../../Input'
+import { Input } from '../../Inputs'
+import { InputStyled } from '../../Inputs'
 import { FormWrapper } from '../LoginForm'
 import usePost from './../../../API/usePost.API'
 
@@ -49,14 +49,14 @@ const RegisterFormik = () => {
       }
     },
 
-  validationSchema: Yup.object().shape({
-    user: Yup.string()
-      .email('Podaj prawidłowy adres email')
-      .required('Wypełnij to pole'),
-    password: Yup.string()
-      .min(6, 'Hasło musi mieć minimum 6 znaków')
-      .required('Wypełnij to pole'),
-  }),
+    validationSchema: Yup.object().shape({
+      user: Yup.string()
+        .email('Podaj prawidłowy adres email')
+        .required('Wypełnij to pole'),
+      password: Yup.string()
+        .min(6, 'Hasło musi mieć minimum 6 znaków')
+        .required('Wypełnij to pole'),
+    }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {
       setTimeout(() => {

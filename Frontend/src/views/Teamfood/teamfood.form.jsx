@@ -1,18 +1,14 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import * as Yup from 'yup'
-import { withFormik, Form } from 'formik'
+import { withFormik, Form, Field } from 'formik'
 import { FormStyled } from './Container/form.style'
-import { default as Input, InputStyled } from '../../components/Input'
+import { Input, InputStyled, RadioGroupFormik } from '../../components/Inputs'
 import {
   ButtonFormWrapper,
   default as ButtonBig,
 } from '../../components/Button'
 
-import Radio from '@material-ui/core/Radio'
-import RadioGroup from '@material-ui/core/RadioGroup'
-import FormControl from '@material-ui/core/FormControl'
-import FormLabel from '@material-ui/core/FormLabel'
 import Button from '@material-ui/core/Button'
 import Loader from '../../components/Loader'
 import ErrorMessage from '../../components/ErrorMessage'
@@ -21,7 +17,6 @@ import { useFetch } from '../../API'
 import { PhotoSelectionStyled } from './PhotoSelection/photo.selection.style'
 import { PhotoSelectionContainer } from './PhotoSelection/photo.selection.container.style'
 import { DoubleInputStyled } from './Container/double.input.style'
-import { FormControlLabelStyled } from './form.control.label.style'
 import Store from '../../components/App/App.store'
 import { AppBackgroundThemes } from '../../components/App/App.themes'
 
@@ -101,35 +96,18 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
             error={errorHandler('what')}
           />
         </InputStyled>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Forma Płatności</FormLabel>
-          <RadioGroup aria-label="gender" name="gender1">
-            <FormControlLabelStyled
-              color={
-                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
-              }
-              value="blik"
-              control={<Radio />}
-              label="BLIK"
-            />
-            <FormControlLabelStyled
-              color={
-                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
-              }
-              value="transfer"
-              control={<Radio />}
-              label="Przelew"
-            />
-            <FormControlLabelStyled
-              color={
-                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
-              }
-              value="cash"
-              control={<Radio />}
-              label="Gotówka"
-            />
-          </RadioGroup>
-        </FormControl>
+        <Field
+          name="payment"
+          options={[
+            { value: 'BLIK', label: 'BLIK' },
+            { value: 'TRANSFER', label: 'Przelew' },
+            { value: 'CASH', label: 'Gotówka' },
+          ]}
+          error={() => errorHandler('payment')}
+          label={'Forma Płatności'}
+          component={RadioGroupFormik}
+          aria-label="payment"
+        />
         <ButtonFormWrapper>
           <ButtonBig disabled={isSubmitting} text="Dodaj" type="submit" />
         </ButtonFormWrapper>
@@ -161,6 +139,7 @@ const TeamfoodFormik = withFormik({
       when: '',
       whenHour: '',
       what: '',
+      payment: '',
     }
   },
 

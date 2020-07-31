@@ -19,7 +19,7 @@ export const CouponInfo = styled.div`
   width: 100%;
   padding: 5px 10px;
   background-color: ${({ color }) => color};
-  border-radius: 5px;
+  border-radius: 8px;
   transition: opacity 0.3s ease;
   opacity: 0;
   z-index: 30;

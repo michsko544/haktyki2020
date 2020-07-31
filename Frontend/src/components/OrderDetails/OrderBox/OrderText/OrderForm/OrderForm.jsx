@@ -1,15 +1,15 @@
 import React from 'react'
 import * as Yup from 'yup'
-import { withFormik, Form, useField, Field } from 'formik'
+import { withFormik, Form, Field } from 'formik'
 import Store from '../../../../App/App.store'
 import { AppBackgroundThemes } from '../../../../App/App.themes'
 import Checkbox from '@material-ui/core/Checkbox'
 import { SmallTitle } from '../Header'
 import { CheckboxStyled, CheckboxLabel } from './OrderForm.style'
-import Input from '../../../../Input'
+import { Input } from '../../../../Inputs'
 import Button from '../../../../Button'
 import { ButtonWrapper, TextDisplayer } from '../../'
-import RadioGroupFormik from '../../../../RadioGroup'
+import { RadioGroupFormik } from '../../../../Inputs'
 
 const OrderForm = ({
   values,
@@ -22,6 +22,8 @@ const OrderForm = ({
   const store = Store.useStore()
   const fontcolor =
     AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
+
+  const errorHandler = (name) => touched[name] && errors[name]
 
   const showCouponInput = () =>
     !values.hasCoupon ? (
@@ -57,6 +59,7 @@ const OrderForm = ({
             { value: 'TRANSFER', label: 'Przelew' },
             { value: 'CASH', label: 'Gotówka' },
           ]}
+          error={() => errorHandler('payment')}
           label={'Forma Płatności'}
           component={RadioGroupFormik}
           aria-label="payment"
@@ -74,7 +77,7 @@ const OrderForm = ({
           component="textarea"
           label="Treść zamówienia"
           style={{ height: 77 }}
-          error={touched.orderContent && errors.orderContent}
+          error={() => errorHandler('orderContent')}
           placeholder="Penne z boczkiem i brokułami w sosie śmietanowym, kompot, zestaw sztućców"
         />
         {showCouponInput()}

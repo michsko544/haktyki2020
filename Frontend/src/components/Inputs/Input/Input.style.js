@@ -77,17 +77,6 @@ Label.defaultProps = {
   textColor: 'black',
 }
 
-export const ErrorStyled = styled.p`
-  font-size: 12px;
-  padding: 4px 17px;
-  color: ${(props) => props.color};
-  width: 100%;
-`
-
-ErrorStyled.defaultProps = {
-  isdarkmode: 'true',
-}
-
 export const InputStyled = styled.div`
   margin-bottom: 11px;
 `

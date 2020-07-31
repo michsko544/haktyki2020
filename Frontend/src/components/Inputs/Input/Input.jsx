@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Store from './../App/App.store'
-import { AppBackgroundThemes, AppThemes } from './../App/App.themes'
-import { FieldStyled, Label, ErrorStyled, Underline } from './'
+import Store from '../../App/App.store'
+import { AppBackgroundThemes, AppThemes } from '../../App/App.themes'
+import { FieldStyled, Label, Underline } from './'
+import InputError from '../InputError'
 
 const Input = ({ label, error, name, children, ...props }) => {
   const store = Store.useStore()
@@ -28,7 +29,7 @@ const Input = ({ label, error, name, children, ...props }) => {
           {...props}
         />
       </Underline>
-      <Error
+      <InputError
         error={error}
         color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}
       />
@@ -42,15 +43,6 @@ Input.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   error: PropTypes.string,
-}
-
-const Error = ({ error, color }) => {
-  return <ErrorStyled color={color}>{error}</ErrorStyled>
-}
-
-Error.propTypes = {
-  error: PropTypes.string,
-  isDarkMode: PropTypes.bool,
 }
 
 export default Input

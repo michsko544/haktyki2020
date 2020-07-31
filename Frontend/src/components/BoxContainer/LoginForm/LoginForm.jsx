@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { withFormik, Form } from 'formik'
 import * as Yup from 'yup'
 import Button from '../../Button'
 import { ButtonFormWrapper } from '../../Button'
-import Input from '../../Input'
-import { InputStyled } from '../../Input'
+import { Input } from '../../Inputs'
+import { InputStyled } from '../../Inputs'
 import { FormWrapper } from './'
 import Store from './../../App/App.store'
 import usePost from './../../../API/usePost.API'
@@ -62,7 +62,7 @@ const LoginFormik = () => {
   }, [login.response])
 
   const LoginWithFormik = withFormik({
-    mapPropsToValues({user, password}) {
+    mapPropsToValues({ user, password }) {
       return {
         user: user || '',
         password: password || '',
@@ -70,7 +70,9 @@ const LoginFormik = () => {
     },
 
     validationSchema: Yup.object().shape({
-      user: Yup.string().email('Podaj poprawny email').required('Wypełnij to pole'),
+      user: Yup.string()
+        .email('Podaj poprawny email')
+        .required('Wypełnij to pole'),
       password: Yup.string().required('Wypełnij to pole'),
     }),
 
