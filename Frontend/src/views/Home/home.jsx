@@ -3,7 +3,6 @@ import { H1, H3, HBold } from './../../components/Headings'
 import Header from '../../components/Header/header'
 import Container from './Container'
 import TuneIcon from '@material-ui/icons/Tune'
-import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined'
 import Button from './../../components/Button'
 import Card from '../../components/FoodCard/foodCard'
 import { IconLink } from './../../components/App/App.style'
@@ -22,6 +21,13 @@ const Home = () => {
 
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [isDetailsVisibile, setDetailsVisibile] = useState(false)
+
+  const logout = () => {
+    console.log('Logout!, Bye.')
+    store.set('authToken')('')
+    store.set('user')('')
+    store.set('userId')(0)
+  }
 
   /**
    * CDM
@@ -61,8 +67,7 @@ const Home = () => {
               <TuneIcon
                 style={{
                   color:
-                    AppBackgroundThemes[store.get('themeBackgroundId')]
-                      .fontColor,
+                    AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
                 }}
               />
             </IconLink>
@@ -99,6 +104,7 @@ const Home = () => {
             </div>
           </div>
         </Container>
+        <p onClick={logout}>Wyloguj</p>
       </BlurChildren>
       {isDetailsVisibile && (
         <OrderDetails orderId={selectedOrder} closeCallback={handleCloseCard} />

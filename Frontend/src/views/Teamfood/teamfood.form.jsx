@@ -145,6 +145,13 @@ const TeamfoodFormik = withFormik({
     }
   },
 
+  validationSchema: Yup.object().shape({
+    where: Yup.string().required('Wypełnij to pole'),
+    when: Yup.string().required('Wypełnij to pole'),
+    whenHour: Yup.string().required('Wypełnij to pole'),
+    what: Yup.string().required('Wypełnij to pole')
+  }),
+
   handleSubmit(values, { resetForm, setSubmitting }) {
     setTimeout(() => {
       console.log('Values: ', values)
