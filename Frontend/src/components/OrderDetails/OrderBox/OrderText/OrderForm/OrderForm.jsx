@@ -59,7 +59,7 @@ const OrderForm = ({
             { value: 'TRANSFER', label: 'Przelew' },
             { value: 'CASH', label: 'Gotówka' },
           ]}
-          error={() => errorHandler('payment')}
+          error={errorHandler('payment')}
           label={'Forma Płatności'}
           component={RadioGroupFormik}
           aria-label="payment"
@@ -77,7 +77,7 @@ const OrderForm = ({
           component="textarea"
           label="Treść zamówienia"
           style={{ height: 77 }}
-          error={() => errorHandler('orderContent')}
+          error={errorHandler('orderContent')}
           placeholder="Penne z boczkiem i brokułami w sosie śmietanowym, kompot, zestaw sztućców"
         />
         {showCouponInput()}
@@ -113,6 +113,7 @@ const OrderFormik = ({
         .max(255, 'Maksymalnie 255 znaków')
         .required('Wypełnij to pole'),
       couponDescription: Yup.string().max(100, 'Maksymalnie 100 znaków'),
+      payment: Yup.string().required('Zaznacz to pole'),
     }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {
