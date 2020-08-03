@@ -7,7 +7,7 @@ const InputError = ({ error, color }) => {
 }
 
 InputError.propTypes = {
-  error: PropTypes.string,
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   color: PropTypes.string,
 }
 

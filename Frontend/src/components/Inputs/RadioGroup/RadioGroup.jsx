@@ -38,9 +38,9 @@ const RadioGroupFormik = ({ field, error, name, label, options, ...props }) => {
 RadioGroupFormik.propTypes = {
   field: PropTypes.object,
   options: PropTypes.array.isRequired,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   label: PropTypes.string.isRequired,
-  error: PropTypes.string,
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 }
 
 export default RadioGroupFormik
