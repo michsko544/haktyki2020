@@ -1,29 +1,33 @@
 package com.hacktyki.Backend.controller;
 
-import com.hacktyki.Backend.model.repository.OrderDetailsRepository;
+import com.hacktyki.Backend.model.responses.FullOrderRestModel;
+import com.hacktyki.Backend.model.service.OrderService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController()
 @RequestMapping("orders")
 public class OrderController {
 
-    private OrderDetailsRepository orderDetailsRepository;
+    private OrderService orderService;
 
-    OrderController (OrderDetailsRepository orderDetailsRepository){
-        this.orderDetailsRepository = orderDetailsRepository;
+    OrderController (OrderService orderService){
+        this.orderService = orderService;
     }
 
-//    @PostMapping(path = "add-details",
-//                consumes = "application/json")
-//    public void addOrderDetails(@RequestBody OrderEntity orderDetails){
-//        orderDetailsRepository.save(orderDetails);
-//    }
-//
-//    @GetMapping(path = "all")
-//    public ResponseEntity<List<OrderEntity>> getAllOrders(){
-//
-//        return null;
-//    }
+    @GetMapping(path = "all")
+    public ResponseEntity<List<FullOrderRestModel>> getAllOrders(@RequestBody long userId){
+        try {
+            List<FullOrderRestModel> ordersList = orderService.getAllOrdersList(userId);
+            return new ResponseEntity<>(ordersList, HttpStatus.OK);
+        }
+        catch(Exception ex){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
