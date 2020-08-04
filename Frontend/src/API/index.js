@@ -1,4 +1,6 @@
 export { default } from './API'
+export { default as unsplashAPI } from './unsplashAPI'
 export { setTokenIntoHeader, removeTokenFromHeader } from './API'
 export { default as useFetch } from './useFetch.API'
 export { default as usePost } from './usePost.API'
+export { default as useRandomThematicImg } from './useRandomThematicImg.unsplashAPI'

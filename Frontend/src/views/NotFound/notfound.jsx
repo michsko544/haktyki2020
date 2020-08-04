@@ -22,7 +22,7 @@ const NotFound = () => {
             description="Ta strona śmierdzi jajkami &#128565;&#129370;"
           />
         </HeaderStyled>
-        <Heroimage image={img} />
+        <Heroimage propImage={img} />
         <FormWrapper>
           <Button
             text="Przycisk ucieczki"

@@ -12,14 +12,13 @@ const useFetch = (url) => {
       setIsLoading(true)
       const response = await axiosAPI(url)
       setResponse({ ...response.data })
-      console.log(response.data)
+      if (process.env.REACT_APP_DEBUG === 'true') console.log(response.data)
     } catch (error) {
-      console.log(error.response)
       setError({
         code: error.response?.status.toString(),
         text: error.response?.statusText?.toString(),
       })
-      console.log(error.response?.status)
+      if (process.env.REACT_APP_DEBUG === 'true') console.log(error.response)
     } finally {
       setIsLoading(false)
     }

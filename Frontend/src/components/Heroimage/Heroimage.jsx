@@ -1,53 +1,43 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { HeroimageStyled } from './'
-import axios from 'axios'
+import { HeroimageStyled, LoaderPosition } from './'
 import Loader from '../Loader'
-import { defaultImage } from '../../images/frytki.png'
+import defaultImage from '../../images/frytki.png'
+import { useRandomThematicImg } from '../../API'
 
-const Heroimage = ({ image }) => {
-  const [isLoading, setIsLoading] = React.useState(false)
-  const [response, setResponse] = React.useState(null)
-  const [error, setError] = React.useState(null)
-
-  const unsplashAPI = axios.create({
-    baseURL: 'https://api.unsplaash.com/photos/',
-  })
-
-  const getPhoto = async () => {
-    try {
-      setIsLoading(true)
-      const response = await unsplashAPI('/random?query=dinner')
-      setResponse({ ...response.data })
-      console.log('unsplash', response.data)
-    } catch (error) {
-      setError({
-        code: error.response?.status.toString(),
-        text: 'Nie można załadować zdjęcia',
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
+const Heroimage = ({ propImage }) => {
+  const { image, getImage, isLoading, error } = useRandomThematicImg('dinner')
 
   React.useEffect(() => {
-    unsplashAPI.defaults.headers.common['Authorization'] =
-      'Client-ID AheeFF2nmSimgHa7CyYxlsMXc7b8-HzuACqD4LXW9ls'
-    if (image) getPhoto()
+    if (!image) getImage()
   }, [])
 
   return (
     <>
-      {isLoading && <Loader />}
+      {isLoading && (
+        <LoaderPosition>
+          <Loader />
+        </LoaderPosition>
+      )}
       {error && <HeroimageStyled src={defaultImage} alt="heroimage" />}
-
-      <HeroimageStyled src={response?.urls.regular || image} alt="heroimage" />
+      {image ? (
+        <HeroimageStyled
+          src={image.urls.regular || defaultImage}
+          alt="heroimage"
+        />
+      ) : (
+        propImage && <HeroimageStyled src={propImage} alt="heroimage" />
+      )}
     </>
   )
 }
 
 Heroimage.propTypes = {
   image: PropTypes.string,
+}
+
+Heroimage.defaultProps = {
+  image: '',
 }
 
 export default Heroimage

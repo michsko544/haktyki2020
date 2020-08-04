@@ -16,17 +16,20 @@ const usePost = (url) => {
   const sendData = async (data) => {
     try {
       setIsLoading(true)
-      console.log(`Posting data on ${url}`, data)
       const response = await axiosAPI.post(url, data)
       setIsLoading(false)
       setResponse({ ...response.data, statusCode: response.status })
-      console.log('Response: ', response)
+      if (process.env.REACT_APP_DEBUG === 'true') {
+        console.log(`Posting data on ${url}`, data)
+        console.log('Response: ', response)
+      }
     } catch (error) {
-      console.log('Error', error.response)
       setError({
         code: error.response?.status,
         text: error.response?.statusText,
       })
+      if (process.env.REACT_APP_DEBUG === 'true')
+        console.log('Error', error.response)
     } finally {
       setIsLoading(false)
     }
