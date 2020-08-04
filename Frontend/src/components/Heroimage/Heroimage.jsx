@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { HeroimageStyled } from './'
 import axios from 'axios'
 import Loader from '../Loader'
-import ErrorMessage from '../ErrorMessage'
+import { defaultImage } from '../../images/frytki.png'
 
 const Heroimage = ({ image }) => {
   const [isLoading, setIsLoading] = React.useState(false)
@@ -39,18 +39,15 @@ const Heroimage = ({ image }) => {
   return (
     <>
       {isLoading && <Loader />}
-      {error && <ErrorMessage error={error.code} advice={error.text} />}
+      {error && <HeroimageStyled src={defaultImage} alt="heroimage" />}
 
-      <HeroimageStyled
-        src={response ? response.urls.regular : ''}
-        alt="heroimage"
-      />
+      <HeroimageStyled src={response?.urls.regular || image} alt="heroimage" />
     </>
   )
 }
 
 Heroimage.propTypes = {
-  image: PropTypes.string.isRequired,
+  image: PropTypes.string,
 }
 
 export default Heroimage
