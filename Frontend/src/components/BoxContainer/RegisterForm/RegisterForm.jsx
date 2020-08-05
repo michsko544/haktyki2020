@@ -7,7 +7,7 @@ import { ButtonFormWrapper } from '../../Button'
 import { Input } from '../../Inputs'
 import { InputStyled } from '../../Inputs'
 import { FormWrapper } from '../LoginForm'
-import usePost from './../../../API/usePost.API'
+import { usePost } from './../../../API'
 
 const RegisterForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -43,7 +43,7 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
 
 const RegisterFormik = () => {
   const history = useHistory()
-  const register = usePost("/register")
+  const register = usePost('/register')
 
   useEffect(() => {
     console.log('ErrorEffect: ', register.error)
@@ -52,8 +52,8 @@ const RegisterFormik = () => {
   useEffect(() => {
     console.log('RegisterEffect: ', register.response)
     // What do? Po prostu redirect?
-    if(!register.isLoading && register.response.statusCode === 201)
-      history.replace('/');
+    if (!register.isLoading && register.response.statusCode === 201)
+      history.replace('/')
   }, [register.response, register.isLoading])
 
   const RegisterWithFormik = withFormik({

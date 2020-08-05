@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import BoxContainer from '../../BoxContainer'
 import CloseIcon from '@material-ui/icons/Close'
-import { OrderDetailsImg } from '../../Heroimage/Heroimage.style'
+import {
+  OrderDetailsImg,
+  HeroimagePosition,
+} from '../../Heroimage/Heroimage.style'
 import defaultImage from '../../../images/frytki.png'
 import { FixedContainer, CloseBtnBackground } from './OrderBox.style'
 import Store from '../../App/App.store'
@@ -25,7 +28,9 @@ const OrderBox = ({ children, image, closeCallback }) => {
             }}
           />
         </CloseBtnBackground>
-        <OrderDetailsImg src={image || defaultImage} alt="food-order-photo" />
+        <HeroimagePosition>
+          <OrderDetailsImg src={image || defaultImage} alt="food-order-photo" />
+        </HeroimagePosition>
         {children}
       </BoxContainer>
     </FixedContainer>
