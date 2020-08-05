@@ -9,7 +9,7 @@ const Heroimage = ({ propImage }) => {
   const { image, getImage, isLoading, error } = useRandomThematicImg('dinner')
 
   React.useEffect(() => {
-    if (!image) getImage()
+    if (!propImage) getImage()
   }, [])
 
   return (

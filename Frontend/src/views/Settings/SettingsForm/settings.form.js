@@ -21,6 +21,7 @@ const SettingsForm = ({ errors, touched, isSubmitting }) => {
             label="Imię i nazwisko"
             placeholder="Tomek Adamczyk"
             error={errorHandler('user')}
+            style={{ textTransform: 'capitalize' }}
           />
         </InputStyled>
         <InputStyled>
@@ -62,9 +63,34 @@ const SettingsFormik = () => {
     },
 
     validationSchema: Yup.object().shape({
-      user: Yup.string().required('Wypełnij to pole'),
-      blik: Yup.string().required('Wypełnij to pole'),
-      account: Yup.string().required('Wypełnij to pole'),
+      user: Yup.string()
+        .matches(
+          /^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ ]*$/,
+          'Pole nie może zawierać znaków specjalnych, ani cyfr'
+        )
+        .matches(
+          /^[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+\s+[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+ ?$/,
+          'Podaj dwa wyrazy'
+        )
+        .min(3, 'Pole musi mieć minimum 3 znaki')
+        .max(50, 'Pole musi mieć maksimum 50 znaków')
+        .required('Wypełnij to pole'),
+      blik: Yup.string()
+        .min(9, 'Pole musi mieć minimum 9 znaków')
+        .max(12, 'Pole musi mieć maksimum 12 znaków')
+        .matches(
+          /^[0-9]{3}[ ]{0,1}[0-9]{3}[ ]{0,1}[0-9]{3} ?$/,
+          'Podaj poprawny, 9-cyfrowy numer telefonu'
+        )
+        .required('Wypełnij to pole'),
+      account: Yup.string()
+        .min(22, 'Pole musi mieć minimum 22 znaków')
+        .max(28, 'Pole musi mieć maksimum 28 znaków')
+        .matches(
+          /^[0-9]{2}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4} ?$/,
+          'Podaj poprawny, 22-cyfrowy numer konta'
+        )
+        .required('Wypełnij to pole'),
     }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {
