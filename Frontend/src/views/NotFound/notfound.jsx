@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom'
 import BoxContainer from '../../components/BoxContainer'
 import Header from '../../components/BoxContainer/Header'
 import Heroimage from '../../components/Heroimage'
+import { HeroimagePosition } from '../../components/Heroimage'
 import { Padding30 } from '../../components/App'
 import { HeaderStyled } from '../../components/BoxContainer/Header'
 import img from '../../images/sad-face.jpg'
@@ -22,7 +23,9 @@ const NotFound = () => {
             description="Ta strona śmierdzi jajkami &#128565;&#129370;"
           />
         </HeaderStyled>
-        <Heroimage propImage={img} />
+        <HeroimagePosition>
+          <Heroimage propImage={img} />
+        </HeroimagePosition>
         <FormWrapper>
           <Button
             text="Przycisk ucieczki"

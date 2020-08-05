@@ -110,10 +110,17 @@ const OrderFormik = ({
 
     validationSchema: Yup.object().shape({
       orderContent: Yup.string()
-        .max(255, 'Maksymalnie 255 znaków')
+        .min(5, 'Pole musi mieć minimum 5 znaków')
+        .max(200, 'Pole musi mieć maksimum 200 znaków')
         .required('Wypełnij to pole'),
-      couponDescription: Yup.string().max(100, 'Maksymalnie 100 znaków'),
-      payment: Yup.string().required('Zaznacz to pole'),
+      coupon: Yup.string().max(20, 'Pole musi mieć maksimum 20 znaków'),
+      couponDescription: Yup.string().max(
+        100,
+        'Pole musi mieć maksimum 100 znaków'
+      ),
+      payment: isPurchaser
+        ? Yup.string().required('Zaznacz to pole')
+        : Yup.string(),
     }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {

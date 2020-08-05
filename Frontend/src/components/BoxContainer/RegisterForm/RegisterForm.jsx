@@ -67,9 +67,15 @@ const RegisterFormik = () => {
     validationSchema: Yup.object().shape({
       user: Yup.string()
         .email('Podaj prawidłowy adres email')
+        .max(50, 'Email musi mieć maksimum 50 znaków')
         .required('Wypełnij to pole'),
       password: Yup.string()
-        .min(6, 'Hasło musi mieć minimum 6 znaków')
+        .min(8, 'Hasło musi mieć minimum 8 znaków')
+        .max(30, 'Hasło musi mieć maksimum 30 znaki')
+        .matches(
+          /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/,
+          'Hasło musi mieć conajmniej jedną małą literę, dużą oraz cyfrę'
+        )
         .required('Wypełnij to pole'),
     }),
 
