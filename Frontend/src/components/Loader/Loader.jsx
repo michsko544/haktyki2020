@@ -11,7 +11,7 @@ const Loader = () => {
     return () => {
       clearTimeout(timeout)
     }
-  }, [state])
+  }, [state]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const incrementState = () => {
     if (state === 5) setState(1)
