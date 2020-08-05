@@ -16,7 +16,7 @@ public class FullOrderDetailsRestModel {
         this.userId = orderDetailsEntity.getId().getUserId();
         this.userFullname = orderDetailsEntity.getUserEntity().getFullName();
         this.description = orderDetailsEntity.getDescription();
-        this.coupon = new CouponRestModel(orderDetailsEntity.getDiscountCoupon());
+        this.coupon = orderDetailsEntity.getDiscountCoupon() != null ? new CouponRestModel(orderDetailsEntity.getDiscountCoupon()) : null;
     }
 
     public long getUserId() {

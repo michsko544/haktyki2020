@@ -54,6 +54,15 @@ public class UserService {
         return false;
     }
 
+    protected long getAuthenticatedId(){
+        String userLogin = getAuthenticatedLogin();
+        if(null != userLogin) {
+            return userRepository.findByLogin(userLogin).getId();
+        } else {
+            throw new NullPointerException("User is not logged in.");
+        }
+    }
+
     public String getAuthenticatedLogin(){
         SecurityContext securityContext = SecurityContextHolder.getContext();
 

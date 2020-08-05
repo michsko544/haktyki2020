@@ -15,10 +15,12 @@ public class OrderService {
 
     private OrderRepository orderRepository;
     private OrderDetailsRepository orderDetailsRepository;
+    private UserService userService;
 
-    public OrderService(OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository) {
+    public OrderService(OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, UserService userService) {
         this.orderDetailsRepository = orderDetailsRepository;
         this.orderRepository = orderRepository;
+        this.userService = userService;
     }
 
     // Instance of FullOrderRestModel FullOrderRestModel( orderRepository.find() + orderdetails.find() + getPurchaserId())
@@ -29,18 +31,37 @@ public class OrderService {
                                      .getId().getUserId();
     }
 
-    public List<FullOrderRestModel> getAllOrdersList(long userId) throws Exception {
-            if(userId < 1){
-                throw new NullPointerException("UserId is expected to be value higher than 0.");
-            }
-            else
-                try {
+    public List<FullOrderRestModel> getMyOrdersList() throws Exception {
+
+        long userId = userService.getAuthenticatedId();
+
+        try {
+            List<Long> orderIdsContainingUserId
+                    = getOrderIdsContainingUsersIdList(userId);
+
+            List<FullOrderRestModel> myOrdersList
+                    = orderRepository.findAll()
+                    .stream()
+                    .filter(orderEntity -> { return orderIdsContainingUserId.contains(orderEntity.getId()); })
+                    .map(FullOrderRestModel::new)
+                    .collect(Collectors.toList());
+
+            return myOrdersList;
+
+        } catch (Exception ex) {
+
+            throw ex;
+        }
+    }
+
+    // Returns all orders that logged user didn't join to
+    public List<FullOrderRestModel> getAllOrdersList() throws Exception {
+
+            long userId = userService.getAuthenticatedId();
+
+            try {
                 List<Long> orderIdsContainingUserId
-                        = orderDetailsRepository.findAllById_UserId(userId)
-                        .stream()
-                        .map(OrderDetailsEntity::getId)
-                        .map(OrderDetailsIdentity::getUserId)
-                        .collect(Collectors.toList());
+                        = getOrderIdsContainingUsersIdList(userId);
 
                 List<FullOrderRestModel> allOrdersList
                         = orderRepository.findAll()
@@ -49,10 +70,20 @@ public class OrderService {
                         .map(FullOrderRestModel::new)
                         .collect(Collectors.toList());
 
-                    return allOrdersList;
-                } catch (Exception ex) {
+                return allOrdersList;
 
-                    throw ex;
-                }
+            } catch (Exception ex) {
+
+                throw ex;
+            }
     }
+
+    private List<Long> getOrderIdsContainingUsersIdList(long userId){
+         return orderDetailsRepository.findAllById_UserId(userId)
+                    .stream()
+                    .map(OrderDetailsEntity::getId)
+                    .map(OrderDetailsIdentity::getUserId)
+                    .collect(Collectors.toList());
+    }
+
 }

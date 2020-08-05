@@ -40,16 +40,6 @@ public class FullOrderRestModel {
                                         .collect(Collectors.toList());
     }
 
-    public FullOrderRestModel(OrderEntity orderEntity, long purchaserId, List<FullOrderDetailsRestModel> orderDetails) {
-        this.id = orderEntity.getId();
-        this.purchaserId = purchaserId;
-        this.restaurant = orderEntity.getRestaurant();
-        this.image = orderEntity.getImageSource();
-        this.date = orderEntity.getOrderDate();
-        this.time = orderEntity.getOrderTime();
-        this.orderDetails = orderDetails;
-    }
-
     public long getId() {
         return id;
     }

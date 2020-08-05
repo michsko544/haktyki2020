@@ -11,7 +11,7 @@ public class OrderDetailsEntity implements Serializable {
     @EmbeddedId
     private OrderDetailsIdentity id;
     @Column(name = "coupon_id")
-    private long couponId;
+    private Long couponId;
     @Column(name = "description", nullable = false, length = 200)
     private String description;
     @Column(name = "order_owner", nullable = false)
@@ -33,7 +33,7 @@ public class OrderDetailsEntity implements Serializable {
         return id;
     }
 
-    public long getCouponId() {
+    public Long getCouponId() {
         return couponId;
     }
 
