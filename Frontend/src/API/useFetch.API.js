@@ -11,7 +11,7 @@ const useFetch = (url) => {
     try {
       setIsLoading(true)
       const response = await axiosAPI(url)
-      setResponse({ ...response.data })
+      setResponse({ ...response.data, statusCode: response.status })
       console.log(response.data)
     } catch (error) {
       console.log(error.response)

@@ -6,8 +6,9 @@ import {
   ButtonFormWrapper,
   default as Button,
 } from './../../../components/Button'
-import Store from './../../../components/App/App.store'
-import useFetch from './../../../API/useFetch.API';
+import useFetch from './../../../API/useFetch.API'
+import { usePost } from '../../../API'
+import { useHistory } from 'react-router-dom';
 
 const SettingsForm = ({ errors, touched, isSubmitting, isLoading }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -20,9 +21,9 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading }) => {
             type="text"
             name="user"
             label="Imię i nazwisko"
-            placeholder="Tomek Adamczyk"
+            placeholder="Ładowanie"
             error={errorHandler('user')}
-            disabled={isLoading ? 'disabled' : ''}
+            disabled={isLoading}
           />
         </InputStyled>
         <InputStyled>
@@ -30,7 +31,7 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading }) => {
             type="tel"
             name="blik"
             label="Numer telefonu do BLIK"
-            placeholder="603 424 420"
+            placeholder="Ładowanie"
             error={errorHandler('blik')}
             disabled={isLoading}
           />
@@ -40,13 +41,13 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading }) => {
             type="text"
             name="account"
             label="Numer konta do przelewów"
-            placeholder="78 2323 4333 1234 2333 0000"
+            placeholder="Ładowanie"
             error={errorHandler('account')}
             disabled={isLoading}
           />
         </InputStyled>
         <ButtonFormWrapper>
-          <Button disabled={isSubmitting} text="Zapisz i wróć" type="submit" />
+          <Button disabled={isSubmitting || isLoading} text="Zapisz i wróć" type="submit" />
         </ButtonFormWrapper>
       </Form>
     </>
@@ -54,27 +55,30 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading }) => {
 }
 
 const SettingsFormik = () => {
-  const store = Store.useStore()
   const userData = useFetch('/user/me')
+  const updateData = usePost('/user/me')
+  const history = useHistory()
 
   useEffect(() => {
-    /**
-     * Fetch data from userData to model
-     */
-
-     userData.getData()
+    userData.getData()
   }, [])
 
   useEffect(() => {
-    console.log('Response: ', userData.response)
-  }, [userData.response])
+    if(updateData.response.statusCode === 0)
+      return;
+
+    console.log('Finished', updateData.response)
+    history.push('/')
+  }, [updateData.response])
 
   const SettingsWithFormik = withFormik({
-    mapPropsToValues() {
+    enableReinitialize: true,
+
+    mapPropsToValues({ user, blik, account }) {
       return {
-        user: store.get('user') || '',
-        blik: '',
-        account: '',
+        user: user || userData?.response?.user || '',
+        blik: blik || userData?.response?.blik || '',
+        account: account || userData?.response?.account || '',
       }
     },
 
@@ -85,17 +89,11 @@ const SettingsFormik = () => {
     }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {
-      setTimeout(() => {
-        console.log(values)
-        setSubmitting(false)
-        resetForm()
-      }, 200)
+      updateData.sendData(values)
     },
-
-    isLoading: userData.isLoading
   })(SettingsForm)
 
-  return <SettingsWithFormik />
+  return <SettingsWithFormik isLoading={userData.isLoading} />
 }
 
 export default SettingsFormik

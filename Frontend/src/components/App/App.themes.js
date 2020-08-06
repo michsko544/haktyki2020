@@ -6,13 +6,13 @@ export const AppThemes = [
     },
     {
         id: 1,
-        from: '#46D3FF',
-        to: '#3687FF'
+        from: '#FBFF34',
+        to: '#FF00D6'
     },
     {
         id: 2,
-        from: '#20B0E8',
-        to: '#20DCE8'
+        from: '#FFF506',
+        to: '#6CE820'
     },
     {
         id: 3,
@@ -21,8 +21,8 @@ export const AppThemes = [
     },
     {
         id: 4,
-        from: '#46D3FF',
-        to: '#3687FF'
+        from: '#FF9C06',
+        to: '#FAFF00'
     }
 ]
 

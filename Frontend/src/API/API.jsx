@@ -11,6 +11,7 @@ import { mockOrder } from './mock/order'
 import { mockRegister } from './mock/register'
 import { mockLogin } from './mock/login'
 import { mockSettings } from './mock/settings';
+import { mockMe } from './mock/me';
 
 const axiosAPI = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -37,5 +38,6 @@ mockOrdersTwo(mock)
 mockOrdersFour(mock)
 mockPhotos(mock)
 mockSettings(mock)
+mockMe(mock)
 
 export default axiosAPI
