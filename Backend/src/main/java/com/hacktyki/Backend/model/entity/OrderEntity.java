@@ -1,5 +1,7 @@
 package com.hacktyki.Backend.model.entity;
 
+import com.hacktyki.Backend.model.responses.FullOrderRestModel;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,7 +14,7 @@ public class OrderEntity {
     // properties
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "restaurant", nullable = false, length = 50)
     private String restaurant;
     @Column(name = "order_date", nullable = false)
@@ -21,14 +23,14 @@ public class OrderEntity {
     private LocalTime orderTime;
     @Column(name = "order_closed", nullable = false)
     private boolean orderClosed;
-    @Column(name = "payment_form_id", nullable = false)
-    private long paymentFormId;
-    @Column(name = "discount_coupon_id") // temporary without other table connection
-    private long DiscountCouponId;
+    @Column(name = "payment_form_id")
+    private Long paymentFormId;
+    @Column(name = "discount_coupon_id")
+    private Long DiscountCouponId;
     @Column(name = "image_source")
     private String imageSource;
 
-    // joined column of payment, list of discount coupons and list of orders
+    // joined column of payment, list of orders
     @ManyToOne // eager
     @JoinColumn(name = "payment_form_id", insertable = false, updatable = false)
     private PaymentFormEntity paymentForm;
@@ -39,7 +41,16 @@ public class OrderEntity {
     public OrderEntity() {
     }
 
-    public long getId() {
+    public OrderEntity(FullOrderRestModel fullOrderRestModel) {
+        this.restaurant = fullOrderRestModel.getRestaurant();
+        this.orderDate = fullOrderRestModel.getDate();
+        this.orderTime = fullOrderRestModel.getTime();
+        this.orderClosed = false;
+        this.imageSource = fullOrderRestModel.getImage();
+    }
+
+
+    public Long getId() {
         return id;
     }
 
@@ -63,15 +74,15 @@ public class OrderEntity {
         this.orderClosed = orderClosed;
     }
 
-    public void setPaymentFormId(long paymentFormId) {
+    public void setPaymentFormId(Long paymentFormId) {
         this.paymentFormId = paymentFormId;
     }
 
-    public long getDiscountCouponId() {
+    public Long getDiscountCouponId() {
         return DiscountCouponId;
     }
 
-    public void setDiscountCouponId(long discountCouponId) {
+    public void setDiscountCouponId(Long discountCouponId) {
         DiscountCouponId = discountCouponId;
     }
 

@@ -2,6 +2,7 @@ package com.hacktyki.Backend.model.responses;
 
 import com.hacktyki.Backend.model.entity.OrderDetailsEntity;
 import com.hacktyki.Backend.model.entity.OrderEntity;
+import com.hacktyki.Backend.utils.PaymentFormEnum;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,6 +17,7 @@ public class FullOrderRestModel {
     private String image;
     private LocalDate date;
     private LocalTime time;
+    private PaymentFormEnum paymentForm;
     private List<FullOrderDetailsRestModel> orderDetails;
 
     public FullOrderRestModel() {
@@ -34,6 +36,7 @@ public class FullOrderRestModel {
         this.image = orderEntity.getImageSource();
         this.date = orderEntity.getOrderDate();
         this.time = orderEntity.getOrderTime();
+        this.paymentForm = orderEntity.getPaymentForm().getPaymentFormName();
         this.orderDetails = orderEntity.getOrderDetailsList()
                                         .stream()
                                         .map(FullOrderDetailsRestModel::new)
@@ -86,6 +89,14 @@ public class FullOrderRestModel {
 
     public void setTime(LocalTime time) {
         this.time = time;
+    }
+
+    public PaymentFormEnum getPaymentForm() {
+        return paymentForm;
+    }
+
+    public void setPaymentForm(PaymentFormEnum paymentForm) {
+        this.paymentForm = paymentForm;
     }
 
     public List<FullOrderDetailsRestModel> getOrderDetails() {

@@ -1,5 +1,7 @@
 package com.hacktyki.Backend.model.entity;
 
+import com.hacktyki.Backend.model.responses.CouponRestModel;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,6 +17,11 @@ public class DiscountCouponEntity {
     private String description;
 
     public DiscountCouponEntity() {
+    }
+
+    public DiscountCouponEntity(CouponRestModel couponRestModel) {
+        this.codeToUse = couponRestModel.getCode();
+        this.description = couponRestModel.getDescription();
     }
 
     public long getId() {

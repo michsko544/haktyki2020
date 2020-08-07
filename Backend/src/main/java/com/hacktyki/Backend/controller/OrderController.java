@@ -22,6 +22,22 @@ public class OrderController {
         this.userService = userService;
     }
 
+    @PostMapping(path = "add-order",
+                consumes = "application/json")
+    public ResponseEntity<String> addNewOrder(@RequestBody FullOrderRestModel fullOrderRestModel){
+        try {
+            if (fullOrderRestModel != null) {
+                orderService.addNewOrder(fullOrderRestModel);
+                return new ResponseEntity<>("Successfully added new order", HttpStatus.CREATED);
+            }
+            return new ResponseEntity<>("Cannot add new order", HttpStatus.BAD_REQUEST);
+        }
+        catch(Exception ex){
+            return new ResponseEntity<>("Cannot add new order, error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
     @GetMapping(path = "my",
             produces = "application/json")
     public ResponseEntity<List<FullOrderRestModel>> getMyOrders(){
