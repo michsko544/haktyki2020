@@ -1,3 +1,2 @@
 include:
-  - project: "zespol4-laczone-obiady"
-    file: "/Frontend/.gitlab-ci.yml"
+  - local: "/Frontend/.gitlab-ci.yml"
