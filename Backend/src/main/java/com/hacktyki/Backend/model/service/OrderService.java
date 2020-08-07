@@ -32,6 +32,7 @@ public class OrderService {
         this.paymentFormRepository = paymentFormRepository;
     }
 
+    // Returns all orders logged user joined to
     public List<FullOrderRestModel> getMyOrdersList() throws Exception {
 
         long userId = userService.getAuthenticatedId();
@@ -87,6 +88,7 @@ public class OrderService {
                     .collect(Collectors.toList());
     }
 
+    // Tries to add new order with order owners details
     @Transactional
     public void addNewOrder(FullOrderRestModel fullOrderRestModel) throws NullPointerException, Exception {
         try {
@@ -119,6 +121,7 @@ public class OrderService {
 
     }
 
+    // Tries to add joining user order details to order
     @Transactional
     public void joinToOrder(JoinOrderRestModel joinOrderRestModel) throws NullPointerException, Exception {
         try {
@@ -134,5 +137,10 @@ public class OrderService {
             System.out.println("Error happened while tried to join to order:\n" + ex.getMessage());
             throw ex;
         }
+    }
+
+
+    public void editOrder(FullOrderRestModel fullOrderRestModel) {
+
     }
 }

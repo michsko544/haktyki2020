@@ -79,4 +79,16 @@ public class OrderController {
 
     }
 
+    @PostMapping(path = "edit",
+                consumes = "application/json")
+    public ResponseEntity<String> editOrder(@RequestBody FullOrderRestModel fullOrderRestModel ) {
+        try{
+            if (fullOrderRestModel != null) {
+                orderService.editOrder(fullOrderRestModel);
+            }
+        }
+
+        return new ResponseEntity<>("Successfully edited order", HttpStatus.ACCEPTED);
+    }
+
 }

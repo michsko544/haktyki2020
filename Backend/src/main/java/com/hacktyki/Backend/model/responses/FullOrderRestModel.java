@@ -18,6 +18,7 @@ public class FullOrderRestModel {
     private LocalDate date;
     private LocalTime time;
     private PaymentFormEnum paymentForm;
+    private String paymentNumber;
     private List<FullOrderDetailsRestModel> orderDetails;
 
     public FullOrderRestModel() {
@@ -37,6 +38,23 @@ public class FullOrderRestModel {
         this.date = orderEntity.getOrderDate();
         this.time = orderEntity.getOrderTime();
         this.paymentForm = orderEntity.getPaymentForm().getPaymentFormName();
+        this.paymentNumber = paymentForm.toString().equals("BLIK") ?
+                                                orderEntity.getOrderDetailsList()
+                                                .stream()
+                                                .filter(OrderDetailsEntity::isOrderOwner)
+                                                .findFirst()
+                                                .get()
+                                                .getUserEntity()
+                                                .getPhoneNumber()
+                                            : paymentForm.toString().equals("TRANSFER") ?
+                                                orderEntity.getOrderDetailsList()
+                                                .stream()
+                                                .filter(OrderDetailsEntity::isOrderOwner)
+                                                .findFirst()
+                                                .get()
+                                                .getUserEntity()
+                                                .getCreditCardNumber()
+                                            : null;
         this.orderDetails = orderEntity.getOrderDetailsList()
                                         .stream()
                                         .map(FullOrderDetailsRestModel::new)
@@ -99,6 +117,14 @@ public class FullOrderRestModel {
         this.paymentForm = paymentForm;
     }
 
+    public String getPaymentNumber() {
+        return paymentNumber;
+    }
+
+    public void setPaymentNumber(String paymentNumber) {
+        this.paymentNumber = paymentNumber;
+    }
+
     public List<FullOrderDetailsRestModel> getOrderDetails() {
         return orderDetails;
     }
@@ -107,25 +133,3 @@ public class FullOrderRestModel {
         this.orderDetails = orderDetails;
     }
 }
-
-
-/* JSON
-order: {
-        id: 0,
-        restaurant: 'Zdrowa Krowa',
-        purchaserId: 0,
-        date: '2021-07-21',
-        time: '14:30',
-        image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
-        orderDetails: [
-                    {
-                    userId: 0,
-                    userFullname: 'Grzegorz',
-                    description: 'Duży mcBurger z frytkami i kalafiorem',
-                    coupon: {
-                            code: '123',
-                            description: 'Daje 12% zniżki'
-                            },
-                    },
-        }
-*/
