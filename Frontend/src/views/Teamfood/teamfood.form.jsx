@@ -83,7 +83,7 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
               name="whenHour"
               label="O której?"
               placeholder="17:00"
-              error={errorHandler('when-hour')}
+              error={errorHandler('whenHour')}
             />
           </InputStyled>
         </DoubleInputStyled>
@@ -149,7 +149,7 @@ const TeamfoodFormik = withFormik({
     where: Yup.string().required('Wypełnij to pole'),
     when: Yup.string().required('Wypełnij to pole'),
     whenHour: Yup.string().required('Wypełnij to pole'),
-    what: Yup.string().required('Wypełnij to pole')
+    what: Yup.string().required('Wypełnij to pole'),
   }),
 
   handleSubmit(values, { resetForm, setSubmitting }) {
