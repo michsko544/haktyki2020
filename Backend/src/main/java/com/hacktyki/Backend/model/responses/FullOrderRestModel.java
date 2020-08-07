@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 public class FullOrderRestModel {
 
-    private long id;
-    private long purchaserId;
+    private Long id;
+    private Long purchaserId;
     private String restaurant;
     private String image;
     private LocalDate date;
@@ -26,7 +26,7 @@ public class FullOrderRestModel {
 
     public FullOrderRestModel(OrderEntity orderEntity) {
         this.id = orderEntity.getId();
-        this.purchaserId = (long) orderEntity.getOrderDetailsList()
+        this.purchaserId = (Long) orderEntity.getOrderDetailsList()
                                             .stream()
                                             .filter(OrderDetailsEntity::isOrderOwner)
                                             .findFirst()
@@ -61,19 +61,19 @@ public class FullOrderRestModel {
                                         .collect(Collectors.toList());
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getPurchaserId() {
+    public Long getPurchaserId() {
         return purchaserId;
     }
 
-    public void setPurchaserId(long purchaserId) {
+    public void setPurchaserId(Long purchaserId) {
         this.purchaserId = purchaserId;
     }
 

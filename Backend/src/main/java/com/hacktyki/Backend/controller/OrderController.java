@@ -1,5 +1,6 @@
 package com.hacktyki.Backend.controller;
 
+import com.hacktyki.Backend.model.responses.EditOrderRestModel;
 import com.hacktyki.Backend.model.responses.FullOrderRestModel;
 import com.hacktyki.Backend.model.responses.JoinOrderRestModel;
 import com.hacktyki.Backend.model.service.OrderService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @RestController()
@@ -81,14 +83,22 @@ public class OrderController {
 
     @PostMapping(path = "edit",
                 consumes = "application/json")
-    public ResponseEntity<String> editOrder(@RequestBody FullOrderRestModel fullOrderRestModel ) {
+    public ResponseEntity<String> editOrder(@RequestBody EditOrderRestModel editOrderRestModel ) {
         try{
-            if (fullOrderRestModel != null) {
-                orderService.editOrder(fullOrderRestModel);
+            if (editOrderRestModel != null) {
+                orderService.editOrder(editOrderRestModel);
+                return new ResponseEntity<>("Successfully edited order", HttpStatus.ACCEPTED);
             }
+            return new ResponseEntity<>("Nothing to edit", HttpStatus.BAD_REQUEST);
+        }
+        catch(NoSuchElementException e){
+            return new ResponseEntity<>("Not found order to edit", HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("Cannot edit order, error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>("Successfully edited order", HttpStatus.ACCEPTED);
+
     }
 
 }

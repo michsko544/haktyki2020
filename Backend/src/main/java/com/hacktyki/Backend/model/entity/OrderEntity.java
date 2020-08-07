@@ -62,8 +62,16 @@ public class OrderEntity {
         return orderDate;
     }
 
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
+    }
+
     public LocalTime getOrderTime() {
         return orderTime;
+    }
+
+    public void setOrderTime(LocalTime orderTime) {
+        this.orderTime = orderTime;
     }
 
     public boolean isOrderClosed() {

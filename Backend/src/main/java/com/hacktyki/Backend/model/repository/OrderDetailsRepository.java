@@ -11,4 +11,5 @@ import java.util.List;
 public interface OrderDetailsRepository extends JpaRepository<OrderDetailsEntity, OrderDetailsIdentity> {
     public OrderDetailsEntity findOrderDetailsEntitiesById_OrderIdAndOrderOwner(long Id_OrderId, boolean OrderOwner);
     public List<OrderDetailsEntity> findAllById_UserId(long Id_UserId);
+    public OrderDetailsEntity findAllById_UserIdAndId_OrderId(Long Id_UserId, Long Id_OrderId);
 }

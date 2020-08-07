@@ -7,12 +7,15 @@ import com.hacktyki.Backend.model.entity.PaymentFormEntity;
 import com.hacktyki.Backend.model.repository.OrderDetailsRepository;
 import com.hacktyki.Backend.model.repository.OrderRepository;
 import com.hacktyki.Backend.model.repository.PaymentFormRepository;
+import com.hacktyki.Backend.model.responses.EditOrderRestModel;
 import com.hacktyki.Backend.model.responses.FullOrderRestModel;
 import com.hacktyki.Backend.model.responses.JoinOrderRestModel;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +54,7 @@ public class OrderService {
             return myOrdersList;
 
         } catch (Exception ex) {
-
+            ex.printStackTrace();
             throw ex;
         }
     }
@@ -75,7 +78,7 @@ public class OrderService {
                 return allOrdersList;
 
             } catch (Exception ex) {
-
+                ex.printStackTrace();
                 throw ex;
             }
     }
@@ -115,7 +118,7 @@ public class OrderService {
             // return orderEntity.getId(); optional created orders Id
         }
         catch(Exception ex){
-            System.out.println("Error happened while tried to add new order:\n" + ex.getMessage());
+            ex.printStackTrace();
             throw ex;
         }
 
@@ -134,13 +137,74 @@ public class OrderService {
             // return orderDetailsEntity.getId(); optional order and user Ids pack to send
         }
         catch(Exception ex){
-            System.out.println("Error happened while tried to join to order:\n" + ex.getMessage());
+            ex.printStackTrace();
             throw ex;
         }
     }
 
+    // Tries to edit user order details description, coupon code and description, owners date, time, payment type in order
+    @Transactional
+    public void editOrder(EditOrderRestModel editOrderRestModel ) throws NoSuchElementException, Exception {
+        try {
+            OrderDetailsEntity orderDetailsEntity = orderDetailsRepository.findAllById_UserIdAndId_OrderId(editOrderRestModel.getUserOrderDetails().getUserId(), editOrderRestModel.getOrderId());
 
-    public void editOrder(FullOrderRestModel fullOrderRestModel) {
+            boolean isDescription = editOrderRestModel.getUserOrderDetails().getDescription() != null;
+            boolean isCoupon = editOrderRestModel.getUserOrderDetails().getCoupon() != null;
+            boolean isCouponCode = isCoupon && editOrderRestModel.getUserOrderDetails().getCoupon().getCode() != null;
+            boolean isCouponDescription = isCoupon && editOrderRestModel.getUserOrderDetails().getCoupon().getDescription() != null;
+            boolean isOwner = orderDetailsEntity.isOrderOwner();
+            boolean isDate = editOrderRestModel.getDate() != null;
+            boolean isTime = editOrderRestModel.getTime() != null;
+            boolean isPaymentType = editOrderRestModel.getPaymentForm() != null;
 
+            if (isDescription) {
+                orderDetailsEntity.setDescription(editOrderRestModel.getUserOrderDetails().getDescription());
+            }
+
+            if (isCoupon) {
+                if (orderDetailsEntity.getDiscountCoupon() != null) {
+                    if (isCouponCode) {
+                        orderDetailsEntity.getDiscountCoupon().setCodeToUse(editOrderRestModel.getUserOrderDetails().getCoupon().getCode());
+                    }
+                    if (isCouponDescription) {
+                        orderDetailsEntity.getDiscountCoupon().setDescription(editOrderRestModel.getUserOrderDetails().getCoupon().getDescription());
+                    }
+                } else {
+                    if (isCouponCode && isCouponDescription) {
+                        orderDetailsEntity.setCouponId(couponService.addCoupon(editOrderRestModel.getUserOrderDetails().getCoupon()));
+                    }
+                }
+            }
+
+            if (isCoupon || isDescription) {
+                orderDetailsEntity = orderDetailsRepository.save(orderDetailsEntity);
+            }
+
+            if (isOwner) {
+                Optional<OrderEntity> optOrderEntity = orderRepository.findById(editOrderRestModel.getOrderId());
+                if(optOrderEntity.isPresent()) {
+                    if (isDate) {
+                        optOrderEntity.get().setOrderDate(editOrderRestModel.getDate());
+                    }
+                    if (isTime) {
+                        optOrderEntity.get().setOrderTime(editOrderRestModel.getTime());
+                    }
+                    if (isPaymentType) {
+                        optOrderEntity.get().setPaymentFormId(paymentFormRepository.findByPaymentFormName(editOrderRestModel.getPaymentForm()).getId());
+                    }
+                    orderRepository.save(optOrderEntity.get());
+                }
+                else{
+                    throw new NoSuchElementException();
+                }
+            }
+        }
+        catch(NoSuchElementException ex){
+            throw ex;
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 }
