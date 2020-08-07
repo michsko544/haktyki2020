@@ -1,6 +1,7 @@
 package com.hacktyki.Backend.model.entity;
 
 import com.hacktyki.Backend.model.responses.FullOrderDetailsRestModel;
+import com.hacktyki.Backend.model.responses.JoinOrderRestModel;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -35,6 +36,12 @@ public class OrderDetailsEntity implements Serializable {
         this.id = new OrderDetailsIdentity( fullOrderDetailsRestModel.getUserId(), orderId);
         this.description = fullOrderDetailsRestModel.getDescription();
         this.orderOwner = true;
+    }
+
+    public OrderDetailsEntity(JoinOrderRestModel joinOrderRestModel) {
+        this.id = new OrderDetailsIdentity( joinOrderRestModel.getUserId(), joinOrderRestModel.getOrderId());
+        this.description = joinOrderRestModel.getDescription();
+        this.orderOwner = false;
     }
 
     public OrderDetailsIdentity getId() {

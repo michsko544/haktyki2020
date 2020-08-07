@@ -8,6 +8,7 @@ import com.hacktyki.Backend.model.repository.OrderDetailsRepository;
 import com.hacktyki.Backend.model.repository.OrderRepository;
 import com.hacktyki.Backend.model.repository.PaymentFormRepository;
 import com.hacktyki.Backend.model.responses.FullOrderRestModel;
+import com.hacktyki.Backend.model.responses.JoinOrderRestModel;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -85,9 +86,9 @@ public class OrderService {
                     .map(OrderDetailsIdentity::getOrderId)
                     .collect(Collectors.toList());
     }
-    
+
     @Transactional
-    public Long addNewOrder(FullOrderRestModel fullOrderRestModel) throws NullPointerException, Exception {
+    public void addNewOrder(FullOrderRestModel fullOrderRestModel) throws NullPointerException, Exception {
         try {
             OrderEntity orderEntity = new OrderEntity(fullOrderRestModel);
 
@@ -109,12 +110,29 @@ public class OrderService {
             }
             orderDetailsRepository.save(orderDetailsEntity);
 
-            return orderEntity.getId();
+            // return orderEntity.getId(); optional created orders Id
         }
         catch(Exception ex){
             System.out.println("Error happened while tried to add new order:\n" + ex.getMessage());
             throw ex;
         }
 
+    }
+
+    @Transactional
+    public void joinToOrder(JoinOrderRestModel joinOrderRestModel) throws NullPointerException, Exception {
+        try {
+            OrderDetailsEntity orderDetailsEntity = new OrderDetailsEntity(joinOrderRestModel);
+            Long couponId = couponService.addCoupon(joinOrderRestModel.getCoupon());
+            if(couponId != null){
+                orderDetailsEntity.setCouponId(couponId);
+            }
+            orderDetailsEntity = orderDetailsRepository.save(orderDetailsEntity);
+            // return orderDetailsEntity.getId(); optional order and user Ids pack to send
+        }
+        catch(Exception ex){
+            System.out.println("Error happened while tried to join to order:\n" + ex.getMessage());
+            throw ex;
+        }
     }
 }

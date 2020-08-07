@@ -1,6 +1,7 @@
 package com.hacktyki.Backend.controller;
 
 import com.hacktyki.Backend.model.responses.FullOrderRestModel;
+import com.hacktyki.Backend.model.responses.JoinOrderRestModel;
 import com.hacktyki.Backend.model.service.OrderService;
 import com.hacktyki.Backend.model.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,30 @@ public class OrderController {
         this.userService = userService;
     }
 
+    @GetMapping(path = "my",
+            produces = "application/json")
+    public ResponseEntity<List<FullOrderRestModel>> getMyOrders(){
+        try {
+            List<FullOrderRestModel> ordersList = orderService.getMyOrdersList();
+            return new ResponseEntity<>(ordersList, HttpStatus.OK);
+        }
+        catch(Exception ex){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(path = "all",
+            produces = "application/json")
+    public ResponseEntity<List<FullOrderRestModel>> getAllOrders(){
+        try {
+            List<FullOrderRestModel> ordersList = orderService.getAllOrdersList();
+            return new ResponseEntity<>(ordersList, HttpStatus.OK);
+        }
+        catch(Exception ex){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping(path = "add-order",
                 consumes = "application/json")
     public ResponseEntity<String> addNewOrder(@RequestBody FullOrderRestModel fullOrderRestModel){
@@ -38,28 +63,20 @@ public class OrderController {
 
     }
 
-    @GetMapping(path = "my",
-            produces = "application/json")
-    public ResponseEntity<List<FullOrderRestModel>> getMyOrders(){
+    @PostMapping(path = "join",
+            consumes = "application/json")
+    public ResponseEntity<String> joinToOrder(@RequestBody JoinOrderRestModel joinOrderRestModel){
         try {
-            List<FullOrderRestModel> ordersList = orderService.getMyOrdersList();
-            return new ResponseEntity<>(ordersList, HttpStatus.OK);
+            if (joinOrderRestModel != null) {
+                orderService.joinToOrder(joinOrderRestModel);
+                return new ResponseEntity<>("Joined successfully", HttpStatus.CREATED);
+            }
+            return new ResponseEntity<>("Cannot join to order", HttpStatus.BAD_REQUEST);
         }
         catch(Exception ex){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Cannot join to order, error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
 
-    @GetMapping(path = "all",
-                produces = "application/json")
-    public ResponseEntity<List<FullOrderRestModel>> getAllOrders(){
-        try {
-            List<FullOrderRestModel> ordersList = orderService.getAllOrdersList();
-            return new ResponseEntity<>(ordersList, HttpStatus.OK);
-        }
-        catch(Exception ex){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
     }
 
 }
