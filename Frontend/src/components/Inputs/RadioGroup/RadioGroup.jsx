@@ -17,7 +17,7 @@ const RadioGroupFormik = ({ field, error, name, label, options, ...props }) => {
     AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
 
   return (
-    <FormControl component="fieldset" style={{ marginTop: 20 }}>
+    <FormControl component="fieldset">
       <FormLabel component="legend">{label}</FormLabel>
       <RadioGroup name={fieldName} {...field} {...props}>
         {options.map((option) => (

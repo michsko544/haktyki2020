@@ -117,7 +117,10 @@ const OrderDetails = ({ orderId, closeCallback }) => {
       <OrderFormik
         order={findLoggedPerson()?.what}
         coupon={findLoggedPerson()?.coupon}
+        date={response.order.date}
+        time={response.order.time}
         payment={response.order.payment}
+        orderId={response.order.id}
         isPurchaser={isLoggedUserPurchaser()}
         closeCallback={closeCallback}
       />
