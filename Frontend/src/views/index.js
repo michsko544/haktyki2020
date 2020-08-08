@@ -1,7 +1,0 @@
-export { default as Home } from './Home'
-export { default as Login } from './Login'
-export { default as Register } from './Register'
-export { default as Greeter } from './Greeter'
-export { default as Settings } from './Settings'
-export { default as Teamfood } from './Teamfood'
-export { default as NotFound } from './NotFound'
