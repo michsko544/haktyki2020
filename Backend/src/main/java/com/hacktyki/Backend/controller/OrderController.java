@@ -115,4 +115,23 @@ public class OrderController {
         }
     }
 
+    @PostMapping(path = "change-coupon",
+                 consumes = "application/json")
+    public ResponseEntity<String> setChoosenCoupon(@RequestBody CouponChangeRestModel couponChangeRestModel){
+        try {
+            if (couponChangeRestModel != null
+                    && couponChangeRestModel.getOrderId() != null
+                    && couponChangeRestModel.getCouponId() != null) {
+                orderService.setNewCoupon(couponChangeRestModel);
+                return new ResponseEntity<>("Changed successfully", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Not changed, bad request", HttpStatus.BAD_REQUEST);
+
+        } catch (NoSuchElementException ex){
+            return new ResponseEntity<>("Not changed. " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex){
+            return new ResponseEntity<>("Not changed, server error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

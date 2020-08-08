@@ -4,10 +4,7 @@ import com.hacktyki.Backend.model.entity.*;
 import com.hacktyki.Backend.model.repository.OrderDetailsRepository;
 import com.hacktyki.Backend.model.repository.OrderRepository;
 import com.hacktyki.Backend.model.repository.PaymentFormRepository;
-import com.hacktyki.Backend.model.responses.EditOrderRestModel;
-import com.hacktyki.Backend.model.responses.FullOrderRestModel;
-import com.hacktyki.Backend.model.responses.JoinOrderRestModel;
-import com.hacktyki.Backend.model.responses.OrderCouponsRestModel;
+import com.hacktyki.Backend.model.responses.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -218,6 +215,30 @@ public class OrderService {
 
             OrderCouponsRestModel orderCouponsRestModel = new OrderCouponsRestModel(orderId, orderEntity.getDiscountCouponId(), couponList);
             return orderCouponsRestModel;
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    public void setNewCoupon(CouponChangeRestModel couponChangeRestModel) throws NoSuchElementException, Exception {
+        try {
+            OrderEntity orderEntity = orderRepository.getOne(couponChangeRestModel.getOrderId());
+            boolean isCouponExisiting = false;
+
+            for (OrderDetailsEntity orderDetails : orderEntity.getOrderDetailsList()) {
+                if (couponChangeRestModel.getCouponId().equals(orderDetails.getCouponId())) {
+                    isCouponExisiting = true;
+                    break;
+                }
+            }
+            if (isCouponExisiting) {
+                orderEntity.setDiscountCouponId(couponChangeRestModel.getCouponId());
+                orderRepository.save(orderEntity);
+                return;
+            }
+            throw new NoSuchElementException("No such coupon in order details list found.");
         }
         catch(Exception ex){
             ex.printStackTrace();
