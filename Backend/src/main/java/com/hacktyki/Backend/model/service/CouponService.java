@@ -5,6 +5,8 @@ import com.hacktyki.Backend.model.repository.DiscountCouponRepository;
 import com.hacktyki.Backend.model.responses.CouponRestModel;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CouponService {
 
@@ -22,6 +24,13 @@ public class CouponService {
         else {
             return null;
         }
+    }
+
+    public List<DiscountCouponEntity> getAllByIds(List<Long> couponIdList) {
+        if(couponIdList != null) {
+        return discountCouponRepository.findAllById(couponIdList);
+        }
+        return null;
     }
 
 }

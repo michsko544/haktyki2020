@@ -1,15 +1,13 @@
 package com.hacktyki.Backend.model.service;
 
-import com.hacktyki.Backend.model.entity.OrderDetailsEntity;
-import com.hacktyki.Backend.model.entity.OrderDetailsIdentity;
-import com.hacktyki.Backend.model.entity.OrderEntity;
-import com.hacktyki.Backend.model.entity.PaymentFormEntity;
+import com.hacktyki.Backend.model.entity.*;
 import com.hacktyki.Backend.model.repository.OrderDetailsRepository;
 import com.hacktyki.Backend.model.repository.OrderRepository;
 import com.hacktyki.Backend.model.repository.PaymentFormRepository;
 import com.hacktyki.Backend.model.responses.EditOrderRestModel;
 import com.hacktyki.Backend.model.responses.FullOrderRestModel;
 import com.hacktyki.Backend.model.responses.JoinOrderRestModel;
+import com.hacktyki.Backend.model.responses.OrderCouponsRestModel;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -201,6 +199,25 @@ public class OrderService {
         }
         catch(NoSuchElementException ex){
             throw ex;
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    public OrderCouponsRestModel getOrderCouponsList(Long orderId) throws Exception{
+        try {
+            OrderEntity orderEntity = orderRepository.getOne(orderId);
+
+            List<Long> couponIdList = orderDetailsRepository.findAllById_OrderId(orderId)
+                    .stream()
+                    .map(OrderDetailsEntity::getCouponId)
+                    .collect(Collectors.toList());
+            List<DiscountCouponEntity> couponList = couponService.getAllByIds(couponIdList);
+
+            OrderCouponsRestModel orderCouponsRestModel = new OrderCouponsRestModel(orderId, orderEntity.getDiscountCouponId(), couponList);
+            return orderCouponsRestModel;
         }
         catch(Exception ex){
             ex.printStackTrace();

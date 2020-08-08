@@ -1,12 +1,11 @@
 package com.hacktyki.Backend.controller;
 
-import com.hacktyki.Backend.model.responses.EditOrderRestModel;
-import com.hacktyki.Backend.model.responses.FullOrderRestModel;
-import com.hacktyki.Backend.model.responses.JoinOrderRestModel;
+import com.hacktyki.Backend.model.responses.*;
 import com.hacktyki.Backend.model.service.OrderService;
 import com.hacktyki.Backend.model.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -98,7 +97,22 @@ public class OrderController {
             return new ResponseEntity<>("Cannot edit order, error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
 
+    @GetMapping(path = "coupons",
+                consumes = "application/json")
+    public ResponseEntity<OrderCouponsRestModel> getAllCoupons(@RequestBody IdRestModel orderIdRestModel) {
+        try {
+            if (orderIdRestModel != null && orderIdRestModel.getId() != null) {
+
+                OrderCouponsRestModel orderCouponsRestModel = orderService.getOrderCouponsList(orderIdRestModel.getId());
+                return new ResponseEntity<>(orderCouponsRestModel, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        } catch (Exception ex){
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

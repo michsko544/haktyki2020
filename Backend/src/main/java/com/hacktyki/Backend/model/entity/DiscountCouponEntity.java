@@ -6,7 +6,8 @@ import javax.persistence.*;
 
 @Entity
 @Table( name = "discount_coupon" )
-public class DiscountCouponEntity {
+public class
+DiscountCouponEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
