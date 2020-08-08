@@ -35,16 +35,31 @@ public class UserController {
         return new ResponseEntity<>("Idk who I am", HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(path = "details")
+    @GetMapping(path = "my-fullname")
+    public ResponseEntity<String> getMyFullname() {
+        return ResponseEntity.ok(userService.getMyFullname());
+    }
+
+    @PostMapping(path = "my-fullname",
+                consumes = "application/json")
+    public ResponseEntity<String> setMyFullname(@RequestBody String fullname) {
+
+        if(userService.setMyFullname(fullname)){
+            return ResponseEntity.ok("Added your fullname successfully");
+        }
+        return new ResponseEntity<>("Could not add your fullname", HttpStatus.NOT_MODIFIED);
+    }
+
+    @GetMapping(path = "my-details")
     public ResponseEntity<UserDetailsRestModel> getMyDetails(){
         return ResponseEntity.ok(userService.getMyDetails());
     }
 
-    @PostMapping(path = "details",
+    @PostMapping(path = "my-details",
                 consumes = "application/json")
     public ResponseEntity<String> setMyDetails(@RequestBody UserDetailsRestModel userDetails){
 
-        if(userService.changeDetails(userDetails)){
+        if(userService.changeMyDetails(userDetails)){
             return ResponseEntity.ok("Added new details");
         }
         return new ResponseEntity<>("Could not add new details", HttpStatus.NOT_MODIFIED);
