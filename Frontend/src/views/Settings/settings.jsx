@@ -66,10 +66,24 @@ const Settings = () => {
 
     return (
       <ButtonFormWrapper>
-        <Button onClick={grantNotificationPermission} text="Włącz powiadomienia" />
+        <Button
+          onClick={grantNotificationPermission}
+          text="Włącz powiadomienia"
+        />
       </ButtonFormWrapper>
     )
   }
+
+  const handleLogout = () => {
+    const setAuthToken = store.set('authToken')
+    setAuthToken('')
+  }
+
+  const logoutButton = () => (
+    <ButtonFormWrapper>
+      <Button onClick={handleLogout} text="Wyloguj" />
+    </ButtonFormWrapper>
+  )
 
   return (
     <>
@@ -94,9 +108,10 @@ const Settings = () => {
           AppBackgroundThemes[store.get('themeBackgroundId')].alternate
         }
       >
-        <NotificationStyled>
+        <NotificationStyled style={{ marginBottom: 20 }}>
           <H4>Powiadomienia</H4>
           {notificationGrantedElement()}
+          {logoutButton()}
         </NotificationStyled>
         <ThemeContainerStyled>
           <div>
