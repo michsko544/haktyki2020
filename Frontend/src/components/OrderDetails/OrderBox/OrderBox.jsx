@@ -6,12 +6,12 @@ import {
   OrderDetailsImg,
   HeroimagePosition,
 } from '../../Heroimage/Heroimage.style'
-import defaultImage from '../../../images/frytki.png'
 import { FixedContainer, CloseBtnBackground } from './OrderBox.style'
 import Store from '../../App/App.store'
 import { AppBackgroundThemes } from '../../App/App.themes'
+import ImageLoadingLogic from '../../ImageLoadingLogic'
 
-const OrderBox = ({ children, image, closeCallback }) => {
+const OrderBox = ({ children, image, closeCallback, isLoading, error }) => {
   const store = Store.useStore()
 
   const background =
@@ -29,7 +29,13 @@ const OrderBox = ({ children, image, closeCallback }) => {
           />
         </CloseBtnBackground>
         <HeroimagePosition>
-          <OrderDetailsImg src={image || defaultImage} alt="food-order-photo" />
+          <ImageLoadingLogic
+            image={image}
+            isLoading={isLoading}
+            error={error}
+            alt="food-order-photo"
+            component={OrderDetailsImg}
+          />
         </HeroimagePosition>
         {children}
       </BoxContainer>
@@ -41,6 +47,8 @@ OrderBox.propTypes = {
   image: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   closeCallback: PropTypes.func,
   children: PropTypes.any,
+  isLoading: PropTypes.bool.isRequired,
+  error: PropTypes.object,
 }
 
 export default OrderBox
