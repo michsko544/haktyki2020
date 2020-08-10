@@ -18,9 +18,10 @@ import { PhotoSelectionStyled } from './PhotoSelection/photo.selection.style'
 import { PhotoSelectionContainer } from './PhotoSelection/photo.selection.container.style'
 import { DoubleInputStyled } from './Container/double.input.style'
 import Store from '../../components/App/App.store'
-import { AppBackgroundThemes, AppThemes } from '../../components/App/App.themes'
+import { AppThemes } from '../../components/App/App.themes'
+import { FoodKeywords } from './teamfood.keywords'
 
-const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
+const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
   const store = Store.useStore()
   const errorHandler = (name) => touched[name] && errors[name]
   const [photos, setPhotos] = useState([])
@@ -54,6 +55,27 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
         advice={fetchPhotos.error.text}
       />
     )
+
+  const checkKeywords = () => {
+    let matched = []
+
+    for(let word of FoodKeywords) {
+      if(values.what.toLowerCase().includes(word.match))
+        matched.push(word.keyword)
+
+      if(values.where.toLowerCase().includes(word.match))
+        matched.push(word.keyword)
+    }
+
+    if(matched.length === 0) {
+      console.log('Nothing matched, using every keyword')
+      matched = [...matched, ...values.what.split(' '), ...values.where.split(' ')].filter((v => v !== ''))
+    }
+
+    console.log('Matched keywords: ', matched)
+  }
+
+  useEffect(checkKeywords, [values])
 
   return (
     <FormStyled>
@@ -135,8 +157,6 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
 }
 
 const TeamfoodFormik = () => {
-  const store = Store.useStore()
-
   const TeamfoodWithFormik = withFormik({
     mapPropsToValues() {
       return {
