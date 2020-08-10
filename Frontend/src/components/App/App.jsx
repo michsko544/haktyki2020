@@ -6,8 +6,6 @@ import { AppDebug } from './App.debug'
 import AppInit from './App.init'
 import { AppTheme } from './App.theme'
 
-import './App.router.animation.css'
-
 const App = () => {
   return (
     <Store.Container>
