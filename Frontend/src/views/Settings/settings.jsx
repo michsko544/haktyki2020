@@ -19,7 +19,6 @@ import {
 import { NotificationStyled } from './Notifications/notifications.style'
 import firebase from './../../firebase'
 import { ButtonFormWrapper, default as Button } from './../../components/Button'
-import useFetch from './../../API/useFetch.API';
 
 /**
  * TODO

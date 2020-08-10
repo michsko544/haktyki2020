@@ -1,17 +1,17 @@
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
-import { mockOrders } from './mock/orders'
-import { mockUserOrders } from './mock/user.orders'
-import { mockOrdersFour } from './mock/orders.four'
-import { mockOrdersZero } from './mock/orders.zero'
-import { mockOrdersOne } from './mock/orders.one'
-import { mockOrdersTwo } from './mock/orders.two'
-import { mockPhotos } from './mock/photos'
-import { mockOrder } from './mock/order'
-import { mockRegister } from './mock/register'
-import { mockLogin } from './mock/login'
-import { mockSettings } from './mock/settings';
-import { mockMe } from './mock/me';
+import { mockOrders } from './../mock/orders'
+import { mockUserOrders } from './../mock/user.orders'
+import { mockOrdersFour } from './../mock/orders.four'
+import { mockOrdersZero } from './../mock/orders.zero'
+import { mockOrdersOne } from './../mock/orders.one'
+import { mockOrdersTwo } from './../mock/orders.two'
+import { mockPhotos } from './../mock/photos'
+import { mockOrder } from './../mock/order'
+import { mockRegister } from './../mock/register'
+import { mockLogin } from './../mock/login'
+import { mockSettings } from './../mock/settings';
+import { mockMe } from './../mock/me';
 
 const axiosAPI = axios.create({
   baseURL: process.env.REACT_APP_API_URL,

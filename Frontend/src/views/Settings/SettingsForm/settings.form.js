@@ -11,11 +11,10 @@ import {
   ButtonFormWrapper,
   default as Button,
 } from './../../../components/Button'
-import useFetch from './../../../API/useFetch.API'
-import { usePost } from '../../../API'
+import { usePost, useFetch } from './../../../API/ourAPI'
 import { useHistory } from 'react-router-dom';
 
-const SettingsForm = ({ errors, touched, isSubmitting, isLoading }) => {
+const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
   const errorHandler = (name) => touched[name] && errors[name]
 
   const isIBANNotFromPoland = () => {
