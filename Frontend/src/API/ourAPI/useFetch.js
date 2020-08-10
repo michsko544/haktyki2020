@@ -14,12 +14,11 @@ const useFetch = (url) => {
       setResponse({ ...response.data, statusCode: response.status })
       console.log(response.data)
     } catch (error) {
-      console.log(error.response)
       setError({
         code: error.response?.status.toString(),
         text: error.response?.statusText?.toString(),
       })
-      console.log(error.response?.status)
+      if (process.env.REACT_APP_DEBUG === 'true') console.log(error.response)
     } finally {
       setIsLoading(false)
     }

@@ -5,7 +5,7 @@ const details = {
     purchaserId: 0,
     payment: 'BLIK',
     date: '2021-07-21',
-    time: '14:30',
+    time: '14:30:00',
     image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
     orderDetails: [
       {

@@ -6,7 +6,8 @@ import { AppBackgroundThemes } from '../../../../App/App.themes'
 import Checkbox from '@material-ui/core/Checkbox'
 import { SmallTitle } from '../Header'
 import { CheckboxStyled, CheckboxLabel } from './OrderForm.style'
-import { Input } from '../../../../Inputs'
+import { Input, InputStyled } from '../../../../Inputs'
+import { DoubleInputStyled } from '../../../../../views/Teamfood/Container/double.input.style'
 import Button from '../../../../Button'
 import { ButtonWrapper, TextDisplayer } from '../../'
 import { RadioGroupFormik } from '../../../../Inputs'
@@ -38,32 +39,65 @@ const OrderForm = ({
       </CheckboxStyled>
     ) : (
       <>
-        <Input type="text" label="Kod kuponu" name="coupon" />
-        <Input
-          component="textarea"
-          placeholder="Kupon obejmuje zamówienie za minimum 40zł i daje zniżkę 10%"
-          label="Informacje o kuponie"
-          name="couponDescription"
-          error={errors.couponDescription}
-        />
+        <InputStyled>
+          <Input type="text" label="Kod kuponu" name="coupon" />
+        </InputStyled>
+        <InputStyled>
+          <Input
+            component="textarea"
+            placeholder="Kupon obejmuje zamówienie za minimum 40zł i daje zniżkę 10%"
+            label="Informacje o kuponie"
+            name="couponDescription"
+            error={errors.couponDescription}
+          />
+        </InputStyled>
       </>
     )
+
+  const showTermInputIfPurchaser = () => {
+    return (
+      isPurchaser && (
+        <DoubleInputStyled>
+          <InputStyled>
+            <Input
+              type="date"
+              name="date"
+              label="Kiedy?"
+              placeholder="Dzisiaj"
+              error={errorHandler('date')}
+            />
+          </InputStyled>
+          <InputStyled>
+            <Input
+              type="time"
+              name="hour"
+              label="O której?"
+              placeholder="17:00"
+              error={errorHandler('hour')}
+            />
+          </InputStyled>
+        </DoubleInputStyled>
+      )
+    )
+  }
 
   const showPaymentFormIfPurchaser = () => {
     return (
       isPurchaser && (
-        <Field
-          name="payment"
-          options={[
-            { value: 'BLIK', label: 'BLIK' },
-            { value: 'TRANSFER', label: 'Przelew' },
-            { value: 'CASH', label: 'Gotówka' },
-          ]}
-          error={() => errorHandler('payment')}
-          label={'Forma Płatności'}
-          component={RadioGroupFormik}
-          aria-label="payment"
-        />
+        <InputStyled style={{ marginTop: 11 }}>
+          <Field
+            name="payment"
+            options={[
+              { value: 'BLIK', label: 'BLIK' },
+              { value: 'TRANSFER', label: 'Przelew' },
+              { value: 'CASH', label: 'Gotówka' },
+            ]}
+            error={errorHandler('payment')}
+            label={'Forma Płatności'}
+            component={RadioGroupFormik}
+            aria-label="payment"
+          />
+        </InputStyled>
       )
     )
   }
@@ -72,15 +106,18 @@ const OrderForm = ({
     <Form>
       <SmallTitle fontcolor={fontcolor}>Co chcesz zamówić?</SmallTitle>
       <TextDisplayer>
-        <Input
-          name="orderContent"
-          component="textarea"
-          label="Treść zamówienia"
-          style={{ height: 77 }}
-          error={() => errorHandler('orderContent')}
-          placeholder="Penne z boczkiem i brokułami w sosie śmietanowym, kompot, zestaw sztućców"
-        />
+        <InputStyled>
+          <Input
+            name="orderContent"
+            component="textarea"
+            label="Treść zamówienia"
+            style={{ height: 77 }}
+            error={errorHandler('orderContent')}
+            placeholder="Penne z boczkiem i brokułami w sosie śmietanowym, kompot, zestaw sztućców"
+          />
+        </InputStyled>
         {showCouponInput()}
+        {showTermInputIfPurchaser()}
         {showPaymentFormIfPurchaser()}
       </TextDisplayer>
       <ButtonWrapper>
@@ -93,31 +130,50 @@ const OrderForm = ({
 const OrderFormik = ({
   order,
   coupon,
+  date,
+  time,
   payment,
+  orderId,
   isPurchaser,
   closeCallback,
 }) => {
   const OrderWithFormik = withFormik({
-    mapPropsToValues({ order, coupon, payment }) {
+    mapPropsToValues({ order, coupon, date, time, payment }) {
       return {
         orderContent: order || '',
         hasCoupon: coupon?.code ? true : false,
         coupon: coupon?.code || '',
         couponDescription: coupon?.description || '',
+        date: date || '',
+        hour: time || '',
         payment: payment || '',
       }
     },
 
     validationSchema: Yup.object().shape({
       orderContent: Yup.string()
-        .max(255, 'Maksymalnie 255 znaków')
+        .min(5, 'Pole musi mieć minimum 5 znaków')
+        .max(200, 'Pole musi mieć maksimum 200 znaków')
         .required('Wypełnij to pole'),
-      couponDescription: Yup.string().max(100, 'Maksymalnie 100 znaków'),
+      coupon: Yup.string().max(20, 'Pole musi mieć maksimum 20 znaków'),
+      couponDescription: Yup.string().max(
+        100,
+        'Pole musi mieć maksimum 100 znaków'
+      ),
+      date: isPurchaser
+        ? Yup.string().required('Wypełnij to pole')
+        : Yup.string(),
+      hour: isPurchaser
+        ? Yup.string().required('Wypełnij to pole')
+        : Yup.string(),
+      payment: isPurchaser
+        ? Yup.string().required('Zaznacz to pole')
+        : Yup.string(),
     }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {
       setTimeout(() => {
-        console.log(values)
+        console.log(values, orderId)
         setSubmitting(false)
         resetForm()
         closeCallback()
@@ -128,6 +184,8 @@ const OrderFormik = ({
     <OrderWithFormik
       order={order}
       coupon={coupon}
+      date={date}
+      time={time}
       payment={payment}
       isPurchaser={isPurchaser}
     />

@@ -1,2 +1,7 @@
 export { default } from './Heroimage'
-export { HeroimageStyled, OrderDetailsImg } from './Heroimage.style'
+export {
+  HeroimageStyled,
+  OrderDetailsImg,
+  HeroimagePosition,
+  LoaderPosition,
+} from './Heroimage.style'

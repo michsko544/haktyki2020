@@ -8,7 +8,7 @@ import { Input } from '../../Inputs'
 import { InputStyled } from '../../Inputs'
 import { FormWrapper } from './'
 import Store from './../../App/App.store'
-import usePost from './../../../API/usePost.API'
+import { usePost } from './../../../API'
 
 const LoginForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]

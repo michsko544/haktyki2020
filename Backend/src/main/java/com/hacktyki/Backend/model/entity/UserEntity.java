@@ -3,18 +3,21 @@ package com.hacktyki.Backend.model.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table( name = "user" )
 public class UserEntity {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(nullable = false)
+    @Column(name = "login", nullable = false, length = 50)
     private String login;
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false, length = 30)
     private String password;
+    @Column(name = "fullname", length = 80)
     private String fullName;
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
+    @Column(name = "credit_card_number", length = 40)
     private String creditCardNumber;
 
     public UserEntity() {
@@ -23,14 +26,6 @@ public class UserEntity {
     public UserEntity(String login, String password) {
         this.login = login;
         this.password = password;
-    }
-
-    public UserEntity(String login, String password, String fullName, String phoneNumber, String creditCardNumber) {
-        this.login = login;
-        this.password = password;
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-        this.creditCardNumber = creditCardNumber;
     }
 
     public long getId() {

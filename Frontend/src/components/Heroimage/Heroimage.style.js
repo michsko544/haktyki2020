@@ -1,8 +1,29 @@
 import styled from 'styled-components'
 
-export const HeroimageStyled = styled.img`
+export const HeroimagePosition = styled.div`
   width: 100%;
+
+  @media (min-width: 1024px) {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+`
+export const LoaderPosition = styled.div`
+  @media (min-width: 1024px) {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+  }
+`
+
+export const HeroimageStyled = styled.img`
   height: 280px;
+  width: 100%;
   max-width: 400px;
   border-radius: 9px;
   object-fit: cover;
@@ -10,12 +31,8 @@ export const HeroimageStyled = styled.img`
   margin: 20px 0;
 
   @media (min-width: 1024px) {
-    width: 50%;
-    height: 100%;
     max-width: unset;
-    position: absolute;
-    right: 0;
-    top: 0;
+    height: 100%;
     border-radius: 0;
     border-top-right-radius: 7px;
     border-bottom-right-radius: 7px;

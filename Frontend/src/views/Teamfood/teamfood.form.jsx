@@ -83,7 +83,7 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
               name="whenHour"
               label="O której?"
               placeholder="17:00"
-              error={errorHandler('when-hour')}
+              error={errorHandler('whenHour')}
             />
           </InputStyled>
         </DoubleInputStyled>

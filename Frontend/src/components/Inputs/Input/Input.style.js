@@ -79,4 +79,22 @@ Label.defaultProps = {
 
 export const InputStyled = styled.div`
   margin-bottom: 11px;
+  width: 100%;
+`
+
+export const SmallerInputStyled = styled(InputStyled)`
+  @media (min-width: 1024px) {
+    width: 60%;
+    margin-left: 20px;
+  }
+`
+
+export const RowOnMediumScreen = styled.div`
+  width: 100%;
+  display: block;
+
+  @media (min-width: 1024px) {
+    display: flex;
+    flex-direction: row;
+  }
 `

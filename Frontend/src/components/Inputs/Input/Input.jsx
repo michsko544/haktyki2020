@@ -42,7 +42,7 @@ Input.propTypes = {
   component: PropTypes.string,
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  error: PropTypes.string,
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 }
 
 export default Input
