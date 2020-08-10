@@ -182,6 +182,8 @@ const OrderDetails = ({ orderId, closeCallback }) => {
       <OrderBox
         image={!isLoading && response?.order.image}
         closeCallback={closeCallback}
+        isLoading={isLoading}
+        error={error}
       >
         {handleDisplay()}
       </OrderBox>

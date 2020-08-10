@@ -12,7 +12,7 @@ export const AppDebug = () => {
   const injectAuthData = () => {
     setAuthToken('aaaa-bbbb-cccc')
     setUser('Tomek Adamek')
-    setUserId(117)
+    setUserId(0)
   }
 
   const deleteAuthData = () => {

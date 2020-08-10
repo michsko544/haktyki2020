@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { HeroimageStyled, LoaderPosition } from './'
-import Loader from '../Loader'
-import defaultImage from '../../images/frytki.png'
+import ImageLoadingLogic from '../ImageLoadingLogic'
+import { HeroimageStyled } from './'
 import { useRandomThematicImg } from '../../API'
 
 const Heroimage = ({ propImage }) => {
@@ -14,30 +13,23 @@ const Heroimage = ({ propImage }) => {
 
   return (
     <>
-      {isLoading && (
-        <LoaderPosition>
-          <Loader />
-        </LoaderPosition>
-      )}
-      {error && <HeroimageStyled src={defaultImage} alt="heroimage" />}
-      {image ? (
-        <HeroimageStyled
-          src={image.urls.regular || defaultImage}
-          alt="heroimage"
-        />
-      ) : (
-        propImage && <HeroimageStyled src={propImage} alt="heroimage" />
-      )}
+      <ImageLoadingLogic
+        image={propImage || image?.urls?.regular}
+        isLoading={isLoading}
+        error={error}
+        alt="heroimage"
+        component={HeroimageStyled}
+      />
     </>
   )
 }
 
 Heroimage.propTypes = {
-  image: PropTypes.string,
+  propImage: PropTypes.string,
 }
 
 Heroimage.defaultProps = {
-  image: '',
+  propImage: '',
 }
 
 export default Heroimage
