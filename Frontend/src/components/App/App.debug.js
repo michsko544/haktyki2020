@@ -4,15 +4,21 @@ import { DebugLink } from './App.style'
 
 export const AppDebug = () => {
   const store = Store.useStore()
-  
+
+  const setAuthToken = store.set('authToken')
+  const setUser = store.set('user')
+  const setUserId = store.set('userId')
+
   const injectAuthData = () => {
-    const setAuthToken = store.set('authToken')
     setAuthToken('aaaa-bbbb-cccc')
+    setUser('Tomek Adamek')
+    setUserId(0)
   }
 
   const deleteAuthData = () => {
-    const setAuthToken = store.set('authToken')
     setAuthToken('')
+    setUser('')
+    setUserId(0)
   }
 
   return (

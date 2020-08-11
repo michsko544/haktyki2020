@@ -11,15 +11,6 @@ export const HeroimagePosition = styled.div`
     top: 0;
   }
 `
-export const LoaderPosition = styled.div`
-  @media (min-width: 1024px) {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-  }
-`
 
 export const HeroimageStyled = styled.img`
   height: 280px;

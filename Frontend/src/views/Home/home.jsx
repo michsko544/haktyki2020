@@ -22,13 +22,6 @@ const Home = () => {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [isDetailsVisibile, setDetailsVisibile] = useState(false)
 
-  const logout = () => {
-    console.log('Logout!, Bye.')
-    store.set('authToken')('')
-    store.set('user')('')
-    store.set('userId')(0)
-  }
-
   /**
    * CDM
    */
@@ -104,7 +97,6 @@ const Home = () => {
             </div>
           </div>
         </Container>
-        <p onClick={logout}>Wyloguj</p>
       </BlurChildren>
       {isDetailsVisibile && (
         <OrderDetails orderId={selectedOrder} closeCallback={handleCloseCard} />

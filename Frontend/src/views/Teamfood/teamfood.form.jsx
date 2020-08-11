@@ -134,31 +134,40 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
   )
 }
 
-const TeamfoodFormik = withFormik({
-  mapPropsToValues() {
-    return {
-      where: '',
-      when: '',
-      whenHour: '',
-      what: '',
-      payment: '',
-    }
-  },
+const TeamfoodFormik = () => {
+  const store = Store.useStore()
 
-  validationSchema: Yup.object().shape({
-    where: Yup.string().required('Wypełnij to pole'),
-    when: Yup.string().required('Wypełnij to pole'),
-    whenHour: Yup.string().required('Wypełnij to pole'),
-    what: Yup.string().required('Wypełnij to pole'),
-  }),
+  const TeamfoodWithFormik = withFormik({
+    mapPropsToValues() {
+      return {
+        where: '',
+        when: '',
+        whenHour: '',
+        what: '',
+        payment: '',
+      }
+    },
+  
+    validationSchema: Yup.object().shape({
+      where: Yup.string().required('Wypełnij to pole'),
+      when: Yup.string().required('Wypełnij to pole'),
+      whenHour: Yup.string().required('Wypełnij to pole'),
+      what: Yup.string().required('Wypełnij to pole'),
+      payment: Yup.string().required('Musisz zaznaczyć jedną z opcji')
+    }),
+  
+    handleSubmit(values, { resetForm, setSubmitting }) {
+      //TODO
+      
+      setTimeout(() => {
+        console.log('Values: ', values)
+        setSubmitting(false)
+        resetForm()
+      }, 500)
+    },
+  })(TeamfoodForm)
 
-  handleSubmit(values, { resetForm, setSubmitting }) {
-    setTimeout(() => {
-      console.log('Values: ', values)
-      setSubmitting(false)
-      resetForm()
-    }, 500)
-  },
-})(TeamfoodForm)
+  return <TeamfoodWithFormik />
+}
 
 export default TeamfoodFormik

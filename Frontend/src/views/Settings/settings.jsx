@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Header from './../../components/Header'
 import { H1, H3, H4, HBold } from './../../components/Headings'
 
@@ -29,6 +29,11 @@ const Settings = () => {
   const store = Store.useStore()
   const setThemeId = store.set('themeId')
   const setBackgroundThemeId = store.set('themeBackgroundId')
+  const [isNotificationGranted, setIsNotificationGranted] = useState(false)
+
+  useEffect(() => {
+    setIsNotificationGranted(Notification.permission === 'granted')
+  }, [])
 
   const gradientClick = (theme) => {
     setThemeId(theme.id)
@@ -45,6 +50,7 @@ const Settings = () => {
     messaging
       .requestPermission()
       .then(() => {
+        setIsNotificationGranted(true)
         return messaging.getToken()
       })
       .then((token) => {
@@ -60,7 +66,7 @@ const Settings = () => {
   }
 
   const notificationGrantedElement = () => {
-    if (Notification.permission === 'granted') {
+    if (isNotificationGranted) {
       return <H3>Powiadomienia Włączone</H3>
     }
 

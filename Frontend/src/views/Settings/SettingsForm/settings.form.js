@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import * as Yup from 'yup'
 import { withFormik, useFormikContext, Form } from 'formik'
 import {
@@ -11,9 +11,10 @@ import {
   ButtonFormWrapper,
   default as Button,
 } from './../../../components/Button'
-import Store from './../../../components/App/App.store'
+import { usePost, useFetch } from './../../../API/ourAPI'
+import { useHistory } from 'react-router-dom';
 
-const SettingsForm = ({ errors, values, touched, isSubmitting }) => {
+const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
   const errorHandler = (name) => touched[name] && errors[name]
 
   const isIBANNotFromPoland = () => {
@@ -57,9 +58,10 @@ const SettingsForm = ({ errors, values, touched, isSubmitting }) => {
             type="text"
             name="user"
             label="Imię i nazwisko"
-            placeholder="Tomek Adamczyk"
+            placeholder="Ładowanie"
             error={errorHandler('user')}
             style={{ textTransform: 'capitalize' }}
+            disabled={isLoading}
           />
         </InputStyled>
         <InputStyled>
@@ -67,8 +69,9 @@ const SettingsForm = ({ errors, values, touched, isSubmitting }) => {
             type="tel"
             name="blik"
             label="Numer telefonu do BLIK"
-            placeholder="603 424 420"
+            placeholder="Ładowanie"
             error={errorHandler('blik')}
+            disabled={isLoading}
           />
         </InputStyled>
         <RowOnMediumScreen>
@@ -85,7 +88,7 @@ const SettingsForm = ({ errors, values, touched, isSubmitting }) => {
           {showSwiftWhenIBAN()}
         </RowOnMediumScreen>
         <ButtonFormWrapper>
-          <Button disabled={isSubmitting} text="Zapisz i wróć" type="submit" />
+          <Button disabled={isSubmitting || isLoading} text="Zapisz i wróć" type="submit" />
         </ButtonFormWrapper>
       </Form>
     </>
@@ -93,14 +96,30 @@ const SettingsForm = ({ errors, values, touched, isSubmitting }) => {
 }
 
 const SettingsFormik = () => {
-  const store = Store.useStore()
+  const userData = useFetch('/user/me')
+  const updateData = usePost('/user/me')
+  const history = useHistory()
+
+  useEffect(() => {
+    userData.getData()
+  }, [])
+
+  useEffect(() => {
+    if(updateData.response.statusCode === 0)
+      return;
+
+    console.log('Finished', updateData.response)
+    history.push('/')
+  }, [updateData.response])
 
   const SettingsWithFormik = withFormik({
-    mapPropsToValues() {
+    enableReinitialize: true,
+
+    mapPropsToValues({ user, blik, account }) {
       return {
-        user: store.get('user') || '',
-        blik: '',
-        account: '',
+        user: user || userData?.response?.user || '',
+        blik: blik || userData?.response?.blik || '',
+        account: account || userData?.response?.account || '',
         swift: '',
       }
     },
@@ -155,16 +174,11 @@ const SettingsFormik = () => {
     }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {
-      //ToDo Przy wysyłaniu należy zamienić numer konta i Switft/BIC na uppercase
-      setTimeout(() => {
-        console.log(values)
-        setSubmitting(false)
-        resetForm()
-      }, 200)
+      updateData.sendData(values)
     },
   })(SettingsForm)
 
-  return <SettingsWithFormik />
+  return <SettingsWithFormik isLoading={userData.isLoading} />
 }
 
 export default SettingsFormik

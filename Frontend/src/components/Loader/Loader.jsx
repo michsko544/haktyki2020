@@ -3,7 +3,7 @@ import Store from '../App/App.store'
 import { AppBackgroundThemes } from '../App/App.themes'
 import { LoaderStyled } from './Loader.style'
 
-const Loader = () => {
+const Loader = ({ ...props }) => {
   const [state, setState] = React.useState(3)
 
   React.useEffect(() => {
@@ -40,7 +40,7 @@ const Loader = () => {
     AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
 
   return (
-    <LoaderStyled color={fontcolor}>
+    <LoaderStyled color={fontcolor} {...props}>
       Ładowanie{handleDisplayDots()}
     </LoaderStyled>
   )

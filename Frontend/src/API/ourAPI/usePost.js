@@ -6,6 +6,7 @@ const defaultResponse = {
   authToken: '',
   userId: 0,
   fullname: '',
+  statusCode: 0
 }
 
 const usePost = (url) => {
