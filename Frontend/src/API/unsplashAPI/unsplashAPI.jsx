@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const unsplashAPI = axios.create({
-  baseURL: 'https://api.unsplasha.com/photos/',
+  baseURL: 'https://api.unsplash.com/',
 })
 
 unsplashAPI.defaults.headers.common[
