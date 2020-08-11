@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { ThemeProvider } from '@material-ui/core/styles'
 import Store from './App.store'
+import { AppThemes } from './App.themes';
 
 export const AppTheme = ({ children, ...props }) => {
   const store = Store.useStore()
@@ -10,12 +11,12 @@ export const AppTheme = ({ children, ...props }) => {
   const darkTheme = createMuiTheme({
     palette: {
       type: 'dark',
-      main: '#20B0E8',
+      main: AppThemes[store.get('themeId')].from,
       primary: {
-        main: '#20B0E8',
+        main: AppThemes[store.get('themeId')].from,
       },
       secondary: {
-        main: '#20B0E8',
+        main: AppThemes[store.get('themeId')].to,
       },
     },
   })
@@ -23,12 +24,12 @@ export const AppTheme = ({ children, ...props }) => {
   const lightTheme = createMuiTheme({
     palette: {
       type: 'light',
-      main: '#20B0E8',
+      main: AppThemes[store.get('themeId')].from,
       primary: {
-        main: '#20B0E8',
+        main: AppThemes[store.get('themeId')].from,
       },
       secondary: {
-        main: '#20B0E8',
+        main: AppThemes[store.get('themeId')].to,
       },
     },
   })
