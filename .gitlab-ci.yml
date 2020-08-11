@@ -11,12 +11,13 @@ before_script:
 
 
 stages:
+  - build
+  - test
   - develop-frontend
   - production-frontend
   - develop-backend
   - production-backend
-  - build
-  - test
+
 
 develop-frontend:
   type: deploy
