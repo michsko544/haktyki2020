@@ -1,29 +1,79 @@
-image: node:latest
+image: gradle:alpine
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
   - apt-get update -qy
   - apt-get install -y ruby-dev
   - gem install dpl
-  - cd Frontend/
+
 
 stages:
-  - develop
-  - production
+  - develop-frontend
+  - production-frontend
+  - develop-backend
+  - production-backend
+  - build
+  - test
 
-develop:
+develop-frontend:
   type: deploy
-  stage: develop
+  stage: develop-frontend
   image: ruby:latest
   script:
+    - cd Frontend/
     - dpl --provider=heroku --app=$HEROKU_APP_DEVELOP --api-key=$HEROKU_API_KEY
   only:
     - develop
 
-production:
+production-frontend:
   type: deploy
-  stage: production
+  stage: production-frontend
   image: ruby:latest
   script:
+    - cd Frontend/
     - dpl --provider=heroku --app=$HEROKU_APP_PRODUCTION --api-key=$HEROKU_API_KEY
+  only:
+    - master
+
+build:
+  stage: build
+  script: 
+    - cd Backend/
+    - gradle --build-cache assemble
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
+
+test:
+  stage: test
+  script: 
+    - cd Backend/
+    - gradle check
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+
+develop-backend:
+  stage: develop-backend
+  script:
+    - cd Backend/
+    - dpl --provider=heroku --app=$API_TEAMFOOD_DEVELOP --api-key=$API_TEAMFOOD_KEY
+  only:
+    - develop
+
+production-backend:
+  stage: production-backend
+  script:
+    - cd Backend/
+    - dpl --provider=heroku --app=$API_TEAMFOOD_PRODUCTION --api-key=$API_TEAMFOOD_KEY
   only:
     - master
