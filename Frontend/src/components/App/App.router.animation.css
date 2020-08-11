@@ -1,11 +1,13 @@
 .route-wrapper {
+    overflow-x: hidden;
     position: relative;
     width: 100vw;
+    max-width: 100%;
     min-height: 100vh;
   }
   
   .route-wrapper > div {
     position: absolute;
-    width: 100vw;
+    width: 100%;
     min-height: 100vh;
   }
