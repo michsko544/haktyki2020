@@ -12,7 +12,7 @@ before_script:
 
 stages:
   - build
-  - test
+#  - test
   - develop-frontend
   - production-frontend
   - develop-backend
@@ -51,17 +51,17 @@ build:
       - build
       - .gradle
 
-test:
-  stage: test
-  script: 
-    - cd Backend/
-    - gradle check
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
-    paths:
-      - build
-      - .gradle
+#test:
+#  stage: test
+#  script: 
+#    - cd Backend/
+#    - gradle check
+#  cache:
+#    key: "$CI_COMMIT_REF_NAME"
+#    policy: pull
+#    paths:
+#      - build
+#      - .gradle
 
 develop-backend:
   stage: develop-backend
