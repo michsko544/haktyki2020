@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { withFormik, Form } from 'formik'
+import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import Button from '../../Button'
 import { ButtonFormWrapper } from '../../Button'
@@ -9,6 +9,7 @@ import { InputStyled } from '../../Inputs'
 import { FormWrapper } from '../LoginForm'
 import { usePost } from './../../../API'
 import { Field } from 'formik'
+import { useSnackbar } from 'notistack'
 
 const RegisterForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -21,9 +22,10 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             component={Input}
             type="email"
             name="user"
-            label="eMail"
+            label="E-Mail"
             placeholder="XxTomekXx@gmail.com"
             error={errorHandler('user')}
+            disabled={isSubmitting}
           />
         </InputStyled>
         <InputStyled>
@@ -34,6 +36,7 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             label="Hasło"
             placeholder="**************"
             error={errorHandler('password')}
+            disabled={isSubmitting}
           />
         </InputStyled>
         <ButtonFormWrapper>
@@ -45,45 +48,71 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
 }
 
 const RegisterFormik = () => {
+  const registerAPI = usePost('/register')
   const history = useHistory()
-  const register = usePost('/register')
-
-  useEffect(() => {}, [register.error])
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   useEffect(() => {
-    if (!register.isLoading && register.response?.statusCode === 201)
-      history.replace('/')
-  }, [register.response, register.isLoading])
-
-  const RegisterWithFormik = withFormik({
-    mapPropsToValues({ user, password }) {
-      return {
-        user: user || '',
-        password: password || '',
+    if (!registerAPI.isLoading && registerAPI.error) {
+      if (registerAPI.error.code === -1) {
+        enqueueSnackbar(registerAPI.error.text, {
+          variant: 'error',
+        })
       }
-    },
+      if (registerAPI.error.code >= 400 && registerAPI.error.code <= 599) {
+        enqueueSnackbar(registerAPI.error.text, {
+          variant: 'error',
+        })
+      }
+    }
+  }, [registerAPI.error])
 
-    validationSchema: Yup.object().shape({
-      user: Yup.string()
-        .email('Podaj prawidłowy adres email')
-        .max(50, 'Email musi mieć maksimum 50 znaków')
-        .required('Wypełnij to pole'),
-      password: Yup.string()
-        .min(8, 'Hasło musi mieć minimum 8 znaków')
-        .max(30, 'Hasło musi mieć maksimum 30 znaki')
-        .matches(
-          /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/,
-          'Hasło musi mieć conajmniej jedną małą literę, dużą oraz cyfrę'
-        )
-        .required('Wypełnij to pole'),
-    }),
+  useEffect(() => {
+    if (!registerAPI.isLoading && registerAPI.response?.statusCode === 201) {
+      enqueueSnackbar('Zarejestrowano pomyślnie!', {
+        variant: 'success',
+      })
+      setTimeout(() => {
+        history.replace('/')
+      }, 1500)
+    }
+  }, [registerAPI.response])
 
-    handleSubmit(values, { resetForm, setSubmitting }) {
-      register.sendData({ login: values.user, password: values.password })
-    },
-    displayName: 'register-form',
-  })(RegisterForm)
+  const initialValues = {
+    user: '',
+    password: '',
+  }
 
-  return <RegisterWithFormik />
+  const onSubmit = async (values, { setSubmitting }) => {
+    await registerAPI.sendData({
+      login: values.user,
+      password: values.password,
+    })
+    setSubmitting(false)
+  }
+
+  const validationSchema = Yup.object().shape({
+    user: Yup.string()
+      .email('Podaj prawidłowy adres email')
+      .max(50, 'Email musi mieć maksimum 50 znaków')
+      .required('Wypełnij to pole'),
+    password: Yup.string()
+      .min(8, 'Hasło musi mieć minimum 8 znaków')
+      .max(30, 'Hasło musi mieć maksimum 30 znaki')
+      .matches(
+        /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/,
+        'Hasło musi mieć conajmniej jedną małą literę, dużą oraz cyfrę'
+      )
+      .required('Wypełnij to pole'),
+  })
+
+  return (
+    <>
+      <Formik {...{ initialValues, onSubmit, validationSchema }}>
+        {RegisterForm}
+      </Formik>
+    </>
+  )
 }
+
 export default RegisterFormik

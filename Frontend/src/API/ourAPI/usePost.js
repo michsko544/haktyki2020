@@ -19,8 +19,8 @@ const usePost = (url) => {
       }
     } catch (error) {
       setError({
-        code: error.response?.status,
-        text: error.response?.statusText,
+        code: error.response?.status || -1,
+        text: 'Coś poszło nie tak',
       })
       if (process.env.REACT_APP_DEBUG === 'true')
         console.log('Error', error.response)
