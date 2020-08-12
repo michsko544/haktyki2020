@@ -20,7 +20,7 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             type="email"
             name="user"
             label="eMail"
-            placeholder="xxxTomekxxx2000@gmail.com"
+            placeholder="XxTomekXx@gmail.com"
             error={errorHandler('user')}
           />
         </InputStyled>
@@ -44,17 +44,6 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
 const RegisterFormik = () => {
   const history = useHistory()
   const register = usePost('/register')
-
-  useEffect(() => {
-    console.log('ErrorEffect: ', register.error)
-  }, [register.error])
-
-  useEffect(() => {
-    console.log('RegisterEffect: ', register.response)
-    // What do? Po prostu redirect?
-    if (!register.isLoading && register.response.statusCode === 201)
-      history.replace('/')
-  }, [register.response, register.isLoading])
 
   const RegisterWithFormik = withFormik({
     mapPropsToValues({ user, password }) {

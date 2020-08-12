@@ -49,10 +49,6 @@ const LoginFormik = () => {
   const store = Store.useStore()
   const login = usePost('/login')
 
-  const handleSubmit = (values) => {
-    login.sendData(values)
-  }
-
   useEffect(() => {
     console.log('LoginEffect: ', login.response)
     store.set('authToken')(login.response.authToken)
@@ -79,7 +75,9 @@ const LoginFormik = () => {
       password: Yup.string().required('Wypełnij to pole'),
     }),
 
-    handleSubmit: handleSubmit,
+    handleSubmit: (values, { resetForm, setSubmitting }) => {
+      login.sendData({ login: values.user, password: values.password })
+    },
   })(LoginForm)
 
   return <LoginWithFormik />
