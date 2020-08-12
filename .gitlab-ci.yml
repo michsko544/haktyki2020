@@ -50,6 +50,9 @@ build:
     paths:
       - build
       - .gradle
+  only:
+    - master
+    - develop
 
 #test:
 #  stage: test
