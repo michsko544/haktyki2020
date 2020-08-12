@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import * as Yup from 'yup'
-import { withFormik, Form, Field } from 'formik'
+import { withFormik, Field } from 'formik'
 import { FormStyled } from './Container/form.style'
 import { Input, InputStyled, RadioGroupFormik } from '../../components/Inputs'
 import {
@@ -13,25 +13,27 @@ import Button from '@material-ui/core/Button'
 import Loader from '../../components/Loader'
 import ErrorMessage from '../../components/ErrorMessage'
 
-import { useFetch } from '../../API'
 import { PhotoSelectionStyled } from './PhotoSelection/photo.selection.style'
 import { PhotoSelectionContainer } from './PhotoSelection/photo.selection.container.style'
 import { DoubleInputStyled } from './Container/double.input.style'
 import Store from '../../components/App/App.store'
-import { AppBackgroundThemes, AppThemes } from '../../components/App/App.themes'
+import { AppThemes } from '../../components/App/App.themes'
+import { FoodKeywords } from './teamfood.keywords'
+import usePhotoSearch from './../../API/unsplashAPI/usePhotoSearch'
+import { TeamfoodDefaultImages } from './teamfood.default.images'
 
-const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
+const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
   const store = Store.useStore()
   const errorHandler = (name) => touched[name] && errors[name]
-  const [photos, setPhotos] = useState([])
-  const fetchPhotos = useFetch('/photos')
+  const images = usePhotoSearch()
+  const [photos, setPhotos] = useState(TeamfoodDefaultImages)
 
   useEffect(() => {
-    fetchPhotos.getData()
+    images.setKeywords(['food'])
   }, [])
 
-  const photoSelectionHandler = (photo, event) => {
-    let photocopy = [...fetchPhotos.response.pictures]
+  const photoSelectionHandler = (photo) => {
+    let photocopy = [...photos]
     photocopy = photocopy.map((p) => {
       p.selected = p.id === photo.id
       return p
@@ -40,20 +42,56 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
     setPhotos(photocopy)
   }
 
-  const newPhotosHandler = (e) => {
-    fetchPhotos.getData()
-    console.log('Refresh photos: ', fetchPhotos)
+  const newPhotosHandler = async (e) => {
+    await images.search(6)
   }
 
-  const showLoaderIfLoading = () => fetchPhotos.isLoading && <Loader />
+  useEffect(() => {
+    if(images.images.length === 6) {
+      console.log('New Images: ', images.images)
+      setPhotos(images.images)
+    }
+  }, [images.images])
+
+  const showLoaderIfLoading = () => images.isLoading && <Loader />
 
   const showErrorIfError = () =>
-    fetchPhotos.error && (
-      <ErrorMessage
-        error={fetchPhotos.error.code}
-        advice={fetchPhotos.error.text}
-      />
+    images.error && (
+      <ErrorMessage error={images.error.code} advice={images.error.text} />
     )
+
+  const checkKeywords = () => {
+    let matched = []
+
+    for (let word of FoodKeywords) {
+      if (values.what.toLowerCase().includes(word.match))
+        matched.push(word.keyword)
+
+      if (values.where.toLowerCase().includes(word.match))
+        matched.push(word.keyword)
+    }
+
+    if (matched.length === 0) {
+      console.log('Nothing matched, using every keyword')
+      matched = [...values.what.split(' '), ...values.where.split(' ')].filter(
+        (v) => v !== ''
+      )
+    }
+
+    if (matched.length === 0) {
+      console.log('Empty.')
+      matched.push('dinner', 'food')
+    }
+
+    console.log('Matched keywords: ', matched)
+    images.setKeywords(matched)
+  }
+
+  useEffect(checkKeywords, [values])
+
+  useEffect(() => {
+    console.log('Photos: ', photos.filter((i) => i.selected)[0])
+  }, [photos])
 
   return (
     <FormStyled>
@@ -116,17 +154,16 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
         <PhotoSelectionContainer>
           {showLoaderIfLoading()}
           {showErrorIfError()}
-          {fetchPhotos.response &&
-            fetchPhotos.response.pictures.map((photo) => (
-              <PhotoSelectionStyled
-                onClick={(e) => photoSelectionHandler(photo, e)}
-                key={photo.id}
-                selected={photo.selected}
-                url={photo.url}
-                from={AppThemes[store.get('themeId')].from}
-                to={AppThemes[store.get('themeId')].to}
-              />
-            ))}
+          {photos.map((photo) => (
+            <PhotoSelectionStyled
+              onClick={(e) => photoSelectionHandler(photo, e)}
+              key={photo.id}
+              selected={photo.selected}
+              url={`${photo.urls.raw}&w=160&h=100`}
+              from={AppThemes[store.get('themeId')].from}
+              to={AppThemes[store.get('themeId')].to}
+            />
+          ))}
           <Button onClick={newPhotosHandler}>Wylosuj nowe</Button>
         </PhotoSelectionContainer>
       </div>
@@ -135,8 +172,6 @@ const TeamfoodForm = ({ errors, touched, isSubmitting }) => {
 }
 
 const TeamfoodFormik = () => {
-  const store = Store.useStore()
-
   const TeamfoodWithFormik = withFormik({
     mapPropsToValues() {
       return {
@@ -145,20 +180,21 @@ const TeamfoodFormik = () => {
         whenHour: '',
         what: '',
         payment: '',
+        image: '',
       }
     },
-  
+
     validationSchema: Yup.object().shape({
       where: Yup.string().required('Wypełnij to pole'),
       when: Yup.string().required('Wypełnij to pole'),
       whenHour: Yup.string().required('Wypełnij to pole'),
       what: Yup.string().required('Wypełnij to pole'),
-      payment: Yup.string().required('Musisz zaznaczyć jedną z opcji')
+      payment: Yup.string().required('Musisz zaznaczyć jedną z opcji'),
     }),
-  
+
     handleSubmit(values, { resetForm, setSubmitting }) {
       //TODO
-      
+
       setTimeout(() => {
         console.log('Values: ', values)
         setSubmitting(false)
