@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
@@ -50,7 +50,7 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
 const RegisterFormik = () => {
   const registerAPI = usePost('/register')
   const history = useHistory()
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
     if (registerAPI.error.code >= 400 && registerAPI.error.code <= 599) {
@@ -59,7 +59,7 @@ const RegisterFormik = () => {
         variant: 'error',
       })
     }
-  }, [registerAPI.error])
+  }, [registerAPI.error, enqueueSnackbar])
 
   useEffect(() => {
     if (!registerAPI.isLoading && registerAPI.response.statusCode === 201) {
@@ -67,11 +67,12 @@ const RegisterFormik = () => {
       enqueueSnackbar('Zarejestrowano pomyślnie!', {
         variant: 'success',
       })
+      
       setTimeout(() => {
         history.replace('/')
       }, 1500)
     }
-  }, [registerAPI.response, registerAPI.isLoading])
+  }, [registerAPI.response, registerAPI.isLoading, enqueueSnackbar, history])
 
   const initialValues = {
     user: '',
