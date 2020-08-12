@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import * as Yup from 'yup'
-import { withFormik, Field } from 'formik'
+import { Formik, Field } from 'formik'
 import { FormStyled } from './Container/form.style'
 import { Input, InputStyled, RadioGroupFormik } from '../../components/Inputs'
 import {
@@ -22,7 +22,7 @@ import { FoodKeywords } from './teamfood.keywords'
 import usePhotoSearch from './../../API/unsplashAPI/usePhotoSearch'
 import { TeamfoodDefaultImages } from './teamfood.default.images'
 
-const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
+const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
   const store = Store.useStore()
   const errorHandler = (name) => touched[name] && errors[name]
   const images = usePhotoSearch()
@@ -99,6 +99,8 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
       return p
     })
 
+    console.log('Selected Photo: ', photo.urls.raw)
+    setValues({ ...values, image: photo.urls.raw })
     setPhotos(photocopy)
   }
 
@@ -160,7 +162,8 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
     <FormStyled>
       <div>
         <InputStyled>
-          <Input
+          <Field
+            component={Input}
             type="text"
             name="where"
             label="Skąd?"
@@ -170,7 +173,8 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
         </InputStyled>
         <DoubleInputStyled>
           <InputStyled>
-            <Input
+            <Field
+              component={Input}
               type="date"
               name="when"
               label="Kiedy?"
@@ -179,7 +183,8 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
             />
           </InputStyled>
           <InputStyled>
-            <Input
+            <Field
+              component={Input}
               type="time"
               name="whenHour"
               label="O której?"
@@ -189,7 +194,8 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
           </InputStyled>
         </DoubleInputStyled>
         <InputStyled>
-          <Input
+          <Field
+            component={Input}
             type="text"
             name="what"
             label="Co zamawiasz?"
@@ -236,38 +242,33 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
 }
 
 const TeamfoodFormik = () => {
-  const TeamfoodWithFormik = withFormik({
-    mapPropsToValues() {
-      return {
-        where: '',
-        when: '',
-        whenHour: '',
-        what: '',
-        payment: '',
-        image: '',
-      }
-    },
+  const initialValues = {
+    where: '',
+    when: '',
+    whenHour: '',
+    what: '',
+    payment: '',
+    image: '',
+  }
 
-    validationSchema: Yup.object().shape({
-      where: Yup.string().required('Wypełnij to pole'),
-      when: Yup.string().required('Wypełnij to pole'),
-      whenHour: Yup.string().required('Wypełnij to pole'),
-      what: Yup.string().required('Wypełnij to pole'),
-      payment: Yup.string().required('Musisz zaznaczyć jedną z opcji'),
-    }),
+  const validationSchema = Yup.object().shape({
+    where: Yup.string().required('Wypełnij to pole'),
+    when: Yup.string().required('Wypełnij to pole'),
+    whenHour: Yup.string().required('Wypełnij to pole'),
+    what: Yup.string().required('Wypełnij to pole'),
+    payment: Yup.string().required('Musisz zaznaczyć jedną z opcji'),
+  })
 
-    handleSubmit(values, { resetForm, setSubmitting }) {
-      //TODO
+  const onSubmit = async (values, { setSubmitting }) => {
+    console.log('Submitted values: ', values)
+    setSubmitting(false)
+  }
 
-      setTimeout(() => {
-        console.log('Values: ', values)
-        setSubmitting(false)
-        resetForm()
-      }, 500)
-    },
-  })(TeamfoodForm)
-
-  return <TeamfoodWithFormik />
+  return (
+    <Formik {...{ initialValues, onSubmit, validationSchema }}>
+      {TeamfoodForm}
+    </Formik>
+  )
 }
 
 export default TeamfoodFormik
