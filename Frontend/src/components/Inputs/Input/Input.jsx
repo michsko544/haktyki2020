@@ -5,7 +5,7 @@ import { AppBackgroundThemes, AppThemes } from '../../App/App.themes'
 import { FieldStyled, Label, Underline } from './'
 import InputError from '../InputError'
 
-const Input = ({ label, error, name, children, field ,...props }) => {
+const Input = ({ label, error, name, children, field, ...props }) => {
   const store = Store.useStore()
 
   return (
