@@ -8,6 +8,7 @@ import { Input } from '../../Inputs'
 import { InputStyled } from '../../Inputs'
 import { FormWrapper } from '../LoginForm'
 import { usePost } from './../../../API'
+import { Field } from 'formik'
 
 const RegisterForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -16,7 +17,8 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
     <FormWrapper>
       <Form>
         <InputStyled>
-          <Input
+          <Field
+            component={Input}
             type="email"
             name="user"
             label="eMail"
@@ -25,7 +27,8 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
           />
         </InputStyled>
         <InputStyled>
-          <Input
+          <Field
+            component={Input}
             type="password"
             name="password"
             label="Hasło"
@@ -44,6 +47,16 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
 const RegisterFormik = () => {
   const history = useHistory()
   const register = usePost('/register')
+
+  useEffect(() => {
+    console.log('ErrorEffect: ', register.error)
+  }, [register.error])
+
+  useEffect(() => {
+    console.log('RegisterEffect: ', register.response)
+    if (!register.isLoading && register.response.statusCode === 201)
+      history.replace('/')
+  }, [register.response, register.isLoading])
 
   const RegisterWithFormik = withFormik({
     mapPropsToValues({ user, password }) {
@@ -71,6 +84,7 @@ const RegisterFormik = () => {
     handleSubmit(values, { resetForm, setSubmitting }) {
       register.sendData(values)
     },
+    displayName: 'register-form',
   })(RegisterForm)
 
   return <RegisterWithFormik />

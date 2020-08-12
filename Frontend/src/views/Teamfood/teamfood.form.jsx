@@ -27,10 +27,70 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
   const errorHandler = (name) => touched[name] && errors[name]
   const images = usePhotoSearch()
   const [photos, setPhotos] = useState(TeamfoodDefaultImages)
+  const [imageProps, setImageProps] = useState({
+    w: 160,
+    h: 100,
+    dpr: window.devicePixelRatio,
+  })
+
+  const photoUrlBuilder = (photo, w, h, dpr) =>
+    `${photo.urls.raw}&w=${w}&h=${h}&dpr=${dpr}&auto=format&fit=crop`
 
   useEffect(() => {
     images.setKeywords(['food'])
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    let rtime
+    let timeout = false
+    const delta = 250
+    const onResize = () => {
+      rtime = new Date()
+      if (timeout === false) {
+        timeout = true
+        setTimeout(resizeEnd, delta)
+      }
+    }
+
+    const resizeEnd = async () => {
+      if (new Date() - rtime < delta) {
+        setTimeout(resizeEnd, delta)
+      } else {
+        timeout = false
+        if (typeof document.querySelector('.photos') === 'object') {
+          const p = document.querySelector('.photos')
+          const width = p.clientWidth
+          const height = p.clientHeight
+          const dpr = window.devicePixelRatio
+          if (
+            width !== imageProps.w ||
+            height !== imageProps.h ||
+            dpr !== imageProps.dpr
+          ) {
+            await Promise.all(
+              photos.map(
+                (p) =>
+                  new Promise((resolve, reject) => {
+                    const img = new Image()
+                    img.onload = () => resolve()
+                    img.onerror = () => reject()
+                    img.src = photoUrlBuilder(p, width, height, dpr)
+                  })
+              )
+            )
+
+            setImageProps({
+              w: width,
+              h: height,
+              dpr: dpr,
+            })
+          }
+        }
+      }
+    }
+
+    window.addEventListener('resize', onResize)
+  })
 
   const photoSelectionHandler = (photo) => {
     let photocopy = [...photos]
@@ -47,7 +107,7 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
   }
 
   useEffect(() => {
-    if(images.images.length === 6) {
+    if (images.images.length === 6) {
       console.log('New Images: ', images.images)
       setPhotos(images.images)
     }
@@ -92,6 +152,9 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
   useEffect(() => {
     console.log('Photos: ', photos.filter((i) => i.selected)[0])
   }, [photos])
+
+  const photoUrl = (photo) =>
+    photoUrlBuilder(photo, imageProps.w, imageProps.h, imageProps.dpr)
 
   return (
     <FormStyled>
@@ -156,10 +219,11 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values }) => {
           {showErrorIfError()}
           {photos.map((photo) => (
             <PhotoSelectionStyled
+              className="photos"
               onClick={(e) => photoSelectionHandler(photo, e)}
               key={photo.id}
               selected={photo.selected}
-              url={`${photo.urls.raw}&w=160&h=100`}
+              url={photoUrl(photo)}
               from={AppThemes[store.get('themeId')].from}
               to={AppThemes[store.get('themeId')].to}
             />

@@ -5,7 +5,7 @@ import { AppBackgroundThemes, AppThemes } from '../../App/App.themes'
 import { FieldStyled, Label, Underline } from './'
 import InputError from '../InputError'
 
-const Input = ({ label, error, name, children, ...props }) => {
+const Input = ({ label, error, name, children, field, ...props }) => {
   const store = Store.useStore()
 
   return (
@@ -23,9 +23,9 @@ const Input = ({ label, error, name, children, ...props }) => {
       >
         <FieldStyled
           autoComplete="off"
-          name={name}
           id={name}
           color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}
+          {...field}
           {...props}
         />
       </Underline>
@@ -40,7 +40,6 @@ const Input = ({ label, error, name, children, ...props }) => {
 Input.propTypes = {
   type: PropTypes.string,
   component: PropTypes.string,
-  name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 }
