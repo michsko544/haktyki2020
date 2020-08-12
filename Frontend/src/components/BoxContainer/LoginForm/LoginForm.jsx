@@ -70,8 +70,16 @@ const LoginFormik = () => {
   }, [loginAPI.response])
 
   useEffect(() => {
-    if (!loginAPI.isLoading && loginAPI.error) {
-      if (loginAPI.error.code >= 400 && loginAPI.error.code <= 599) {
+    if (loginAPI.error) {
+      if (loginAPI.error.code === -1) {
+        enqueueSnackbar(loginAPI.error.text, {
+          variant: 'error',
+        })
+      } else if (loginAPI.error.code === 401) {
+        enqueueSnackbar('Niepoprawny email lub hasło', {
+          variant: 'error',
+        })
+      } else if (loginAPI.error.code >= 400 && loginAPI.error.code <= 599) {
         enqueueSnackbar(loginAPI.error.text, {
           variant: 'error',
         })
@@ -88,7 +96,6 @@ const LoginFormik = () => {
     enqueueSnackbar('Logowanie', {
       variant: 'info',
     })
-    console.log('Submitted vals: ', values)
     await loginAPI.sendData({ login: values.user, password: values.password })
     setSubmitting(false)
   }

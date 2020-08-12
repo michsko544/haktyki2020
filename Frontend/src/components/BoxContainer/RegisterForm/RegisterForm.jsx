@@ -52,13 +52,19 @@ const RegisterFormik = () => {
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
-    if (!registerAPI.isLoading && registerAPI.error) {
+    if (registerAPI.error) {
       if (registerAPI.error.code === -1) {
         enqueueSnackbar(registerAPI.error.text, {
           variant: 'error',
         })
-      }
-      if (registerAPI.error.code >= 400 && registerAPI.error.code <= 599) {
+      } else if (registerAPI.error.code === 400) {
+        enqueueSnackbar('Ten email jest już używany', {
+          variant: 'error',
+        })
+      } else if (
+        registerAPI.error.code >= 400 &&
+        registerAPI.error.code <= 599
+      ) {
         enqueueSnackbar(registerAPI.error.text, {
           variant: 'error',
         })
@@ -84,6 +90,9 @@ const RegisterFormik = () => {
   }
 
   const onSubmit = async (values, { setSubmitting }) => {
+    enqueueSnackbar('Rejestrowanie', {
+      variant: 'info',
+    })
     await registerAPI.sendData({
       login: values.user,
       password: values.password,
