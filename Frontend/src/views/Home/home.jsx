@@ -31,7 +31,7 @@ const Home = () => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const getFirstname = () => {
-    return store.get('user').split(' ')[0]
+    return store.get('user')?.split(' ')[0]
   }
 
   const toggleDetailsVisibility = () => {
@@ -60,7 +60,8 @@ const Home = () => {
               <TuneIcon
                 style={{
                   color:
-                    AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+                    AppBackgroundThemes[store.get('themeBackgroundId')]
+                      .fontColor,
                 }}
               />
             </IconLink>

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import Button from '../../Button'
@@ -23,7 +24,7 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
             disabled={isSubmitting}
             type="email"
             name="user"
-            label="eMail"
+            label="E-Mail"
             placeholder="XxTomekXx@gmail.com"
             error={errorHandler('user')}
           />
@@ -49,25 +50,40 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
 
 const LoginFormik = () => {
   const store = Store.useStore()
+  const history = useHistory()
   const loginAPI = usePost('/login')
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
-    console.log('LoginEffect: ', loginAPI.response)
-    if(loginAPI.response.authToken && loginAPI.response.fullname && loginAPI.response.userId) {
+    if (loginAPI.response) {
+      if (loginAPI.response.statusCode === 200) {
+        enqueueSnackbar('Pomyślnie zalogowano', {
+          variant: 'success',
+        })
+      }
       store.set('authToken')(loginAPI.response.authToken)
-      store.set('user')(loginAPI.response.fullname)
+      store.set('user')(loginAPI.response.fullname || '')
       store.set('userId')(loginAPI.response.userId)
-
+      if (!loginAPI.response.fullname) history.push('/greeter')
+      else history.push('/')
     }
   }, [loginAPI.response])
 
   useEffect(() => {
-    if (loginAPI.error.code >= 400 && loginAPI.error.code <= 599) {
-      console.log('ErrorEffect: ', loginAPI.error)
-      enqueueSnackbar('Spróbuj jeszcze raz', {
-        variant: 'error',
-      })
+    if (loginAPI.error) {
+      if (loginAPI.error.code === -1) {
+        enqueueSnackbar(loginAPI.error.text, {
+          variant: 'error',
+        })
+      } else if (loginAPI.error.code === 401) {
+        enqueueSnackbar('Niepoprawny email lub hasło', {
+          variant: 'error',
+        })
+      } else if (loginAPI.error.code >= 400 && loginAPI.error.code <= 599) {
+        enqueueSnackbar(loginAPI.error.text, {
+          variant: 'error',
+        })
+      }
     }
   }, [loginAPI.error, enqueueSnackbar])
 
@@ -78,10 +94,9 @@ const LoginFormik = () => {
 
   const onSubmit = async (values, { setSubmitting }) => {
     enqueueSnackbar('Logowanie', {
-      variant: 'info'
+      variant: 'info',
     })
-    console.log('Submitted vals: ', values)
-    await loginAPI.sendData(values)
+    await loginAPI.sendData({ login: values.user, password: values.password })
     setSubmitting(false)
   }
 
