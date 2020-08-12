@@ -12,7 +12,7 @@ const defaultResponse = {
 const usePost = (url) => {
   const [isLoading, setIsLoading] = useState(false)
   const [response, setResponse] = useState(defaultResponse)
-  const [error, setError] = useState({})
+  const [error, setError] = useState({code: -1})
 
   const sendData = async (data) => {
     try {
