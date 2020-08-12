@@ -12,7 +12,7 @@ import {
 import Button from '@material-ui/core/Button'
 import Loader from '../../components/Loader'
 import ErrorMessage from '../../components/ErrorMessage'
-
+import { useSnackbar } from 'notistack'
 import { PhotoSelectionStyled } from './PhotoSelection/photo.selection.style'
 import { PhotoSelectionContainer } from './PhotoSelection/photo.selection.container.style'
 import { DoubleInputStyled } from './Container/double.input.style'
@@ -21,6 +21,9 @@ import { AppThemes } from '../../components/App/App.themes'
 import { FoodKeywords } from './teamfood.keywords'
 import usePhotoSearch from './../../API/unsplashAPI/usePhotoSearch'
 import { TeamfoodDefaultImages } from './teamfood.default.images'
+import { usePost } from './../../API'
+import { AppBackgroundThemes } from './../../components/App/App.themes'
+import { useHistory } from 'react-router-dom';
 
 const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
   const store = Store.useStore()
@@ -32,6 +35,7 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
     h: 100,
     dpr: window.devicePixelRatio,
   })
+  const { enqueueSnackbar } = useSnackbar()
 
   const photoUrlBuilder = (photo, w, h, dpr) =>
     `${photo.urls.raw}&w=${w}&h=${h}&dpr=${dpr}&auto=format&fit=crop`
@@ -105,6 +109,7 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
   }
 
   const newPhotosHandler = async (e) => {
+    enqueueSnackbar('Ładowanie nowych zdjęć ^_+')
     await images.search(6)
   }
 
@@ -126,18 +131,19 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
     let matched = []
 
     for (let word of FoodKeywords) {
-      if (values.what.toLowerCase().includes(word.match))
+      if (values.restaurant.toLowerCase().includes(word.match))
         matched.push(word.keyword)
 
-      if (values.where.toLowerCase().includes(word.match))
+      if (values.description.toLowerCase().includes(word.match))
         matched.push(word.keyword)
     }
 
     if (matched.length === 0) {
       console.log('Nothing matched, using every keyword')
-      matched = [...values.what.split(' '), ...values.where.split(' ')].filter(
-        (v) => v !== ''
-      )
+      matched = [
+        ...values.restaurant.split(' '),
+        ...values.description.split(' '),
+      ].filter((v) => v !== '')
     }
 
     if (matched.length === 0) {
@@ -165,10 +171,10 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
           <Field
             component={Input}
             type="text"
-            name="where"
+            name="restaurant"
             label="Skąd?"
-            placeholder="Krowa Zdrowa"
-            error={errorHandler('where')}
+            placeholder="Nazwa miejsca"
+            error={errorHandler('restaurant')}
           />
         </InputStyled>
         <DoubleInputStyled>
@@ -176,20 +182,20 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
             <Field
               component={Input}
               type="date"
-              name="when"
+              name="date"
               label="Kiedy?"
               placeholder="Dzisiaj"
-              error={errorHandler('when')}
+              error={errorHandler('date')}
             />
           </InputStyled>
           <InputStyled>
             <Field
               component={Input}
               type="time"
-              name="whenHour"
+              name="time"
               label="O której?"
               placeholder="17:00"
-              error={errorHandler('whenHour')}
+              error={errorHandler('time')}
             />
           </InputStyled>
         </DoubleInputStyled>
@@ -197,20 +203,20 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
           <Field
             component={Input}
             type="text"
-            name="what"
+            name="description"
             label="Co zamawiasz?"
-            placeholder="Podwójny Krowa Burger"
-            error={errorHandler('what')}
+            placeholder="Twoje zamówienie"
+            error={errorHandler('description')}
           />
         </InputStyled>
         <Field
-          name="payment"
+          name="paymentForm"
           options={[
             { value: 'BLIK', label: 'BLIK' },
             { value: 'TRANSFER', label: 'Przelew' },
             { value: 'CASH', label: 'Gotówka' },
           ]}
-          error={() => errorHandler('payment')}
+          error={() => errorHandler('paymentForm')}
           label={'Forma Płatności'}
           component={RadioGroupFormik}
           aria-label="payment"
@@ -234,6 +240,17 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
               to={AppThemes[store.get('themeId')].to}
             />
           ))}
+          <p
+            style={{
+              textAlign: 'center',
+              gridColumn: 'span 2',
+              width: '100%',
+              color:
+                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+            }}
+          >
+            {errorHandler('image')}
+          </p>
           <Button onClick={newPhotosHandler}>Wylosuj nowe</Button>
         </PhotoSelectionContainer>
       </div>
@@ -242,25 +259,62 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
 }
 
 const TeamfoodFormik = () => {
+  const store = Store.useStore()
+  const { enqueueSnackbar } = useSnackbar()
+  const api = usePost('/orders/add-order')
+  const history = useHistory()
+
+  useEffect(() => {
+    if (!api.isLoading && api.response.statusCode > 0) {
+      console.log('Api Response:', api.response)
+      history.replace('/')
+    }
+  }, [api.response, api.isLoading])
+
+  useEffect(() => {
+    if (!api.isLoading && api.error.code > 0) {
+      console.warn('Api Error occured: ', api.error)
+    }
+  }, [api.error, api.isLoading])
+
+  const transformRequest = (order) => {
+    return {
+      restaurant: order.restaurant,
+      date: order.date,
+      time: order.time,
+      image: order.image,
+      orderDetails: [
+        {
+          description: order.description,
+          userId: store.get('userId'),
+        },
+      ],
+    }
+  }
+
   const initialValues = {
-    where: '',
-    when: '',
-    whenHour: '',
-    what: '',
-    payment: '',
+    restaurant: '',
+    date: '',
+    time: '',
+    description: '',
+    paymentForm: '',
     image: '',
   }
 
   const validationSchema = Yup.object().shape({
-    where: Yup.string().required('Wypełnij to pole'),
-    when: Yup.string().required('Wypełnij to pole'),
-    whenHour: Yup.string().required('Wypełnij to pole'),
-    what: Yup.string().required('Wypełnij to pole'),
-    payment: Yup.string().required('Musisz zaznaczyć jedną z opcji'),
+    restaurant: Yup.string().required('Wypełnij to pole'),
+    date: Yup.string().required('Wypełnij to pole'),
+    time: Yup.string().required('Wypełnij to pole'),
+    description: Yup.string().required('Wypełnij to pole'),
+    paymentForm: Yup.string().required('Musisz zaznaczyć jedną z opcji'),
+    image: Yup.string().required('Wybierz zdjęcie (☞ﾟヮﾟ)☞'),
   })
 
   const onSubmit = async (values, { setSubmitting }) => {
     console.log('Submitted values: ', values)
+    console.log('Transformed request: ', transformRequest(values))
+    enqueueSnackbar('Dodawanie twojego zamówienia （*＾-＾*）↗　')
+    await api.sendData(transformRequest(values))
     setSubmitting(false)
   }
 
