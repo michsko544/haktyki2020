@@ -18,7 +18,7 @@ const Login = () => {
         <HeroimagePosition>
           <Heroimage />
         </HeroimagePosition>
-        <FormWithLink linkText={'Chce dołączyć'} link="/register">
+        <FormWithLink linkText={'Chce dołączyć!'} link="/register">
           <LoginFormik />
         </FormWithLink>
       </Padding30>

@@ -22,7 +22,7 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             type="email"
             name="user"
             label="E-Mail"
-            placeholder="xxxTomekxxx2000@gmail.com"
+            placeholder="XxTomekXx@gmail.com"
             error={errorHandler('user')}
             disabled={isSubmitting}
           />
@@ -52,17 +52,28 @@ const RegisterFormik = () => {
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
-    if (registerAPI.error.code >= 400 && registerAPI.error.code <= 599) {
-      console.log('ErrorEffect: ', registerAPI.error)
-      enqueueSnackbar('Coś poszło nie tak', {
-        variant: 'error',
-      })
+    if (registerAPI.error) {
+      if (registerAPI.error.code === -1) {
+        enqueueSnackbar(registerAPI.error.text, {
+          variant: 'error',
+        })
+      } else if (registerAPI.error.code === 400) {
+        enqueueSnackbar('Ten email jest już używany', {
+          variant: 'error',
+        })
+      } else if (
+        registerAPI.error.code >= 400 &&
+        registerAPI.error.code <= 599
+      ) {
+        enqueueSnackbar(registerAPI.error.text, {
+          variant: 'error',
+        })
+      }
     }
   }, [registerAPI.error, enqueueSnackbar])
 
   useEffect(() => {
-    if (!registerAPI.isLoading && registerAPI.response.statusCode === 201) {
-      console.log('RegisterEffect: ', registerAPI.response)
+    if (!registerAPI.isLoading && registerAPI.response?.statusCode === 201) {
       enqueueSnackbar('Zarejestrowano pomyślnie!', {
         variant: 'success',
       })
@@ -79,8 +90,13 @@ const RegisterFormik = () => {
   }
 
   const onSubmit = async (values, { setSubmitting }) => {
-    console.log('Submitted values:', values)
-    await registerAPI.sendData(values)
+    enqueueSnackbar('Rejestrowanie', {
+      variant: 'info',
+    })
+    await registerAPI.sendData({
+      login: values.user,
+      password: values.password,
+    })
     setSubmitting(false)
   }
 

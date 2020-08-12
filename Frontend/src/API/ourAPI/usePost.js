@@ -2,17 +2,10 @@ import { useState } from 'react'
 import axiosAPI from './API'
 import PropTypes from 'prop-types'
 
-const defaultResponse = {
-  authToken: '',
-  userId: 0,
-  fullname: '',
-  statusCode: 0
-}
-
 const usePost = (url) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [response, setResponse] = useState(defaultResponse)
-  const [error, setError] = useState({code: -1})
+  const [response, setResponse] = useState(null)
+  const [error, setError] = useState(null)
 
   const sendData = async (data) => {
     try {
@@ -26,8 +19,8 @@ const usePost = (url) => {
       }
     } catch (error) {
       setError({
-        code: error.response?.status,
-        text: error.response?.statusText,
+        code: error.response?.status || -1,
+        text: 'Coś poszło nie tak',
       })
       if (process.env.REACT_APP_DEBUG === 'true')
         console.log('Error', error.response)

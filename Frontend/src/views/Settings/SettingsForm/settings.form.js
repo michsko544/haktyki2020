@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import * as Yup from 'yup'
-import { withFormik, useFormikContext, Form } from 'formik'
+import { withFormik, Form } from 'formik'
 import {
   Input,
   InputStyled,
@@ -12,7 +12,7 @@ import {
   default as Button,
 } from './../../../components/Button'
 import { usePost, useFetch } from './../../../API/ourAPI'
-import { useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom'
 
 const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -80,7 +80,7 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
               type="text"
               name="account"
               label="Numer konta do przelewów"
-              placeholder="PL78 2323 4333 1234 2333 0000"
+              placeholder="PL78 2323 4333 1234 2333 0000 1234"
               error={errorHandler('account')}
               style={{ textTransform: 'uppercase' }}
             />
@@ -88,7 +88,11 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
           {showSwiftWhenIBAN()}
         </RowOnMediumScreen>
         <ButtonFormWrapper>
-          <Button disabled={isSubmitting || isLoading} text="Zapisz i wróć" type="submit" />
+          <Button
+            disabled={isSubmitting || isLoading}
+            text="Zapisz i wróć"
+            type="submit"
+          />
         </ButtonFormWrapper>
       </Form>
     </>
@@ -105,11 +109,10 @@ const SettingsFormik = () => {
   }, [])
 
   useEffect(() => {
-    if(updateData.response.statusCode === 0)
-      return;
-
-    console.log('Finished', updateData.response)
-    history.push('/')
+    if (updateData.response) {
+      if (updateData.response.statusCode === 0) return
+      history.push('/')
+    }
   }, [updateData.response])
 
   const SettingsWithFormik = withFormik({
