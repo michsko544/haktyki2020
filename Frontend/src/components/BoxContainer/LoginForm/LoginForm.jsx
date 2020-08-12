@@ -9,6 +9,7 @@ import { InputStyled } from '../../Inputs'
 import { FormWrapper } from './'
 import Store from './../../App/App.store'
 import { usePost } from './../../../API'
+import { Field } from 'formik'
 
 const LoginForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -17,7 +18,8 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
     <FormWrapper>
       <Form>
         <InputStyled>
-          <Input
+          <Field
+            component={Input}
             disabled={isSubmitting}
             type="email"
             name="user"
@@ -27,7 +29,8 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
           />
         </InputStyled>
         <InputStyled>
-          <Input
+          <Field
+            component={Input}
             disabled={isSubmitting}
             type="password"
             name="password"
