@@ -13,30 +13,34 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/orders/**").allowedOrigins("http://localhost:3000"
-                                                                    ,"https://teamfood-env-develop.herokuapp.com"
-                                                                    ,"https://teamfood-env-production.herokuapp.com")
-                                                    .allowedMethods("GET","POST")
-                                                    .maxAge(3600);
-                registry.addMapping("/users/**").allowedOrigins("http://localhost:3000"
-                        ,"https://teamfood-env-develop.herokuapp.com"
-                        ,"https://teamfood-env-production.herokuapp.com")
+                registry.addMapping("/orders/**")
+                        .allowedOrigins("http://localhost:3000"
+                                        ,"https://teamfood-env-develop.herokuapp.com"
+                                        ,"https://teamfood-env-production.herokuapp.com")
                         .allowedMethods("GET","POST")
                         .maxAge(3600);
-                registry.addMapping("/login").allowedOrigins("http://localhost:3000"
-                        ,"https://teamfood-env-develop.herokuapp.com"
-                        ,"https://teamfood-env-production.herokuapp.com")
+                registry.addMapping("/users/**")
+                        .allowedOrigins("http://localhost:3000"
+                                        ,"https://teamfood-env-develop.herokuapp.com"
+                                        ,"https://teamfood-env-production.herokuapp.com")
                         .allowedMethods("GET","POST")
                         .maxAge(3600);
-                registry.addMapping("/register").allowedOrigins("http://localhost:3000"
-                        ,"https://teamfood-env-develop.herokuapp.com"
-                        ,"https://teamfood-env-production.herokuapp.com")
+                registry.addMapping("/login")
+                        .allowedOrigins("http://localhost:3000"
+                                        ,"https://teamfood-env-develop.herokuapp.com"
+                                        ,"https://teamfood-env-production.herokuapp.com")
                         .allowedMethods("GET","POST")
                         .maxAge(3600);
-                registry.addMapping("/**").allowedOrigins("*")
+                registry.addMapping("/register")
+                        .allowedOrigins("http://localhost:3000"
+                                        ,"https://teamfood-env-develop.herokuapp.com"
+                                        ,"https://teamfood-env-production.herokuapp.com")
                         .allowedMethods("GET","POST")
                         .maxAge(3600);
-
+                registry.addMapping("/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("GET","POST")
+                        .maxAge(3600);
             }
         };
     }
