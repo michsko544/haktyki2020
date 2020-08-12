@@ -5,10 +5,10 @@ import { HeroimageStyled } from './'
 import { useRandomThematicImg } from '../../API'
 
 const Heroimage = ({ propImage }) => {
-  const { image, getImage, isLoading, error } = useRandomThematicImg('dinner')
+  const { image, getImage, isLoading, error } = useRandomThematicImg()
 
   React.useEffect(() => {
-    if (!propImage) getImage()
+    if (!propImage) getImage('dinner')
   }, [])
 
   return (
