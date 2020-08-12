@@ -2,17 +2,10 @@ import { useState } from 'react'
 import axiosAPI from './API'
 import PropTypes from 'prop-types'
 
-const defaultResponse = {
-  authToken: '',
-  userId: 0,
-  fullname: '',
-  statusCode: 0
-}
-
 const usePost = (url) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [response, setResponse] = useState(defaultResponse)
-  const [error, setError] = useState({})
+  const [response, setResponse] = useState(null)
+  const [error, setError] = useState(null)
 
   const sendData = async (data) => {
     try {

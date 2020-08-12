@@ -53,15 +53,14 @@ const LoginFormik = () => {
   const login = usePost('/login')
 
   useEffect(() => {
-    console.log('LoginEffect: ', login.response)
-    store.set('authToken')(login.response.authToken)
-    store.set('user')(login.response.fullname)
-    store.set('userId')(login.response.userId)
+    if (login.response) {
+      store.set('authToken')(login.response.authToken)
+      store.set('user')(login.response.fullname)
+      store.set('userId')(login.response.userId)
+    }
   }, [login.response])
 
-  useEffect(() => {
-    console.log('ErrorEffect: ', login.error)
-  }, [login.error])
+  useEffect(() => {}, [login.error])
 
   const LoginWithFormik = withFormik({
     mapPropsToValues({ user, password }) {

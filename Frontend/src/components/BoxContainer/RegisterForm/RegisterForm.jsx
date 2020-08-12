@@ -48,13 +48,10 @@ const RegisterFormik = () => {
   const history = useHistory()
   const register = usePost('/register')
 
-  useEffect(() => {
-    console.log('ErrorEffect: ', register.error)
-  }, [register.error])
+  useEffect(() => {}, [register.error])
 
   useEffect(() => {
-    console.log('RegisterEffect: ', register.response)
-    if (!register.isLoading && register.response.statusCode === 201)
+    if (!register.isLoading && register.response?.statusCode === 201)
       history.replace('/')
   }, [register.response, register.isLoading])
 
@@ -82,7 +79,7 @@ const RegisterFormik = () => {
     }),
 
     handleSubmit(values, { resetForm, setSubmitting }) {
-      register.sendData(values)
+      register.sendData({ login: values.user, password: values.password })
     },
     displayName: 'register-form',
   })(RegisterForm)
