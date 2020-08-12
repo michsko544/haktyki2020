@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Form, Formik } from 'formik'
+import { Form, Field, Formik } from 'formik'
 import * as Yup from 'yup'
 import Button from '../../Button'
 import { ButtonFormWrapper } from '../../Button'
@@ -8,7 +8,6 @@ import { Input } from '../../Inputs'
 import { InputStyled } from '../../Inputs'
 import { FormWrapper } from '../LoginForm'
 import { usePost } from './../../../API'
-import { Field } from 'formik'
 import { useSnackbar } from 'notistack'
 
 const RegisterForm = ({ errors, touched, isSubmitting }) => {
@@ -76,7 +75,7 @@ const RegisterFormik = () => {
 
   const initialValues = {
     user: '',
-    password: ''
+    password: '',
   }
 
   const onSubmit = async (values, { setSubmitting }) => {
@@ -101,9 +100,9 @@ const RegisterFormik = () => {
   })
 
   return (
-      <Formik {...{ initialValues, onSubmit, validationSchema }}>
-        {RegisterForm}
-      </Formik>
+    <Formik {...{ initialValues, onSubmit, validationSchema }}>
+      {RegisterForm}
+    </Formik>
   )
 }
 
