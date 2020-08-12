@@ -5,6 +5,7 @@ import com.hacktyki.Backend.model.service.OrderService;
 import com.hacktyki.Backend.model.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.NoSuchElementException;
 
 
 @RestController()
+@PreAuthorize("hasRole('USER')")
 @RequestMapping("orders")
 public class OrderController {
 

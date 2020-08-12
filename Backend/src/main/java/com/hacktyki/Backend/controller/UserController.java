@@ -3,12 +3,14 @@ package com.hacktyki.Backend.controller;
 import com.hacktyki.Backend.model.responses.UserDetailsRestModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.hacktyki.Backend.model.service.UserService;
 
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasRole('USER')")
 @RequestMapping("users")
 public class UserController {
 

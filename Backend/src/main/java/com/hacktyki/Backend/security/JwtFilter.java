@@ -57,7 +57,7 @@ public class JwtFilter extends BasicAuthenticationFilter {
                 String username = claimsJws.getBody().get("sub").toString();
                 String role = claimsJws.getBody().get("roles").toString();
                 Set<SimpleGrantedAuthority> simpleGrantedAuthorities
-                        = Collections.singleton(new SimpleGrantedAuthority((role)));
+                        = Collections.singleton(new SimpleGrantedAuthority(("ROLE_" + role)));
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                         = new UsernamePasswordAuthenticationToken(username, null, simpleGrantedAuthorities);
