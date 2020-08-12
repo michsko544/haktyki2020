@@ -8,6 +8,9 @@ import com.hacktyki.Backend.model.responses.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -33,6 +36,8 @@ public class OrderService {
     // Returns all orders logged user joined to
     public List<FullOrderRestModel> getMyOrdersList() throws Exception {
 
+        checkOrdersTime(); // orders temporary refreshing due to limited time on heroku
+
         long userId = userService.getAuthenticatedId();
 
         try {
@@ -57,25 +62,27 @@ public class OrderService {
     // Returns all orders that logged user didn't join to
     public List<FullOrderRestModel> getAllOrdersList() throws Exception {
 
-            long userId = userService.getAuthenticatedId();
+        checkOrdersTime(); // orders temporary refreshing due to limited time on heroku
 
-            try {
-                List<Long> orderIdsContainingUserId
-                        = getOrderIdsContainingUsersIdList(userId);
+        long userId = userService.getAuthenticatedId();
 
-                List<FullOrderRestModel> allOrdersList
-                        = orderRepository.findAll()
-                        .stream()
-                        .filter(orderEntity -> { return !orderIdsContainingUserId.contains(orderEntity.getId()); })
-                        .map(FullOrderRestModel::new)
-                        .collect(Collectors.toList());
+        try {
+            List<Long> orderIdsContainingUserId
+                    = getOrderIdsContainingUsersIdList(userId);
 
-                return allOrdersList;
+            List<FullOrderRestModel> allOrdersList
+                    = orderRepository.findAll()
+                    .stream()
+                    .filter(orderEntity -> { return !orderIdsContainingUserId.contains(orderEntity.getId()) && !orderEntity.isOrderClosed(); })
+                    .map(FullOrderRestModel::new)
+                    .collect(Collectors.toList());
 
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                throw ex;
-            }
+            return allOrdersList;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     private List<Long> getOrderIdsContainingUsersIdList(long userId){
@@ -245,4 +252,21 @@ public class OrderService {
             throw ex;
         }
     }
+
+    public void checkOrdersTime(){
+        List<OrderEntity> openOrders = orderRepository.findAllByOrderClosed(false);
+        boolean hasAnyChanges = false;
+        for( OrderEntity order : openOrders){
+            if(order.getOrderDate().isBefore(LocalDate.now())
+                    || ( order.getOrderDate().isEqual(LocalDate.now())
+                        && order.getOrderTime().isBefore(LocalTime.now()) ) ){
+                order.setOrderClosed(true);
+                hasAnyChanges = true;
+            }
+        }
+        if(hasAnyChanges) {
+            orderRepository.saveAll(openOrders);
+        }
+    }
+
 }
