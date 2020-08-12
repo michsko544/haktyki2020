@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.cors().and()
+        http.cors().configurationSource(corsConfigurationSource()).and()
             .authorizeRequests()
             .antMatchers(
      LOG_IN_URL,
@@ -41,6 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
     }
 
     @Bean

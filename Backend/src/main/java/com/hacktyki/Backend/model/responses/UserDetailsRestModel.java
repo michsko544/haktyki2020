@@ -7,6 +7,7 @@ public class UserDetailsRestModel {
     private String fullName;
     private String phoneNumber;
     private String creditCardNumber;
+    private String swiftBicCode;
 
     public UserDetailsRestModel() {
     }
@@ -15,6 +16,7 @@ public class UserDetailsRestModel {
         this.fullName = userEntity.getFullName();
         this.phoneNumber = userEntity.getPhoneNumber();
         this.creditCardNumber = userEntity.getCreditCardNumber();
+        this.swiftBicCode = userEntity.getSwiftBicCode();
     }
 
     public String getFullName() {
@@ -27,5 +29,9 @@ public class UserDetailsRestModel {
 
     public String getCreditCardNumber() {
         return creditCardNumber;
+    }
+
+    public String getSwiftBicCode() {
+        return swiftBicCode;
     }
 }
