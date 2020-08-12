@@ -2,6 +2,7 @@ package com.hacktyki.Backend.model.responses;
 
 import com.hacktyki.Backend.model.entity.OrderDetailsEntity;
 import com.hacktyki.Backend.model.entity.OrderEntity;
+import com.hacktyki.Backend.model.entity.UserEntity;
 import com.hacktyki.Backend.utils.PaymentFormEnum;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ public class FullOrderRestModel {
     private LocalTime time;
     private PaymentFormEnum paymentForm;
     private String paymentNumber;
+    private String swiftBicCode;
     private List<FullOrderDetailsRestModel> orderDetails;
 
     public FullOrderRestModel() {
@@ -38,27 +40,29 @@ public class FullOrderRestModel {
         this.date = orderEntity.getOrderDate();
         this.time = orderEntity.getOrderTime();
         this.paymentForm = orderEntity.getPaymentForm().getPaymentFormName();
+
+        UserEntity paymentUser = getPaymentUser(orderEntity);
         this.paymentNumber = paymentForm.toString().equals("BLIK") ?
-                                                orderEntity.getOrderDetailsList()
-                                                .stream()
-                                                .filter(OrderDetailsEntity::isOrderOwner)
-                                                .findFirst()
-                                                .get()
-                                                .getUserEntity()
-                                                .getPhoneNumber()
-                                            : paymentForm.toString().equals("TRANSFER") ?
-                                                orderEntity.getOrderDetailsList()
-                                                .stream()
-                                                .filter(OrderDetailsEntity::isOrderOwner)
-                                                .findFirst()
-                                                .get()
-                                                .getUserEntity()
-                                                .getCreditCardNumber()
-                                            : null;
+                                                    paymentUser.getPhoneNumber()
+                                                : paymentForm.toString().equals("TRANSFER") ?
+                                                    paymentUser.getCreditCardNumber()
+                                                : null;
+        this.swiftBicCode = paymentForm.toString().equals("TRANSFER") ?
+                                                    paymentUser.getSwiftBicCode()
+                                                : null;
         this.orderDetails = orderEntity.getOrderDetailsList()
                                         .stream()
                                         .map(FullOrderDetailsRestModel::new)
                                         .collect(Collectors.toList());
+    }
+
+    private UserEntity getPaymentUser(OrderEntity orderEntity){
+        return orderEntity.getOrderDetailsList()
+                .stream()
+                .filter(OrderDetailsEntity::isOrderOwner)
+                .findFirst()
+                .get()
+                .getUserEntity();
     }
 
     public Long getId() {
@@ -123,6 +127,14 @@ public class FullOrderRestModel {
 
     public void setPaymentNumber(String paymentNumber) {
         this.paymentNumber = paymentNumber;
+    }
+
+    public String getSwiftBicCode() {
+        return swiftBicCode;
+    }
+
+    public void setSwiftBicCode(String swiftBicCode) {
+        this.swiftBicCode = swiftBicCode;
     }
 
     public List<FullOrderDetailsRestModel> getOrderDetails() {

@@ -19,6 +19,8 @@ public class UserEntity {
     private String phoneNumber;
     @Column(name = "credit_card_number", length = 40)
     private String creditCardNumber;
+    @Column(name = "swift_bic_code", length = 12)
+    private String swiftBicCode;
 
     public UserEntity() {
     }
@@ -66,5 +68,13 @@ public class UserEntity {
 
     public void setCreditCardNumber(String creditCardNumber) {
         this.creditCardNumber = creditCardNumber;
+    }
+
+    public String getSwiftBicCode() {
+        return swiftBicCode;
+    }
+
+    public void setSwiftBicCode(String swiftBicCode) {
+        this.swiftBicCode = swiftBicCode;
     }
 }

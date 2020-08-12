@@ -74,12 +74,14 @@ public class UserService {
     }
 
     private UserEntity mapDetailsRestModel(UserDetailsRestModel userDetails){
-        UserEntity user = userRepository.findByLogin(getAuthenticatedLogin());
 
-        user.setFullName(userDetails.getFullName());
-        user.setPhoneNumber(userDetails.getPhoneNumber());
-        user.setCreditCardNumber(userDetails.getCreditCardNumber());
+            UserEntity user = userRepository.findByLogin(getAuthenticatedLogin());
+            user.setFullName(userDetails.getFullName());
+            user.setPhoneNumber(userDetails.getPhoneNumber());
+            user.setCreditCardNumber(userDetails.getCreditCardNumber());
+            user.setSwiftBicCode(userDetails.getSwiftBicCode());
 
-        return user;
+            return user;
+
     }
 }

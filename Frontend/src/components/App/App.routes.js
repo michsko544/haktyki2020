@@ -2,9 +2,17 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import { GuardedRoute } from './../GuardedRoute'
 import { CustomRoute } from './../CustomRoute'
-import { Home, Login, Register, Greeter, Settings, NotFound, Teamfood } from '../../views'
+import {
+  Home,
+  Login,
+  Register,
+  Greeter,
+  Settings,
+  NotFound,
+  Teamfood,
+} from '../../views'
 import Store from './App.store'
-import { AnimatedSwitch } from 'react-router-transition';
+import { AnimatedSwitch } from 'react-router-transition'
 
 import './App.router.animation.css'
 
@@ -14,9 +22,9 @@ const AppRoutes = () => {
   /**
    * For /login & /register
    */
-  const isLogged = () => {
-    return store.get('authToken') !== ''
-  }
+  const isLogged = () => store.get('authToken') !== ''
+
+  const hasFullname = () => store.get('user') !== ''
 
   return (
     <AnimatedSwitch
@@ -38,7 +46,12 @@ const AppRoutes = () => {
         path="/register"
         component={Register}
       />
-      <GuardedRoute path="/greeter" component={Greeter} />
+      <CustomRoute
+        customGuard={isLogged() && !hasFullname()}
+        redirectTo="/"
+        path="/greeter"
+        component={Greeter}
+      />
       <GuardedRoute path="/settings" component={Settings} />
       <GuardedRoute path="/teamfood" component={Teamfood} />
       <Route path="*" component={NotFound} />
