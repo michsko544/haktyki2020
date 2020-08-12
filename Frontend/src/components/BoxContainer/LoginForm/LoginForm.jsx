@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
-import { withFormik, Form } from 'formik'
+import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import Button from '../../Button'
 import { ButtonFormWrapper } from '../../Button'
@@ -10,6 +9,7 @@ import { FormWrapper } from './'
 import Store from './../../App/App.store'
 import { usePost } from './../../../API'
 import { Field } from 'formik'
+import { useSnackbar } from 'notistack'
 
 const LoginForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -48,44 +48,55 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
 }
 
 const LoginFormik = () => {
-  const history = useHistory()
   const store = Store.useStore()
-  const login = usePost('/login')
+  const loginAPI = usePost('/login')
+  const { enqueueSnackbar } = useSnackbar()
 
-  const handleSubmit = (values) => {
-    login.sendData(values)
+  useEffect(() => {
+    console.log('LoginEffect: ', loginAPI.response)
+    if(loginAPI.response.authToken && loginAPI.response.fullname && loginAPI.response.userId) {
+      store.set('authToken')(loginAPI.response.authToken)
+      store.set('user')(loginAPI.response.fullname)
+      store.set('userId')(loginAPI.response.userId)
+
+    }
+  }, [loginAPI.response])
+
+  useEffect(() => {
+    if (loginAPI.error.code >= 400 && loginAPI.error.code <= 599) {
+      console.log('ErrorEffect: ', loginAPI.error)
+      enqueueSnackbar('Spróbuj jeszcze raz', {
+        variant: 'error',
+      })
+    }
+  }, [loginAPI.error, enqueueSnackbar])
+
+  const initialValues = {
+    user: '',
+    password: '',
   }
 
-  useEffect(() => {
-    console.log('LoginEffect: ', login.response)
-    store.set('authToken')(login.response.authToken)
-    store.set('user')(login.response.fullname)
-    store.set('userId')(login.response.userId)
-  }, [login.response])
+  const onSubmit = async (values, { setSubmitting }) => {
+    enqueueSnackbar('Logowanie', {
+      variant: 'info'
+    })
+    console.log('Submitted vals: ', values)
+    await loginAPI.sendData(values)
+    setSubmitting(false)
+  }
 
-  useEffect(() => {
-    console.log('ErrorEffect: ', login.error)
-  }, [login.error])
+  const validationSchema = Yup.object().shape({
+    user: Yup.string()
+      .email('Podaj poprawny email')
+      .required('Wypełnij to pole'),
+    password: Yup.string().required('Wypełnij to pole'),
+  })
 
-  const LoginWithFormik = withFormik({
-    mapPropsToValues({ user, password }) {
-      return {
-        user: user || '',
-        password: password || '',
-      }
-    },
-
-    validationSchema: Yup.object().shape({
-      user: Yup.string()
-        .email('Podaj poprawny email')
-        .required('Wypełnij to pole'),
-      password: Yup.string().required('Wypełnij to pole'),
-    }),
-
-    handleSubmit: handleSubmit,
-  })(LoginForm)
-
-  return <LoginWithFormik />
+  return (
+    <Formik {...{ initialValues, onSubmit, validationSchema }}>
+      {LoginForm}
+    </Formik>
+  )
 }
 
 export default LoginFormik

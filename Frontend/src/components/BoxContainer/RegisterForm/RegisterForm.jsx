@@ -67,7 +67,7 @@ const RegisterFormik = () => {
       enqueueSnackbar('Zarejestrowano pomyślnie!', {
         variant: 'success',
       })
-      
+
       setTimeout(() => {
         history.replace('/')
       }, 1500)
@@ -76,7 +76,7 @@ const RegisterFormik = () => {
 
   const initialValues = {
     user: '',
-    password: '',
+    password: ''
   }
 
   const onSubmit = async (values, { setSubmitting }) => {
@@ -101,11 +101,9 @@ const RegisterFormik = () => {
   })
 
   return (
-    <>
       <Formik {...{ initialValues, onSubmit, validationSchema }}>
         {RegisterForm}
       </Formik>
-    </>
   )
 }
 
