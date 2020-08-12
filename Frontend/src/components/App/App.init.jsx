@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import Store from './App.store'
 import { AppBackgroundThemes } from './App.themes'
+import { setTokenIntoHeader, removeTokenFromHeader } from './../../API/ourAPI/API'
 
 const AppInit = () => {
   const store = Store.useStore()
@@ -19,6 +20,16 @@ const AppInit = () => {
   useEffect(() => {
     window.document.body.style.background =
       AppBackgroundThemes[store.get('themeBackgroundId')].background
+  }, [store])
+
+  useEffect(() => {
+    const token = store.get('authToken')
+    if(token.length > 0) {
+      setTokenIntoHeader(token)
+    } else {
+      removeTokenFromHeader()
+    }
+    
   }, [store])
 
   return null

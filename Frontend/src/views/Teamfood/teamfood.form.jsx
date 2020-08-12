@@ -265,14 +265,14 @@ const TeamfoodFormik = () => {
   const history = useHistory()
 
   useEffect(() => {
-    if (!api.isLoading && api.response.statusCode > 0) {
+    if (!api.isLoading && api.response !== null && api.response.statusCode > 0) {
       console.log('Api Response:', api.response)
       history.replace('/')
     }
   }, [api.response, api.isLoading])
 
   useEffect(() => {
-    if (!api.isLoading && api.error.code > 0) {
+    if (!api.isLoading && api.error !== null && api.error.code > 0) {
       console.warn('Api Error occured: ', api.error)
     }
   }, [api.error, api.isLoading])

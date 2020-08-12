@@ -55,7 +55,7 @@ const LoginFormik = () => {
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
-    if (loginAPI.response) {
+    if (!loginAPI.isLoading && loginAPI.response) {
       if (loginAPI.response.statusCode === 200) {
         enqueueSnackbar('Pomyślnie zalogowano', {
           variant: 'success',
@@ -67,7 +67,7 @@ const LoginFormik = () => {
       if (!loginAPI.response.fullname) history.push('/greeter')
       else history.push('/')
     }
-  }, [loginAPI.response])
+  }, [loginAPI.isLoading, loginAPI.response, history, enqueueSnackbar])
 
   useEffect(() => {
     if (loginAPI.error) {
