@@ -4,6 +4,7 @@ import com.hacktyki.Backend.model.entity.UserEntity;
 import com.hacktyki.Backend.model.repository.UserRepository;
 import com.hacktyki.Backend.model.responses.LoginRestModel;
 import com.hacktyki.Backend.model.responses.UserSignInRestModel;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -13,10 +14,13 @@ public class LoginService {
 
     private UserRepository userRepository;
     private JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
-    public LoginService(UserRepository userRepository, JwtService jwtService) {
+
+    public LoginService(UserRepository userRepository, JwtService jwtService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -33,8 +37,7 @@ public class LoginService {
     public void authenticate(UserSignInRestModel userDTO) throws Exception {
 
         UserEntity user = userRepository.findByLogin(userDTO.getLogin());
-
-        if( user == null || !user.getPassword().equals(userDTO.getPassword()) ) {
+        if( user == null || !passwordEncoder.matches(userDTO.getPassword(), user.getPassword()) ) {
             throw new Exception("Used bad credentials or user doesn't exists.");
         }
     }
@@ -50,7 +53,7 @@ public class LoginService {
     }
 
     private UserEntity mapSignInRestModel(final UserSignInRestModel model) {
-        return new UserEntity(model.getLogin(), model.getPassword());
+        return new UserEntity(model.getLogin(), passwordEncoder.encode(model.getPassword()));
     }
 
     private boolean emailExists(UserSignInRestModel user) {
