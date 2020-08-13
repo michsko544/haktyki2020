@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import * as Yup from 'yup'
-import { withFormik, Form } from 'formik'
+import { Formik, Form, Field } from 'formik'
 import {
   Input,
   InputStyled,
@@ -13,6 +13,7 @@ import {
 } from './../../../components/Button'
 import { usePost, useFetch } from './../../../API/ourAPI'
 import { useHistory } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 
 const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -37,7 +38,8 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
     return (
       isIBANNotFromPoland() && (
         <SmallerInputStyled>
-          <Input
+          <Field
+            component={Input}
             type="text"
             name="swift"
             label="SWIFT/BIC"
@@ -54,33 +56,36 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
     <>
       <Form>
         <InputStyled>
-          <Input
+          <Field
+            component={Input}
             type="text"
             name="user"
             label="Imię i nazwisko"
-            placeholder="Ładowanie"
+            placeholder={isLoading ? 'Ładowanie' : 'Jan Kowalski'}
             error={errorHandler('user')}
             style={{ textTransform: 'capitalize' }}
             disabled={isLoading}
           />
         </InputStyled>
         <InputStyled>
-          <Input
+          <Field
+            component={Input}
             type="tel"
             name="blik"
             label="Numer telefonu do BLIK"
-            placeholder="Ładowanie"
+            placeholder={isLoading ? 'Ładowanie' : '420 420 420'}
             error={errorHandler('blik')}
             disabled={isLoading}
           />
         </InputStyled>
         <RowOnMediumScreen>
           <InputStyled>
-            <Input
+            <Field
+              component={Input}
               type="text"
               name="account"
               label="Numer konta do przelewów"
-              placeholder="PL78 2323 4333 1234 2333 0000 1234"
+              placeholder={isLoading ? 'Ładowanie' : 'PL78 2323 4333 1234 2333 0000 1234'}
               error={errorHandler('account')}
               style={{ textTransform: 'uppercase' }}
             />
@@ -100,88 +105,109 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
 }
 
 const SettingsFormik = () => {
-  const userData = useFetch('/user/me')
-  const updateData = usePost('/user/me')
+  const userData = useFetch('/users/my-details')
+  const updateData = usePost('/users/my-details')
   const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
     userData.getData()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (updateData.response) {
-      if (updateData.response.statusCode === 0) return
-      history.push('/')
+    if(!userData.isLoading && userData.response !== null && userData.response.statusCode === 200) {
+      console.log('Data: ', userData.response)
     }
-  }, [updateData.response])
+  }, [userData.isLoading, userData.response])
 
-  const SettingsWithFormik = withFormik({
-    enableReinitialize: true,
+  const goToHome = () => {
+    history.push('/')
+  }
 
-    mapPropsToValues({ user, blik, account }) {
-      return {
-        user: user || userData?.response?.user || '',
-        blik: blik || userData?.response?.blik || '',
-        account: account || userData?.response?.account || '',
-        swift: '',
-      }
-    },
+  useEffect(() => {
+    if (!updateData.isLoading && updateData.response !== null && updateData.response.statusCode === 200) {
+      enqueueSnackbar('Zapisano 👌', { variant: 'success' })
+      setTimeout(goToHome, 1500)
+    }
+  }, [updateData.response, updateData.isLoading, enqueueSnackbar, goToHome])
 
-    validationSchema: Yup.object().shape({
-      user: Yup.string()
-        .matches(
-          /^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ ]*$/,
-          'Pole nie może zawierać znaków specjalnych, ani cyfr'
-        )
-        .matches(
-          /^[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+\s+[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+ ?$/,
-          'Podaj dwa wyrazy'
-        )
-        .min(3, 'Pole musi mieć minimum 3 znaki')
-        .max(50, 'Pole musi mieć maksimum 50 znaków')
-        .required('Wypełnij to pole'),
-      blik: Yup.string()
-        .min(9, 'Pole musi mieć minimum 9 znaków')
-        .max(12, 'Pole musi mieć maksimum 12 znaków')
-        .matches(
-          /^[0-9]{3}[ ]{0,1}[0-9]{3}[ ]{0,1}[0-9]{3} ?$/,
-          'Podaj poprawny, 9-cyfrowy numer telefonu'
-        )
-        .required('Wypełnij to pole'),
-      account: Yup.string()
-        .min(22, 'Pole musi mieć minimum 22 znaków')
-        .max(35, 'Pole musi mieć maksimum 35 znaków')
-        .matches(
-          /^[A-Za-z]{0,2}[0-9]{2}[ ]{0,1}[A-Za-z0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{2,4}[ ]{0,1}[0-9]{0,4} ?$/,
-          'Podaj poprawny numer konta'
-        )
-        .required('Wypełnij to pole'),
-      swift: Yup.string()
-        .when('account', {
-          is: (account) =>
-            account
-              ? account.length > 1 &&
-                /^[A-Z]*$/.test(
-                  (account[0] + account[1]).toString().toUpperCase()
-                ) &&
-                (account[0] + account[1]).toString().toUpperCase() !== 'PL'
-              : false,
-          then: Yup.string().required('Wypełnij to pole'),
-        })
-        .min(8, 'Pole musi mieć minimum 8 znaków')
-        .max(11, 'Pole musi mieć maksimum 11 znaków')
-        .matches(
-          /^[A-Za-z0-9]*$/,
-          'Pole musi zawierać tylko duże litery i/lub cyfry'
-        ),
-    }),
+  const initialValues = {
+    user: userData?.response?.fullName || '',
+    blik: userData?.response?.phoneNumber || '',
+    account: userData?.response?.creditCardNumber || '',
+    swift: userData?.response?.swiftBicCode || '',
+  }
 
-    handleSubmit(values, { resetForm, setSubmitting }) {
-      updateData.sendData(values)
-    },
-  })(SettingsForm)
+  const validationSchema = Yup.object().shape({
+    user: Yup.string()
+      .matches(
+        /^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ ]*$/,
+        'Pole nie może zawierać znaków specjalnych, ani cyfr'
+      )
+      .matches(
+        /^[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+\s+[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+ ?$/,
+        'Podaj dwa wyrazy'
+      )
+      .min(3, 'Pole musi mieć minimum 3 znaki')
+      .max(50, 'Pole musi mieć maksimum 50 znaków')
+      .required('Wypełnij to pole'),
+    blik: Yup.string()
+      .min(9, 'Pole musi mieć minimum 9 znaków')
+      .max(12, 'Pole musi mieć maksimum 12 znaków')
+      .matches(
+        /^[0-9]{3}[ ]{0,1}[0-9]{3}[ ]{0,1}[0-9]{3} ?$/,
+        'Podaj poprawny, 9-cyfrowy numer telefonu'
+      )
+      .required('Wypełnij to pole'),
+    account: Yup.string()
+      .min(22, 'Pole musi mieć minimum 22 znaków')
+      .max(35, 'Pole musi mieć maksimum 35 znaków')
+      .matches(
+        /^[A-Za-z]{0,2}[0-9]{2}[ ]{0,1}[A-Za-z0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{2,4}[ ]{0,1}[0-9]{0,4} ?$/,
+        'Podaj poprawny numer konta'
+      )
+      .required('Wypełnij to pole'),
+    swift: Yup.string()
+      .when('account', {
+        is: (account) =>
+          account
+            ? account.length > 1 &&
+              /^[A-Z]*$/.test(
+                (account[0] + account[1]).toString().toUpperCase()
+              ) &&
+              (account[0] + account[1]).toString().toUpperCase() !== 'PL'
+            : false,
+        then: Yup.string().required('Wypełnij to pole'),
+      })
+      .min(8, 'Pole musi mieć minimum 8 znaków')
+      .max(11, 'Pole musi mieć maksimum 11 znaków')
+      .matches(
+        /^[A-Za-z0-9]*$/,
+        'Pole musi zawierać tylko duże litery i/lub cyfry'
+      ),
+  })
 
-  return <SettingsWithFormik isLoading={userData.isLoading} />
+  const transformValues = (values) => {
+    return {
+      fullName: values.user,
+      creditCardNumber: values.account,
+      swiftBicCode: values.swift,
+      phoneNumber: values.blik
+    }
+  }
+
+  const onSubmit = async (values, { setSubmitting }) => {
+    enqueueSnackbar('Zapisywanie 🤞', { variant: 'info' })
+    console.log('Sending values: ', transformValues(values))
+    await updateData.sendData(transformValues(values))
+    setSubmitting(false)
+  }
+
+  return (
+    <Formik enableReinitialize={true} {...{ initialValues, onSubmit, validationSchema }}>
+      {formikProps => <SettingsForm {...formikProps} isLoading={userData?.isLoading} />}
+    </Formik>
+  )
 }
 
 export default SettingsFormik

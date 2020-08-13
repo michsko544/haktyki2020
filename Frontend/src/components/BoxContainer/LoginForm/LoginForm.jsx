@@ -17,7 +17,7 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
 
   return (
     <FormWrapper>
-      <Form>
+      <Form autoComplete={'on'}>
         <InputStyled>
           <Field
             component={Input}
