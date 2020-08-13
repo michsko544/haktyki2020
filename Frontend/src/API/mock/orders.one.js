@@ -5,6 +5,7 @@ const details = {
     purchaserId: 2,
     date: '2021-07-29',
     time: '14:30',
+    paymentForm: 'CASH',
     image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
     orderDetails: [
       { userId: 2, who: 'Tomek', what: 'Super Burger XL z serem' },

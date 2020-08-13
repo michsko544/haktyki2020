@@ -119,7 +119,7 @@ const OrderDetails = ({ orderId, closeCallback }) => {
         coupon={findLoggedPerson()?.coupon}
         date={response.order.date}
         time={response.order.time}
-        payment={response.order.payment}
+        payment={response.order.paymentForm}
         orderId={response.order.id}
         isPurchaser={isLoggedUserPurchaser()}
         closeCallback={closeCallback}
@@ -129,6 +129,8 @@ const OrderDetails = ({ orderId, closeCallback }) => {
         orders={response.order.orderDetails}
         purchaserId={response.order.purchaserId}
         isPurchaser={isLoggedUserPurchaser()}
+        payment={response.order.paymentForm}
+        isOrderClosed={isOrderClosed()}
       />
     )
 

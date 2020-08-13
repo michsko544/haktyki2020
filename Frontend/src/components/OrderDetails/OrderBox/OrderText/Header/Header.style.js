@@ -26,7 +26,7 @@ export const Info = styled.p`
 
 export const SmallTitle = styled(Info)`
   font-weight: 500;
-  margin-top: 25px;
-  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   color: ${({ fontcolor }) => fontcolor};
 `

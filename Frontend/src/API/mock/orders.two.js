@@ -5,6 +5,7 @@ const details = {
     purchaserId: 71,
     date: '2021-07-18',
     time: '12:30',
+    paymentForm: 'TRANSFER',
     image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
     orderDetails: [
       {
