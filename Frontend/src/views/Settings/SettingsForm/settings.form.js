@@ -87,7 +87,7 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
               label="Numer konta do przelewów"
               placeholder={isLoading ? 'Ładowanie' : 'PL78 2323 4333 1234 2333 0000 1234'}
               error={errorHandler('account')}
-              style={{ textTransform: 'uppercase' }}
+              style={ isLoading ? { textTransform: 'uppercase' } : null }
             />
           </InputStyled>
           {showSwiftWhenIBAN()}
@@ -111,6 +111,7 @@ const SettingsFormik = () => {
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
+    document.title = 'Ustawienia 👏 | TeamFood'
     userData.getData()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -120,16 +121,12 @@ const SettingsFormik = () => {
     }
   }, [userData.isLoading, userData.response])
 
-  const goToHome = () => {
-    history.push('/')
-  }
-
   useEffect(() => {
     if (!updateData.isLoading && updateData.response !== null && updateData.response.statusCode === 200) {
-      enqueueSnackbar('Zapisano 👌', { variant: 'success' })
-      setTimeout(goToHome, 1500)
+      enqueueSnackbar('Zapisano 👌', { variant: 'success', preventDuplicate: true })
+      history.push('/')
     }
-  }, [updateData.response, updateData.isLoading, enqueueSnackbar, goToHome])
+  }, [updateData.response, updateData.isLoading, history, enqueueSnackbar])
 
   const initialValues = {
     user: userData?.response?.fullName || '',

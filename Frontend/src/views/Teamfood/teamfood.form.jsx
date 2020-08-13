@@ -45,6 +45,15 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    if(values.restaurant.length > 0) {
+      let title = values.restaurant.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+      document.title = `${title} | TeamFood`
+    } else {
+      document.title = 'Nowe Zamówienie | TeamFood'
+    }
+  }, [values])
+
+  useEffect(() => {
     let rtime
     let timeout = false
     const delta = 250
