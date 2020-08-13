@@ -14,6 +14,7 @@ export const ButtonStyled = styled.button`
   background-clip: padding-box;
   border: solid 2px transparent;
   border-radius: 9px;
+  transition: filter .3s cubic-bezier(0.4, 0, 0.2, 1), opacity .3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:before {
     content: '';
@@ -29,10 +30,19 @@ export const ButtonStyled = styled.button`
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  &:hover {
+    filter: drop-shadow(1px 1px 3px ${(props) => props.secondColor}) drop-shadow(-1px -1px 3px ${(props) => props.firstColor});
+  }
+
   &:hover:before{
     opacity: 0.95;
   }
 
+  &:disabled {
+    opacity: .5
+  }
+ 
+  /* Text ex. Dodaj Zamówienie */
   &:after {
     z-index: 10;
     content: "${(props) => props.text}";
