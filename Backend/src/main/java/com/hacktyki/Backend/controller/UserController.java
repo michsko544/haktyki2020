@@ -44,9 +44,9 @@ public class UserController {
 
     @PostMapping(path = "my-fullname",
                 consumes = "application/json")
-    public ResponseEntity<InformationStatusRestModel> setMyFullname(@RequestBody String fullname) {
+    public ResponseEntity<InformationStatusRestModel> setMyFullname(@RequestBody UserFullnameRestModel person) {
 
-        if(userService.setMyFullname(fullname)){
+        if(userService.setMyFullname(person.getFullname())){
             return ResponseEntity.ok(new InformationStatusRestModel("Added your fullname successfully"));
         }
         return new ResponseEntity<>(new InformationStatusRestModel("Could not add your fullname"), HttpStatus.NOT_MODIFIED);
