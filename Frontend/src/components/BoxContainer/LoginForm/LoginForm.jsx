@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
@@ -53,9 +53,10 @@ const LoginFormik = () => {
   const history = useHistory()
   const loginAPI = usePost('/login')
   const { enqueueSnackbar } = useSnackbar()
+  const [completed, setCompleted] = useState(false)
 
   useEffect(() => {
-    if (!loginAPI.isLoading && loginAPI.response) {
+    if (!loginAPI.isLoading && loginAPI.response && !completed) {
       if (loginAPI.response.statusCode === 200) {
         enqueueSnackbar('Pomyślnie zalogowano', {
           variant: 'success',
@@ -64,10 +65,11 @@ const LoginFormik = () => {
       store.set('authToken')(loginAPI.response.authToken)
       store.set('user')(loginAPI.response.fullname || '')
       store.set('userId')(loginAPI.response.userId)
+      setCompleted(true)
       if (!loginAPI.response.fullname) history.push('/greeter')
       else history.push('/')
     }
-  }, [loginAPI.isLoading, loginAPI.response, history, enqueueSnackbar])
+  }, [loginAPI.isLoading, loginAPI.response, history, completed, store, enqueueSnackbar])
 
   useEffect(() => {
     if (loginAPI.error) {
@@ -93,6 +95,7 @@ const LoginFormik = () => {
   }
 
   const onSubmit = async (values, { setSubmitting }) => {
+    setCompleted(false)
     enqueueSnackbar('Logowanie', {
       variant: 'info',
     })

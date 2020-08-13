@@ -13,11 +13,11 @@ export const FoodKeywords = [
     },
     {
       match: 'mcd',
-      keyword: 'mc donalds'
+      keyword: 'mcdonalds'
     },
     {
         match: 'mc d',
-        keyword: 'mc donalds'
+        keyword: 'mcdonalds'
       },
     {
       match: 'kfc',

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Formik, Form, Field } from 'formik'
 import * as Yup from 'yup'
 import Button from '../../Button'
@@ -49,6 +49,7 @@ const GreeterFormik = () => {
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
   const store = Store.useStore()
+  const [completed, setCompleted] = useState(false)
 
   const initialValues = {
     name: ''
@@ -70,13 +71,15 @@ const GreeterFormik = () => {
   })
 
   useEffect(() => {
-    if(!api.isLoading && api.response !== null && api.response.statusCode === 200) {
+    if(!api.isLoading && api.response !== null && api.response.statusCode === 200 && !completed) {
       console.log('Loaded: ', api.response)
       history.push('/')
+      setCompleted(true)
     }
-  }, [api.response, api.isLoading])
+  }, [api.response, api.isLoading, history, completed])
 
   const onSubmit = async (values, { setSubmitting }) => {
+    setCompleted(false)
     enqueueSnackbar('Zapisywanie danych 🤞', {
       variant: 'info'
     })

@@ -279,13 +279,17 @@ const TeamfoodFormik = () => {
   const { enqueueSnackbar } = useSnackbar()
   const api = usePost('/orders/add-order')
   const history = useHistory()
+  let [completed, setCompleted] = useState(false)
 
   useEffect(() => {
     if (!api.isLoading && api.response !== null && api.response.statusCode > 0) {
       console.log('Api Response:', api.response)
-      history.replace('/')
+      if(!completed) {
+        history.replace('/')
+        setCompleted(true)
+      }
     }
-  }, [api.response, api.isLoading])
+  }, [api.response, api.isLoading, history, completed])
 
   useEffect(() => {
     if (!api.isLoading && api.error !== null && api.error.code > 0) {
@@ -329,6 +333,7 @@ const TeamfoodFormik = () => {
   const onSubmit = async (values, { setSubmitting }) => {
     console.log('Submitted values: ', values)
     console.log('Transformed request: ', transformRequest(values))
+    setCompleted(false)
     enqueueSnackbar('Dodawanie twojego zamówienia （*＾-＾*）↗　')
     await api.sendData(transformRequest(values))
     setSubmitting(false)
