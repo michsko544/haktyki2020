@@ -9,7 +9,7 @@ const Heroimage = ({ propImage }) => {
 
   React.useEffect(() => {
     if (!propImage) getImage('dinner')
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

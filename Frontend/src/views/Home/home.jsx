@@ -26,6 +26,7 @@ const Home = () => {
    * CDM
    */
   useEffect(() => {
+    document.title = 'Zamówmy coś 🍕 | TeamFood'
     fetchOrders.getData()
     fetchUserOrders.getData()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

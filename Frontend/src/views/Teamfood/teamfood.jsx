@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Header from './../../components/Header'
 import { H1, H4, HBold } from './../../components/Headings'
 import CloseIcon from '@material-ui/icons/Close'
@@ -10,6 +10,10 @@ import { AppBackgroundThemes } from './../../components/App/App.themes'
 
 const Teamfood = () => {
   const store = Store.useStore()
+
+  useEffect(() => {
+    document.title = 'Nowe Zamówienie 🍔 | TeamFood'
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
