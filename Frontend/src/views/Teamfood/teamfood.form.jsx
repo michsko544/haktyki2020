@@ -48,24 +48,26 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
     let rtime
     let timeout = false
     const delta = 250
+    let timeoutRef
+
     const onResize = () => {
       rtime = new Date()
       if (timeout === false) {
         timeout = true
-        setTimeout(resizeEnd, delta)
+        timeoutRef = setTimeout(resizeEnd, delta)
       }
     }
 
     const resizeEnd = async () => {
       if (new Date() - rtime < delta) {
-        setTimeout(resizeEnd, delta)
+        timeoutRef = setTimeout(resizeEnd, delta)
       } else {
         timeout = false
         if (typeof document.querySelector('.photos') === 'object') {
           const p = document.querySelector('.photos')
-          const width = p.clientWidth
-          const height = p.clientHeight
-          const dpr = window.devicePixelRatio
+          const width = p?.clientWidth
+          const height = p?.clientHeight
+          const dpr = window?.devicePixelRatio
           if (
             width !== imageProps.w ||
             height !== imageProps.h ||
@@ -94,6 +96,11 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
     }
 
     window.addEventListener('resize', onResize)
+
+    return () => {
+      window.removeEventListener('resize', onResize, true)
+      clearTimeout(timeoutRef)
+    }
   })
 
   const photoSelectionHandler = (photo) => {
