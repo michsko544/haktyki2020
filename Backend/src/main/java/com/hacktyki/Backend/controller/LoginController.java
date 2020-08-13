@@ -1,5 +1,6 @@
 package com.hacktyki.Backend.controller;
 
+import com.hacktyki.Backend.model.responses.InformationStatusRestModel;
 import com.hacktyki.Backend.model.responses.LoginRestModel;
 import com.hacktyki.Backend.model.responses.UserSignInRestModel;
 import com.hacktyki.Backend.model.service.JwtService;
@@ -21,13 +22,12 @@ public class LoginController {
 
     @PostMapping(path = "register",
             consumes = "application/json")
-    public ResponseEntity<String> signUp(@RequestBody UserSignInRestModel user)
-    {
+    public ResponseEntity<InformationStatusRestModel> signUp(@RequestBody UserSignInRestModel user) {
         try {
-            return new ResponseEntity<>(loginService.addNewUser(user), HttpStatus.CREATED);
+            return new ResponseEntity<>(new InformationStatusRestModel(loginService.addNewUser(user)), HttpStatus.CREATED);
         }
         catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new InformationStatusRestModel(e.getMessage()),HttpStatus.BAD_REQUEST);
         }
     }
 

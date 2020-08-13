@@ -39,7 +39,7 @@ public class FullOrderRestModel {
         this.image = orderEntity.getImageSource();
         this.date = orderEntity.getOrderDate();
         this.time = orderEntity.getOrderTime();
-        this.paymentForm = orderEntity.getPaymentForm().getPaymentFormName();
+        this.paymentForm = orderEntity.getPaymentForm() != null ? orderEntity.getPaymentForm().getPaymentFormName() : null;
 
         UserEntity paymentUser = getPaymentUser(orderEntity);
         this.paymentNumber = paymentForm.toString().equals("BLIK") ?

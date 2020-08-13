@@ -33,8 +33,11 @@ public class OrderController {
             List<FullOrderRestModel> ordersList = orderService.getMyOrdersList();
             return new ResponseEntity<>(ordersList, HttpStatus.OK);
         }
-        catch(Exception ex){
+        catch(NullPointerException ex){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        catch(Exception ex){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -45,58 +48,61 @@ public class OrderController {
             List<FullOrderRestModel> ordersList = orderService.getAllOrdersList();
             return new ResponseEntity<>(ordersList, HttpStatus.OK);
         }
-        catch(Exception ex){
+        catch(NullPointerException ex){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        catch(Exception ex){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping(path = "add-order",
                 consumes = "application/json")
-    public ResponseEntity<String> addNewOrder(@RequestBody FullOrderRestModel fullOrderRestModel){
+    public ResponseEntity<InformationStatusRestModel> addNewOrder(@RequestBody FullOrderRestModel fullOrderRestModel){
         try {
             if (fullOrderRestModel != null) {
                 orderService.addNewOrder(fullOrderRestModel);
-                return new ResponseEntity<>("Successfully added new order", HttpStatus.CREATED);
+                return new ResponseEntity<>(new InformationStatusRestModel("Successfully added new order"), HttpStatus.CREATED);
             }
-            return new ResponseEntity<>("Cannot add new order", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new InformationStatusRestModel("Cannot add new order"), HttpStatus.BAD_REQUEST);
         }
         catch(Exception ex){
-            return new ResponseEntity<>("Cannot add new order, error", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new InformationStatusRestModel("Cannot add new order, error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @PostMapping(path = "join",
             consumes = "application/json")
-    public ResponseEntity<String> joinToOrder(@RequestBody JoinOrderRestModel joinOrderRestModel){
+    public ResponseEntity<InformationStatusRestModel> joinToOrder(@RequestBody JoinOrderRestModel joinOrderRestModel){
         try {
             if (joinOrderRestModel != null) {
                 orderService.joinToOrder(joinOrderRestModel);
-                return new ResponseEntity<>("Joined successfully", HttpStatus.CREATED);
+                return new ResponseEntity<>(new InformationStatusRestModel("Joined successfully"), HttpStatus.CREATED);
             }
-            return new ResponseEntity<>("Cannot join to order", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new InformationStatusRestModel("Cannot join to order"), HttpStatus.BAD_REQUEST);
         }
         catch(Exception ex){
-            return new ResponseEntity<>("Cannot join to order, error", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new InformationStatusRestModel("Cannot join to order, error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @PostMapping(path = "edit",
                 consumes = "application/json")
-    public ResponseEntity<String> editOrder(@RequestBody EditOrderRestModel editOrderRestModel ) {
+    public ResponseEntity<InformationStatusRestModel> editOrder(@RequestBody EditOrderRestModel editOrderRestModel ) {
         try{
             if (editOrderRestModel != null) {
                 orderService.editOrder(editOrderRestModel);
-                return new ResponseEntity<>("Successfully edited order", HttpStatus.ACCEPTED);
+                return new ResponseEntity<>(new InformationStatusRestModel("Successfully edited order"), HttpStatus.ACCEPTED);
             }
-            return new ResponseEntity<>("Nothing to edit", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new InformationStatusRestModel("Nothing to edit"), HttpStatus.BAD_REQUEST);
         }
         catch(NoSuchElementException e){
-            return new ResponseEntity<>("Not found order to edit", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new InformationStatusRestModel("Not found order to edit"), HttpStatus.NOT_FOUND);
         }
         catch (Exception e) {
-            return new ResponseEntity<>("Cannot edit order, error", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new InformationStatusRestModel("Cannot edit order, error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -119,20 +125,20 @@ public class OrderController {
 
     @PostMapping(path = "change-coupon",
                  consumes = "application/json")
-    public ResponseEntity<String> setChoosenCoupon(@RequestBody CouponChangeRestModel couponChangeRestModel){
+    public ResponseEntity<InformationStatusRestModel> setChoosenCoupon(@RequestBody CouponChangeRestModel couponChangeRestModel){
         try {
             if (couponChangeRestModel != null
                     && couponChangeRestModel.getOrderId() != null
                     && couponChangeRestModel.getCouponId() != null) {
                 orderService.setNewCoupon(couponChangeRestModel);
-                return new ResponseEntity<>("Changed successfully", HttpStatus.OK);
+                return new ResponseEntity<>(new InformationStatusRestModel("Changed successfully"), HttpStatus.OK);
             }
-            return new ResponseEntity<>("Not changed, bad request", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new InformationStatusRestModel("Not changed, bad request"), HttpStatus.BAD_REQUEST);
 
         } catch (NoSuchElementException ex){
-            return new ResponseEntity<>("Not changed. " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new InformationStatusRestModel("Not changed. " + ex.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception ex){
-            return new ResponseEntity<>("Not changed, server error", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new InformationStatusRestModel("Not changed, server error"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

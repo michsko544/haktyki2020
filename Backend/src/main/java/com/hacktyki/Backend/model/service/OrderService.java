@@ -106,7 +106,15 @@ public class OrderService {
 
             if(fullOrderRestModel.getPaymentForm() != null){
                 PaymentFormEntity paymentFormEntity = paymentFormRepository.findByPaymentFormName(fullOrderRestModel.getPaymentForm());
-                orderEntity.setPaymentFormId(paymentFormEntity.getId());
+                if( paymentFormEntity != null) {
+                    orderEntity.setPaymentFormId(paymentFormEntity.getId());
+                }
+                else {
+                    throw new NullPointerException("Payment entity with null value. Value not found.");
+                }
+            }
+            else {
+                throw new NullPointerException("Provided payment variable with null value.");
             }
 
             orderEntity = orderRepository.save(orderEntity);
