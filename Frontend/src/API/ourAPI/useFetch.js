@@ -12,11 +12,11 @@ const useFetch = (url) => {
       setIsLoading(true)
       const response = await axiosAPI(url)
       setResponse({ ...response.data, statusCode: response.status })
-      console.log(response.data)
+      if (process.env.REACT_APP_DEBUG === 'true') console.log(response.data)
     } catch (error) {
       setError({
-        code: error.response?.status.toString(),
-        text: error.response?.statusText?.toString(),
+        code: error.response?.status || -1,
+        text: 'Coś poszło nie tak',
       })
       if (process.env.REACT_APP_DEBUG === 'true') console.log(error.response)
     } finally {

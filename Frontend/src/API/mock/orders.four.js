@@ -3,8 +3,9 @@ const details = {
     id: 4,
     restaurant: 'Zdrowa Krowa',
     purchaserId: 2,
-    date: '2021-07-21',
+    date: '2019-07-21',
     time: '14:30',
+    paymentForm: 'BLIK',
     image: 'https://scx2.b-cdn.net/gfx/news/hires/2016/howcuttingdo.jpg',
     orderDetails: [
       {

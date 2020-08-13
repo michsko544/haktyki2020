@@ -13,7 +13,13 @@ import {
 import { recognizeUser } from './OrderList.utils'
 import { TextDisplayer } from '../../'
 
-const OrderList = ({ orders, purchaserId, isPurchaser }) => {
+const OrderList = ({
+  orders,
+  purchaserId,
+  isPurchaser,
+  payment,
+  isOrderClosed,
+}) => {
   const store = Store.useStore()
 
   const backgroundTheme = AppBackgroundThemes[store.get('themeBackgroundId')]
@@ -57,6 +63,28 @@ const OrderList = ({ orders, purchaserId, isPurchaser }) => {
     order: PropTypes.object.isRequired,
   }
 
+  const displayPayment = () => {
+    switch (payment) {
+      case 'CASH':
+        return 'GOTÓWKA'
+      case 'TRANSFER':
+        return 'PRZELEW'
+      default:
+        return payment
+    }
+  }
+
+  const displayInterested = () => {
+    if (orders.length > 1) {
+      if (!isOrderClosed) {
+        return `Obecnie chętnych: ${orders.length}`
+      } else {
+        return `Zapisało się ${orders.length} wyżerkowiczów`
+      }
+    }
+    return ''
+  }
+
   const mapOrderDetails = () =>
     orders.map((order) => (
       <OrderRecord
@@ -73,9 +101,12 @@ const OrderList = ({ orders, purchaserId, isPurchaser }) => {
 
   return (
     <>
-      <SmallTitle fontcolor={fontcolor}>
-        {orders.length > 0 ? `Obecnie chętnych: ${orders.length}` : ''}
-      </SmallTitle>
+      <div style={{ marginTop: 15, marginBottom: 5 }}>
+        <SmallTitle fontcolor={fontcolor}>
+          Preferowana forma zwrotu: {displayPayment()}
+        </SmallTitle>
+        <SmallTitle fontcolor={fontcolor}>{displayInterested()}</SmallTitle>
+      </div>
       <TextDisplayer>{mapOrderDetails()}</TextDisplayer>
     </>
   )
