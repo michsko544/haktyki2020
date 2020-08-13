@@ -303,6 +303,7 @@ const TeamfoodFormik = () => {
       date: order.date,
       time: order.time,
       image: order.image,
+      paymentForm: order.paymentForm,
       orderDetails: [
         {
           description: order.description,
