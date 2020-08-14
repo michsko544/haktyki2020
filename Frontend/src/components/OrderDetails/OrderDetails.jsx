@@ -5,20 +5,12 @@ import OrderList from './OrderBox/OrderText/OrderList'
 import OrderFormik from './OrderBox/OrderText/OrderForm'
 import OrderText from './OrderBox/OrderText'
 import Button from '../Button'
-import { useFetch } from '../../API'
 import { ButtonWrapper, Margins } from './OrderBox'
-import Skeleton from '@material-ui/lab/Skeleton'
-import ErrorMessage from '../ErrorMessage'
 import Store from '../App/App.store'
 
-const OrderDetails = ({ order, closeCallback, isLoading }) => {
+const OrderDetails = ({ order, closeCallback }) => {
   const [isFirstStage, setFirstStage] = React.useState(true)
-  //const { response, getData, isLoading, error } = useFetch(`/orders/${orderId}`)
   const store = Store.useStore()
-
-  React.useEffect(() => {
-    //getData()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const isOrderClosed = () => {
     const date = order.date
@@ -29,6 +21,7 @@ const OrderDetails = ({ order, closeCallback, isLoading }) => {
     dateSplited[1]--
     const orderDate = new Date(...dateSplited, timeSplited[0], timeSplited[1])
     const dateNow = new Date(Date.now())
+
     const result = orderDate < dateNow
 
     return result
@@ -136,8 +129,6 @@ const OrderDetails = ({ order, closeCallback, isLoading }) => {
   const handleDisplay = () => {
     return (
       <Margins isFirstStage={isFirstStage.toString()}>
-        {showLoaderIfLoading()}
-        {/* {showErrorIfError()} */}
         {order && (
           <OrderText
             title={order.restaurant}
@@ -151,39 +142,9 @@ const OrderDetails = ({ order, closeCallback, isLoading }) => {
     )
   }
 
-  const showLoaderIfLoading = () =>
-    isLoading && (
-      <>
-        <Skeleton variant="text" animation="wave" height={35} width={'50%'} />
-        <Skeleton variant="text" animation="wave" height={22} width={'80%'} />
-        <br />
-        <Skeleton variant="text" animation="wave" height={22} width={'60%'} />
-        <br />
-        <Skeleton variant="text" animation="wave" height={22} width={'50%'} />
-        <Skeleton variant="text" animation="wave" height={17} width={'70%'} />
-        <br />
-        <Skeleton variant="text" animation="wave" height={22} width={'35%'} />
-        <Skeleton variant="text" animation="wave" height={17} width={'90%'} />
-        <br />
-        <Skeleton variant="text" animation="wave" height={22} width={'29%'} />
-        <Skeleton variant="text" animation="wave" height={17} width={'75%'} />
-        <br />
-        <Skeleton variant="text" animation="wave" height={22} width={'40%'} />
-        <Skeleton variant="text" animation="wave" height={17} width={'60%'} />
-      </>
-    )
-
-  // const showErrorIfError = () =>
-  //   error && <ErrorMessage error={error.code} advice={error.text} />
-
   return (
     <>
-      <OrderBox
-        image={!isLoading && order.image}
-        closeCallback={closeCallback}
-        isLoading={isLoading}
-        //error={error}
-      >
+      <OrderBox image={order.image} closeCallback={closeCallback}>
         {handleDisplay()}
       </OrderBox>
     </>
@@ -193,7 +154,6 @@ const OrderDetails = ({ order, closeCallback, isLoading }) => {
 OrderDetails.propTypes = {
   order: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
   closeCallback: PropTypes.func,
-  isLoading: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]).isRequired,
 }
 
 export default OrderDetails

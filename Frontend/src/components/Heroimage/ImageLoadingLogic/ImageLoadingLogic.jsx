@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Loader from '../Loader'
-import defaultImage from '../../images/frytki.png'
+import Loader from '../../Loader'
+import defaultImage from '../../../images/frytki.png'
 import { LoaderPosition } from './'
 
 const ImageLoadingLogic = ({

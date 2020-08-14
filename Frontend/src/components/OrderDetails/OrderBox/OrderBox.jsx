@@ -9,9 +9,8 @@ import {
 import { FixedContainer, CloseBtnBackground } from './OrderBox.style'
 import Store from '../../App/App.store'
 import { AppBackgroundThemes } from '../../App/App.themes'
-import ImageLoadingLogic from '../../ImageLoadingLogic'
 
-const OrderBox = ({ children, image, closeCallback, isLoading, error }) => {
+const OrderBox = ({ children, image, closeCallback }) => {
   const store = Store.useStore()
 
   const background =
@@ -29,13 +28,7 @@ const OrderBox = ({ children, image, closeCallback, isLoading, error }) => {
           />
         </CloseBtnBackground>
         <HeroimagePosition>
-          <ImageLoadingLogic
-            image={image}
-            isLoading={isLoading}
-            error={error}
-            alt="food-order-photo"
-            component={OrderDetailsImg}
-          />
+          <OrderDetailsImg src={image} alt="food-order-photo" />
         </HeroimagePosition>
         {children}
       </BoxContainer>
