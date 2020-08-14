@@ -5,11 +5,15 @@ import com.hacktyki.Backend.model.repository.OrderDetailsRepository;
 import com.hacktyki.Backend.model.repository.OrderRepository;
 import com.hacktyki.Backend.model.repository.PaymentFormRepository;
 import com.hacktyki.Backend.model.responses.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -23,6 +27,7 @@ public class OrderService {
     private UserService userService;
     private CouponService couponService;
     private PaymentFormRepository paymentFormRepository;
+    private Logger logger;
 
     public OrderService(OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, UserService userService, CouponService couponService, PaymentFormRepository paymentFormRepository) {
         this.orderDetailsRepository = orderDetailsRepository;
@@ -30,11 +35,13 @@ public class OrderService {
         this.userService = userService;
         this.couponService = couponService;
         this.paymentFormRepository = paymentFormRepository;
+        this.logger = LoggerFactory.getLogger(OrderService.class);
     }
 
     // Returns all orders logged user joined to
     public OrdersListRestModel getMyOrdersList() throws Exception {
 
+        logger.info("/orders/my triggered actual time: " + LocalDateTime.now().toString());
         checkOrdersTime(); // orders temporary refreshing due to limited time on heroku
 
         long userId = userService.getAuthenticatedId();
@@ -61,6 +68,7 @@ public class OrderService {
     // Returns all orders that logged user didn't join to
     public OrdersListRestModel getAllOrdersList() throws Exception {
 
+        logger.info("/orders/all triggered actual time: " + LocalDateTime.now().toString());
         checkOrdersTime(); // orders temporary refreshing due to limited time on heroku
 
         long userId = userService.getAuthenticatedId();
