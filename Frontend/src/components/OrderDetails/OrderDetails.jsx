@@ -88,7 +88,7 @@ const OrderDetails = ({ order, closeCallback, isLoading }) => {
       return (
         <ButtonWrapper>
           <Button
-            text={findLoggedPerson()?.what ? 'Edytuj' : 'Dołącz'}
+            text={findLoggedPerson()?.description ? 'Edytuj' : 'Dołącz'}
             handleOnClick={() => setFirstStage(false)}
           />
         </ButtonWrapper>
