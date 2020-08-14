@@ -33,7 +33,10 @@ const Home = () => {
 
   useEffect(() => {
     console.log('Response:', fetchUserOrders.response)
-    if(fetchUserOrders.response !== null && !('map' in fetchUserOrders.response)) {
+    if (
+      fetchUserOrders.response !== null &&
+      !('map' in fetchUserOrders.response)
+    ) {
       console.log()
     }
   }, [fetchUserOrders.response])
@@ -46,9 +49,9 @@ const Home = () => {
     setDetailsVisibile(!isDetailsVisibile)
   }
 
-  const handleShowCard = (id) => {
+  const handleShowCard = (order) => {
     toggleDetailsVisibility()
-    setSelectedOrder(id)
+    setSelectedOrder(order)
   }
 
   const handleCloseCard = () => {
@@ -81,12 +84,12 @@ const Home = () => {
         <Container>
           <div className="your-order">
             <H3>Twoje zamówienia</H3>
-            {fetchUserOrders.response !== null
-              ? Object.values(fetchUserOrders.response).filter((v) => typeof v === 'object').map((order) => (
+            {fetchUserOrders.response
+              ? fetchUserOrders.response.orders.map((order) => (
                   <Card
                     key={order.id}
                     details={order}
-                    openCallback={() => handleShowCard(order.id)}
+                    openCallback={() => handleShowCard(order)}
                   />
                 ))
               : fetchUserOrders.isLoading && <Loader />}
@@ -94,12 +97,12 @@ const Home = () => {
           <div className="available-orders-wrapper">
             <H3>Dostępne zamówienia</H3>
             <div className="orders">
-              {fetchOrders.response !== null
-                ? Object.values(fetchOrders.response).filter((v) => typeof v === 'object').map((order) => (
+              {fetchOrders.response
+                ? fetchOrders.response.orders.map((order) => (
                     <Card
                       key={order.id}
                       details={order}
-                      openCallback={() => handleShowCard(order.id)}
+                      openCallback={() => handleShowCard(order)}
                     />
                   ))
                 : fetchOrders.isLoading && <Loader />}
@@ -108,7 +111,11 @@ const Home = () => {
         </Container>
       </BlurChildren>
       {isDetailsVisibile && (
-        <OrderDetails orderId={selectedOrder} closeCallback={handleCloseCard} />
+        <OrderDetails
+          order={selectedOrder}
+          closeCallback={handleCloseCard}
+          isLoading={fetchOrders.isLoading || fetchUserOrders.isLoading}
+        />
       )}
     </>
   )
