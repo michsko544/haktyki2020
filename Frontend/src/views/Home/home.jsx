@@ -49,6 +49,24 @@ const Home = () => {
     setSelectedOrder(null)
   }
 
+  const orderSort = (a, b) => {
+    const aDay = new Date(a.date)
+    const bDay = new Date(b.date)
+
+    const [aHour, aMinute, aSecond] = a.time.split(':')
+    const [bHour, bMinute, bSecond] = b.time.split(':')
+    
+    aDay.setHours(aHour)
+    aDay.setMinutes(aMinute)
+    aDay.setSeconds(aSecond)
+
+    bDay.setHours(bHour)
+    bDay.setMinutes(bMinute)
+    bDay.setSeconds(bSecond)
+
+    return aDay > bDay
+  }
+
   return (
     <>
       <BlurChildren shouldBlur={isDetailsVisibile}>
@@ -75,7 +93,7 @@ const Home = () => {
           <div className="your-order">
             <H3>Twoje zamówienia</H3>
             {fetchUserOrders.response
-              ? fetchUserOrders.response.orders.map((order) => (
+              ? fetchUserOrders.response.orders.sort((a, b) => orderSort(a, b)).map((order) => (
                   <Card
                     key={order.id}
                     details={order}
@@ -88,7 +106,7 @@ const Home = () => {
             <H3>Dostępne zamówienia</H3>
             <div className="orders">
               {fetchOrders.response
-                ? fetchOrders.response.orders.map((order) => (
+                ? fetchOrders.response.orders.sort((a, b) => orderSort(a, b)).map((order) => (
                     <Card
                       key={order.id}
                       details={order}
