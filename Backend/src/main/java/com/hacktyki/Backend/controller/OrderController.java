@@ -28,9 +28,9 @@ public class OrderController {
 
     @GetMapping(path = "my",
             produces = "application/json")
-    public ResponseEntity<List<FullOrderRestModel>> getMyOrders(){
+    public ResponseEntity<OrdersListRestModel> getMyOrders(){
         try {
-            List<FullOrderRestModel> ordersList = orderService.getMyOrdersList();
+            OrdersListRestModel ordersList = orderService.getMyOrdersList();
             return new ResponseEntity<>(ordersList, HttpStatus.OK);
         }
         catch(NullPointerException ex){
@@ -43,9 +43,9 @@ public class OrderController {
 
     @GetMapping(path = "all",
             produces = "application/json")
-    public ResponseEntity<List<FullOrderRestModel>> getAllOrders(){
+    public ResponseEntity<OrdersListRestModel> getAllOrders(){
         try {
-            List<FullOrderRestModel> ordersList = orderService.getAllOrdersList();
+            OrdersListRestModel ordersList = orderService.getAllOrdersList();
             return new ResponseEntity<>(ordersList, HttpStatus.OK);
         }
         catch(NullPointerException ex){

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -34,7 +33,7 @@ public class OrderService {
     }
 
     // Returns all orders logged user joined to
-    public List<FullOrderRestModel> getMyOrdersList() throws Exception {
+    public OrdersListRestModel getMyOrdersList() throws Exception {
 
         checkOrdersTime(); // orders temporary refreshing due to limited time on heroku
 
@@ -51,7 +50,7 @@ public class OrderService {
                     .map(FullOrderRestModel::new)
                     .collect(Collectors.toList());
 
-            return myOrdersList;
+            return new OrdersListRestModel(myOrdersList);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -60,7 +59,7 @@ public class OrderService {
     }
 
     // Returns all orders that logged user didn't join to
-    public List<FullOrderRestModel> getAllOrdersList() throws Exception {
+    public OrdersListRestModel getAllOrdersList() throws Exception {
 
         checkOrdersTime(); // orders temporary refreshing due to limited time on heroku
 
@@ -77,7 +76,7 @@ public class OrderService {
                     .map(FullOrderRestModel::new)
                     .collect(Collectors.toList());
 
-            return allOrdersList;
+            return new OrdersListRestModel(allOrdersList);
 
         } catch (Exception ex) {
             ex.printStackTrace();
