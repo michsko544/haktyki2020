@@ -94,7 +94,7 @@ public class OrderController {
         try{
             if (editOrderRestModel != null) {
                 orderService.editOrder(editOrderRestModel);
-                return new ResponseEntity<>(new InformationStatusRestModel("Successfully edited order"), HttpStatus.ACCEPTED);
+                return new ResponseEntity<>(new InformationStatusRestModel("Successfully edited order"), HttpStatus.OK);
             }
             return new ResponseEntity<>(new InformationStatusRestModel("Nothing to edit"), HttpStatus.BAD_REQUEST);
         }
