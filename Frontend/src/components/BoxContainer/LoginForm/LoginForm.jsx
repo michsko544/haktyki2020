@@ -69,7 +69,14 @@ const LoginFormik = () => {
       if (!loginAPI.response.fullname) history.push('/greeter')
       else history.push('/')
     }
-  }, [loginAPI.isLoading, loginAPI.response, history, completed, store, enqueueSnackbar])
+  }, [
+    loginAPI.isLoading,
+    loginAPI.response,
+    history,
+    completed,
+    store,
+    enqueueSnackbar,
+  ])
 
   useEffect(() => {
     if (loginAPI.error) {

@@ -27,7 +27,7 @@ const Payment = ({ payment, isOrderClosed }) => {
   const displaySwift = () =>
     payment.swift ? (
       <>
-        <SmallTitle fontcolor={fontcolor}>SWIFT/BIC: </SmallTitle>
+        <SmallTitle fontcolor={fontcolor}>Swift/BIC: </SmallTitle>
         <Number firstcolor={firstcolor} secondcolor={secondcolor}>
           {payment.swift}
         </Number>

@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import * as Yup from 'yup'
-import { withFormik, Form, Field } from 'formik'
+import { usePost } from '../../../../../API'
+import { Form, Field, Formik } from 'formik'
 import Store from '../../../../App/App.store'
 import { AppBackgroundThemes } from '../../../../App/App.themes'
 import Checkbox from '@material-ui/core/Checkbox'
@@ -11,6 +12,7 @@ import { DoubleInputStyled } from '../../../../../views/Teamfood/Container/doubl
 import Button from '../../../../Button'
 import { ButtonWrapper, TextDisplayer } from '../../'
 import { RadioGroupFormik } from '../../../../Inputs'
+import { useSnackbar } from 'notistack'
 
 const OrderForm = ({
   values,
@@ -40,14 +42,20 @@ const OrderForm = ({
     ) : (
       <>
         <InputStyled>
-          <Input type="text" label="Kod kuponu" name="coupon" />
+          <Field
+            type="text"
+            label="Kod kuponu"
+            name="coupon"
+            component={Input}
+          />
         </InputStyled>
         <InputStyled>
-          <Input
-            component="textarea"
+          <Field
+            componentType="textarea"
             placeholder="Kupon obejmuje zamówienie za minimum 40zł i daje zniżkę 10%"
             label="Informacje o kuponie"
             name="couponDescription"
+            component={Input}
             error={errors.couponDescription}
           />
         </InputStyled>
@@ -59,20 +67,22 @@ const OrderForm = ({
       isPurchaser && (
         <DoubleInputStyled>
           <InputStyled>
-            <Input
+            <Field
               type="date"
               name="date"
               label="Kiedy?"
               placeholder="Dzisiaj"
+              component={Input}
               error={errorHandler('date')}
             />
           </InputStyled>
           <InputStyled>
-            <Input
+            <Field
               type="time"
               name="hour"
               label="O której?"
               placeholder="17:00"
+              component={Input}
               error={errorHandler('hour')}
             />
           </InputStyled>
@@ -107,9 +117,10 @@ const OrderForm = ({
       <SmallTitle fontcolor={fontcolor}>Co chcesz zamówić?</SmallTitle>
       <TextDisplayer>
         <InputStyled>
-          <Input
+          <Field
             name="orderContent"
-            component="textarea"
+            component={Input}
+            componentType="textarea"
             label="Treść zamówienia"
             style={{ height: 77 }}
             error={errorHandler('orderContent')}
@@ -137,58 +148,88 @@ const OrderFormik = ({
   isPurchaser,
   closeCallback,
 }) => {
-  const OrderWithFormik = withFormik({
-    mapPropsToValues({ order, coupon, date, time, payment }) {
-      return {
-        orderContent: order || '',
-        hasCoupon: coupon?.code ? true : false,
-        coupon: coupon?.code || '',
-        couponDescription: coupon?.description || '',
-        date: date || '',
-        hour: time || '',
-        payment: payment || '',
-      }
-    },
+  const updateData = usePost('/orders/edit')
+  const { enqueueSnackbar } = useSnackbar()
+  const store = Store.useStore()
 
-    validationSchema: Yup.object().shape({
-      orderContent: Yup.string()
-        .min(5, 'Pole musi mieć minimum 5 znaków')
-        .max(200, 'Pole musi mieć maksimum 200 znaków')
-        .required('Wypełnij to pole'),
-      coupon: Yup.string().max(20, 'Pole musi mieć maksimum 20 znaków'),
-      couponDescription: Yup.string().max(
-        100,
-        'Pole musi mieć maksimum 100 znaków'
-      ),
-      date: isPurchaser
-        ? Yup.string().required('Wypełnij to pole')
-        : Yup.string(),
-      hour: isPurchaser
-        ? Yup.string().required('Wypełnij to pole')
-        : Yup.string(),
-      payment: isPurchaser
-        ? Yup.string().required('Zaznacz to pole')
-        : Yup.string(),
-    }),
+  useEffect(() => {
+    if (
+      !updateData.isLoading &&
+      updateData.response !== null &&
+      updateData.response.statusCode === 200
+    ) {
+      enqueueSnackbar('Zapisano 👌', {
+        variant: 'success',
+        preventDuplicate: true,
+      })
+      closeCallback()
+    }
+  }, [updateData.response, updateData.isLoading, enqueueSnackbar])
 
-    handleSubmit(values, { resetForm, setSubmitting }) {
-      setTimeout(() => {
-        console.log(values, orderId)
-        setSubmitting(false)
-        resetForm()
-        closeCallback()
-      }, 2000)
-    },
-  })(OrderForm)
+  const initialValues = {
+    orderContent: order || '',
+    hasCoupon: coupon?.code ? true : false,
+    coupon: coupon?.code || '',
+    couponDescription: coupon?.description || '',
+    date: date || '',
+    hour: time || '',
+    payment: payment || '',
+  }
+
+  const validationSchema = Yup.object().shape({
+    orderContent: Yup.string()
+      .min(5, 'Pole musi mieć minimum 5 znaków')
+      .max(200, 'Pole musi mieć maksimum 200 znaków')
+      .required('Wypełnij to pole'),
+    coupon: Yup.string().max(20, 'Pole musi mieć maksimum 20 znaków'),
+    couponDescription: Yup.string().max(
+      100,
+      'Pole musi mieć maksimum 100 znaków'
+    ),
+    date: isPurchaser
+      ? Yup.string().required('Wypełnij to pole')
+      : Yup.string(),
+    hour: isPurchaser
+      ? Yup.string().required('Wypełnij to pole')
+      : Yup.string(),
+    payment: isPurchaser
+      ? Yup.string().required('Zaznacz to pole')
+      : Yup.string(),
+  })
+
+  const transformValues = (values) => {
+    return {
+      date: values.date,
+      orderId: orderId,
+      paymentForm: values.payment,
+      time: values.hour,
+      userOrderDetails: {
+        coupon: {
+          code: values.coupon || '',
+          description: values.couponDescription || '',
+        },
+        description: values.orderContent,
+        userFullname: store.get('user'),
+        userId: store.get('userId'),
+      },
+    }
+  }
+
+  const onSubmit = async (values, { setSubmitting }) => {
+    enqueueSnackbar('Zapisywanie 🤞', { variant: 'info' })
+    await updateData.sendData(transformValues(values))
+    setSubmitting(false)
+  }
+
   return (
-    <OrderWithFormik
-      order={order}
-      coupon={coupon}
-      date={date}
-      time={time}
-      payment={payment}
-      isPurchaser={isPurchaser}
-    />
+    <Formik
+      enableReinitialize={true}
+      {...{ initialValues, onSubmit, validationSchema }}
+    >
+      {(formikProps) => (
+        <OrderForm {...formikProps} isPurchaser={isPurchaser} />
+      )}
+    </Formik>
   )
 }
 

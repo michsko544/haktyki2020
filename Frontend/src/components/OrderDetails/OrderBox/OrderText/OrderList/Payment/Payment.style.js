@@ -14,6 +14,6 @@ export const Number = styled.div`
   -webkit-text-fill-color: transparent;
 
   @media (min-width: 1024px) {
-    font-size: 1.4em;
+    font-size: 1.25em;
   }
 `

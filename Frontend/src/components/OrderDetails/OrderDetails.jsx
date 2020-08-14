@@ -18,6 +18,7 @@ const OrderDetails = ({ order, closeCallback }) => {
 
     const dateSplited = date.split('-')
     const timeSplited = time.split(':')
+    //decrement because constructor Date numbered months from 0
     dateSplited[1]--
     const orderDate = new Date(...dateSplited, timeSplited[0], timeSplited[1])
     const dateNow = new Date(Date.now())
@@ -103,7 +104,7 @@ const OrderDetails = ({ order, closeCallback }) => {
   const displayCurrentStage = () =>
     !isFirstStage ? (
       <OrderFormik
-        order={findLoggedPerson()?.desctiption}
+        order={findLoggedPerson()?.description}
         coupon={findLoggedPerson()?.coupon}
         date={order.date}
         time={order.time}
