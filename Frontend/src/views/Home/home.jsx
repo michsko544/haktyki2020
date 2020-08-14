@@ -111,11 +111,7 @@ const Home = () => {
         </Container>
       </BlurChildren>
       {isDetailsVisibile && (
-        <OrderDetails
-          order={selectedOrder}
-          closeCallback={handleCloseCard}
-          isLoading={fetchOrders.isLoading || fetchUserOrders.isLoading}
-        />
+        <OrderDetails order={selectedOrder} closeCallback={handleCloseCard} />
       )}
     </>
   )

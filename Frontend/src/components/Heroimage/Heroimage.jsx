@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ImageLoadingLogic from '../ImageLoadingLogic'
+import ImageLoadingLogic from './ImageLoadingLogic'
 import { HeroimageStyled } from './'
 import { useRandomThematicImg } from '../../API'
 

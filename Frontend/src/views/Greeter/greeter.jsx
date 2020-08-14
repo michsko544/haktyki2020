@@ -9,7 +9,7 @@ import { HeaderStyled } from '../../components/BoxContainer/Header'
 
 const Greeter = () => {
   useEffect(() => {
-    document.title = 'Poznajmy się 🖐🏻🖐🏿🖐🏼🖐🖐🏾 | TeamFood'
+    document.title = 'Poznajmy się 🖐🏻🖐🖐🏾 | TeamFood'
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

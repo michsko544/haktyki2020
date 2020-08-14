@@ -12,7 +12,7 @@ import Button from '../../components/Button'
 
 const NotFound = () => {
   useEffect(() => {
-    document.title = 'Uciekaj stąd! ❌🥚🤢 | TeamFood'
+    document.title = 'Uciekaj stąd! ❌ | TeamFood'
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const history = useHistory()
