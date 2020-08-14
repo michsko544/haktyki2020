@@ -31,16 +31,6 @@ const Home = () => {
     fetchUserOrders.getData()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    console.log('Response:', fetchUserOrders.response)
-    if (
-      fetchUserOrders.response !== null &&
-      !('map' in fetchUserOrders.response)
-    ) {
-      console.log()
-    }
-  }, [fetchUserOrders.response])
-
   const getFirstname = () => {
     return store.get('user')?.split(' ')[0]
   }
