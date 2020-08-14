@@ -52,7 +52,7 @@ const GreeterFormik = () => {
   const [completed, setCompleted] = useState(false)
 
   const transformRequest = (values) => {
-    values.name = values.name.split(' ').map(v => v.chatAt(0).toUpperCase() + v.split(1)).join(' ')
+    values.name = values.name.split(' ').map(v => v.charAt(0).toUpperCase() + v.slice(1)).join(' ')
     return values
   }
 
@@ -88,9 +88,8 @@ const GreeterFormik = () => {
     enqueueSnackbar('Zapisywanie danych 🤞', {
       variant: 'info'
     })
-    console.log('Submitted values: ', transformRequest(values))
     await api.sendData(transformRequest(values))
-    store.set('user')(values.name.charAt(0).toUpperCase() + values.name.split(1))
+    store.set('user')(values.name)
     setSubmitting(false)
   }
 
