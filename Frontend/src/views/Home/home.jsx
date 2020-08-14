@@ -16,8 +16,8 @@ import { BlurChildren } from '../../components/App'
 
 const Home = () => {
   const store = Store.useStore()
-  const fetchOrders = useFetch('/orders')
-  const fetchUserOrders = useFetch('/user/orders')
+  const fetchOrders = useFetch('/orders/all')
+  const fetchUserOrders = useFetch('/orders/my')
 
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [isDetailsVisibile, setDetailsVisibile] = useState(false)
@@ -30,6 +30,13 @@ const Home = () => {
     fetchOrders.getData()
     fetchUserOrders.getData()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    console.log('Response:', fetchUserOrders.response)
+    if(fetchUserOrders.response !== null && !('map' in fetchUserOrders.response)) {
+      console.log()
+    }
+  }, [fetchUserOrders.response])
 
   const getFirstname = () => {
     return store.get('user')?.split(' ')[0]
@@ -74,8 +81,8 @@ const Home = () => {
         <Container>
           <div className="your-order">
             <H3>Twoje zamówienia</H3>
-            {fetchUserOrders.response
-              ? fetchUserOrders.response.orders.map((order) => (
+            {fetchUserOrders.response !== null
+              ? Object.values(fetchUserOrders.response).filter((v) => typeof v === 'object').map((order) => (
                   <Card
                     key={order.id}
                     details={order}
@@ -87,8 +94,8 @@ const Home = () => {
           <div className="available-orders-wrapper">
             <H3>Dostępne zamówienia</H3>
             <div className="orders">
-              {fetchOrders.response
-                ? fetchOrders.response.orders.map((order) => (
+              {fetchOrders.response !== null
+                ? Object.values(fetchOrders.response).filter((v) => typeof v === 'object').map((order) => (
                     <Card
                       key={order.id}
                       details={order}
