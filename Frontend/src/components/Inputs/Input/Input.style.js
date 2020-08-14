@@ -10,7 +10,6 @@ export const FieldStyled = styled.input`
   color: ${(props) => props.color};
   width: 100%;
   line-height: 22px;
-  resize: vertical;
   box-shadow: none;
 
   &[type='time'],
@@ -29,9 +28,24 @@ export const FieldStyled = styled.input`
   }
 `
 
-FieldStyled.defaultProps = {
-  isdarkmode: 'true',
-}
+export const TextareaStyled = styled.textarea`
+  border: none;
+  padding: 5px 17px 6px;
+  background: none;
+  outline: none;
+  font-size: 18px;
+  font-family: 'Montserrat';
+  color: ${(props) => props.color};
+  width: 100%;
+  line-height: 22px;
+  resize: vertical;
+  box-shadow: none;
+
+  &::placeholder {
+    color: ${(props) => props.color};
+    opacity: 0.6;
+  }
+`
 
 export const Underline = styled.div`
   position: relative;

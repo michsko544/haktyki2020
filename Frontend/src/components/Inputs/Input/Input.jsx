@@ -2,11 +2,43 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Store from '../../App/App.store'
 import { AppBackgroundThemes, AppThemes } from '../../App/App.themes'
-import { FieldStyled, Label, Underline } from './'
+import { FieldStyled, TextareaStyled, Label, Underline } from './'
 import InputError from '../InputError'
 
-const Input = ({ label, error, name, children, field, ...props }) => {
+const Input = ({ label, error, name, componentType, field, ...props }) => {
   const store = Store.useStore()
+
+  const selectComponentType = () => {
+    switch (componentType) {
+      case 'textarea':
+        return (
+          <TextareaStyled
+            autoComplete="off"
+            id={name}
+            name={name}
+            color={
+              AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
+            }
+            {...field}
+            {...props}
+          />
+        )
+      default:
+        return (
+          <FieldStyled
+            autoComplete="off"
+            id={name}
+            component={componentType}
+            name={name}
+            color={
+              AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
+            }
+            {...field}
+            {...props}
+          />
+        )
+    }
+  }
 
   return (
     <>
@@ -21,13 +53,7 @@ const Input = ({ label, error, name, children, field, ...props }) => {
         firstcolor={AppThemes[store.get('themeId')].from}
         secondcolor={AppThemes[store.get('themeId')].to}
       >
-        <FieldStyled
-          autoComplete="off"
-          id={name}
-          color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}
-          {...field}
-          {...props}
-        />
+        {selectComponentType()}
       </Underline>
       <InputError
         error={error}
@@ -39,7 +65,7 @@ const Input = ({ label, error, name, children, field, ...props }) => {
 
 Input.propTypes = {
   type: PropTypes.string,
-  component: PropTypes.string,
+  componentType: PropTypes.string,
   label: PropTypes.string.isRequired,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 }

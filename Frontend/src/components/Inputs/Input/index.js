@@ -2,6 +2,7 @@ export {
   FieldStyled,
   Label,
   InputStyled,
+  TextareaStyled,
   SmallerInputStyled,
   RowOnMediumScreen,
   Underline,
