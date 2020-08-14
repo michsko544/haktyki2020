@@ -11,18 +11,18 @@ import Skeleton from '@material-ui/lab/Skeleton'
 import ErrorMessage from '../ErrorMessage'
 import Store from '../App/App.store'
 
-const OrderDetails = ({ orderId, closeCallback }) => {
+const OrderDetails = ({ order, closeCallback, isLoading }) => {
   const [isFirstStage, setFirstStage] = React.useState(true)
-  const { response, getData, isLoading, error } = useFetch(`/orders/${orderId}`)
+  //const { response, getData, isLoading, error } = useFetch(`/orders/${orderId}`)
   const store = Store.useStore()
 
   React.useEffect(() => {
-    getData()
+    //getData()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const isOrderClosed = () => {
-    const date = response.order.date
-    const time = response.order.time
+    const date = order.date
+    const time = order.time
 
     const dateSplited = date.split('-')
     const timeSplited = time.split(':')
@@ -35,7 +35,7 @@ const OrderDetails = ({ orderId, closeCallback }) => {
   }
 
   const displayDate = () => {
-    const date = response.order.date
+    const date = order.date
     const dateSplited = date.split('-')
     //decrement because constructor Date numbered months from 0
     dateSplited[1]--
@@ -58,24 +58,19 @@ const OrderDetails = ({ orderId, closeCallback }) => {
     }
   }
 
-  const isLoggedUserPurchaser = () =>
-    store.get('userId') === response.order.purchaserId
+  const isLoggedUserPurchaser = () => store.get('userId') === order.purchaserId
 
   const findPurchaser = () =>
-    response.order.orderDetails.find(
-      (elem) => response.order.purchaserId === elem.userId
-    )
+    order.orderDetails.find((elem) => order.purchaserId === elem.userId)
 
   const findLoggedPerson = () =>
-    response.order.orderDetails.find(
-      (elem) => store.get('userId') === elem.userId
-    )
+    order.orderDetails.find((elem) => store.get('userId') === elem.userId)
 
   const recognizePurchaser = () => {
     if (isLoggedUserPurchaser()) {
       return 'Ty'
     } else {
-      return findPurchaser().who
+      return findPurchaser().userFullname
     }
   }
 
@@ -115,21 +110,25 @@ const OrderDetails = ({ orderId, closeCallback }) => {
   const displayCurrentStage = () =>
     !isFirstStage ? (
       <OrderFormik
-        order={findLoggedPerson()?.what}
+        order={findLoggedPerson()?.desctiption}
         coupon={findLoggedPerson()?.coupon}
-        date={response.order.date}
-        time={response.order.time}
-        payment={response.order.paymentForm}
-        orderId={response.order.id}
+        date={order.date}
+        time={order.time}
+        payment={order.paymentForm}
+        orderId={order.id}
         isPurchaser={isLoggedUserPurchaser()}
         closeCallback={closeCallback}
       />
     ) : (
       <OrderList
-        orders={response.order.orderDetails}
-        purchaserId={response.order.purchaserId}
+        orders={order.orderDetails}
+        purchaserId={order.purchaserId}
         isPurchaser={isLoggedUserPurchaser()}
-        payment={response.order.paymentForm}
+        payment={{
+          type: order.paymentForm,
+          number: order.paymentNumber,
+          swift: order.swiftBicCode,
+        }}
         isOrderClosed={isOrderClosed()}
       />
     )
@@ -138,13 +137,11 @@ const OrderDetails = ({ orderId, closeCallback }) => {
     return (
       <Margins isFirstStage={isFirstStage.toString()}>
         {showLoaderIfLoading()}
-        {showErrorIfError()}
-        {response && (
+        {/* {showErrorIfError()} */}
+        {order && (
           <OrderText
-            title={response.order.restaurant}
-            info={`${displayPurchaser()} - ${displayDate()} ${
-              response.order.time
-            }`}
+            title={order.restaurant}
+            info={`${displayPurchaser()} - ${displayDate()} ${order.time}`}
           >
             {displayCurrentStage()}
             {showSuitableButton()}
@@ -176,16 +173,16 @@ const OrderDetails = ({ orderId, closeCallback }) => {
       </>
     )
 
-  const showErrorIfError = () =>
-    error && <ErrorMessage error={error.code} advice={error.text} />
+  // const showErrorIfError = () =>
+  //   error && <ErrorMessage error={error.code} advice={error.text} />
 
   return (
     <>
       <OrderBox
-        image={!isLoading && response?.order.image}
+        image={!isLoading && order.image}
         closeCallback={closeCallback}
         isLoading={isLoading}
-        error={error}
+        //error={error}
       >
         {handleDisplay()}
       </OrderBox>
@@ -194,8 +191,9 @@ const OrderDetails = ({ orderId, closeCallback }) => {
 }
 
 OrderDetails.propTypes = {
-  orderId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  order: PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
   closeCallback: PropTypes.func,
+  isLoading: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]).isRequired,
 }
 
 export default OrderDetails

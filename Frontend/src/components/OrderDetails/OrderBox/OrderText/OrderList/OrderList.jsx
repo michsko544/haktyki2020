@@ -12,6 +12,7 @@ import {
 } from './OrderList.style'
 import { recognizeUser } from './OrderList.utils'
 import { TextDisplayer } from '../../'
+import Payment from './Payment'
 
 const OrderList = ({
   orders,
@@ -23,22 +24,18 @@ const OrderList = ({
   const store = Store.useStore()
 
   const backgroundTheme = AppBackgroundThemes[store.get('themeBackgroundId')]
-
   const fontcolor = backgroundTheme.fontColor
   const backgroundcolor = backgroundTheme.background
+  const theme = AppThemes[store.get('themeId')]
+  const firstcolor = theme.from
+  const secondcolor = theme.to
 
   const OrderRecord = ({ name, order }) => {
-    const store = Store.useStore()
-
-    const theme = AppThemes[store.get('themeId')]
-    const firstcolor = theme.from
-    const secondcolor = theme.to
-
     return (
       <RecordStyled hascoupon={isPurchaser && order.coupon}>
         <Name color={fontcolor}>{name}</Name>
         <Order firstcolor={firstcolor} secondcolor={secondcolor}>
-          {order.what}
+          {order.description}
         </Order>
         {isPurchaser && order.coupon && (
           <>
@@ -63,17 +60,6 @@ const OrderList = ({
     order: PropTypes.object.isRequired,
   }
 
-  const displayPayment = () => {
-    switch (payment) {
-      case 'CASH':
-        return 'GOTÓWKA'
-      case 'TRANSFER':
-        return 'PRZELEW'
-      default:
-        return payment
-    }
-  }
-
   const displayInterested = () => {
     if (orders.length > 1) {
       if (!isOrderClosed) {
@@ -93,7 +79,7 @@ const OrderList = ({
           order.userId,
           store.get('userId'),
           purchaserId,
-          order.who
+          order.userFullname
         )}
         order={order}
       />
@@ -102,9 +88,7 @@ const OrderList = ({
   return (
     <>
       <div style={{ marginTop: 15, marginBottom: 5 }}>
-        <SmallTitle fontcolor={fontcolor}>
-          Preferowana forma zwrotu: {displayPayment()}
-        </SmallTitle>
+        <Payment payment={payment} isOrderClosed={isOrderClosed} />
         <SmallTitle fontcolor={fontcolor}>{displayInterested()}</SmallTitle>
       </div>
       <TextDisplayer>{mapOrderDetails()}</TextDisplayer>
@@ -117,6 +101,9 @@ OrderList.propTypes = {
   purchaserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   isPurchaser: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]).isRequired,
+  payment: PropTypes.object.isRequired,
+  isOrderClosed: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
+    .isRequired,
 }
 
 export default OrderList
