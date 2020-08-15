@@ -147,8 +147,10 @@ const OrderFormik = ({
   orderId,
   isPurchaser,
   closeCallback,
+  formAction,
 }) => {
   const updateData = usePost('/orders/edit')
+  const addData = usePost('/orders/join')
   const { enqueueSnackbar } = useSnackbar()
   const store = Store.useStore()
 
@@ -164,7 +166,26 @@ const OrderFormik = ({
       })
       closeCallback()
     }
-  }, [updateData.response, updateData.isLoading, enqueueSnackbar])
+  }, [
+    updateData.response,
+    updateData.isLoading,
+    enqueueSnackbar,
+    closeCallback,
+  ])
+
+  useEffect(() => {
+    if (
+      !addData.isLoading &&
+      addData.response !== null &&
+      addData.response.statusCode === 201
+    ) {
+      enqueueSnackbar('Dołączono 👌', {
+        variant: 'success',
+        preventDuplicate: true,
+      })
+      closeCallback()
+    }
+  }, [addData.response, addData.isLoading, enqueueSnackbar, closeCallback])
 
   const initialValues = {
     orderContent: order || '',
@@ -197,7 +218,7 @@ const OrderFormik = ({
       : Yup.string(),
   })
 
-  const transformValues = (values) => {
+  const transformValuesForUpadate = (values) => {
     return {
       date: values.date,
       orderId: orderId,
@@ -215,9 +236,24 @@ const OrderFormik = ({
     }
   }
 
+  const transformValuesForJoin = (values) => {
+    return {
+      coupon: {
+        code: values.coupon || '',
+        description: values.couponDescription || '',
+      },
+      description: values.orderContent,
+      orderId: orderId,
+      userId: store.get('userId'),
+    }
+  }
+
   const onSubmit = async (values, { setSubmitting }) => {
     enqueueSnackbar('Zapisywanie 🤞', { variant: 'info' })
-    await updateData.sendData(transformValues(values))
+    if (formAction === 'edit')
+      await updateData.sendData(transformValuesForUpadate(values))
+    else await addData.sendData(transformValuesForJoin(values))
+
     setSubmitting(false)
   }
 

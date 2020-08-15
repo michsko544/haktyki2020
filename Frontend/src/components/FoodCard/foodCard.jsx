@@ -8,7 +8,12 @@ import Typography from '@material-ui/core/Typography'
 import { FoodCardStyled } from './foodCard.style'
 import Store from './../App/App.store'
 import { AppBackgroundThemes } from './../App/App.themes'
-import { displayPurchaser, displayDate, displayTime, findLoggedPerson } from './../../utils';
+import {
+  displayPurchaser,
+  displayDate,
+  displayTime,
+  findLoggedPerson,
+} from './../../utils'
 
 const useStyles = makeStyles({
   root: {
@@ -22,8 +27,6 @@ const useStyles = makeStyles({
 const FoodCard = ({ details, openCallback, ...props }) => {
   const store = Store.useStore()
   const classes = useStyles()
-
-  console.log('Details: ', details)
 
   const orderDetails = () => {
     if (findLoggedPerson(store.get('userId'), details)) {
@@ -58,7 +61,8 @@ const FoodCard = ({ details, openCallback, ...props }) => {
             {details.restaurant}
           </Typography>
           <Typography color="textSecondary" component="p">
-            {displayPurchaser(store.get('userId'), details)} - { displayDate(details) } {displayTime(details)}
+            {displayPurchaser(store.get('userId'), details)} -{' '}
+            {displayDate(details)} {displayTime(details)}
           </Typography>
           <Typography component="p">
             Obecnie chętnych: {details.orderDetails.length}
