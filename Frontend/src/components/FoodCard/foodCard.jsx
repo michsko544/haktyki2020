@@ -6,9 +6,14 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import { FoodCardStyled } from './foodCard.style'
-
 import Store from './../App/App.store'
 import { AppBackgroundThemes } from './../App/App.themes'
+import {
+  displayPurchaser,
+  displayDate,
+  displayTime,
+  findLoggedPerson,
+} from './../../utils'
 
 const useStyles = makeStyles({
   root: {
@@ -24,15 +29,14 @@ const FoodCard = ({ details, openCallback, ...props }) => {
   const classes = useStyles()
 
   const orderDetails = () => {
-    if (details.orderDetails) {
+    if (findLoggedPerson(store.get('userId'), details)) {
       return (
         <>
           <Typography variant="body2" color="textSecondary" component="p">
             Zapisałeś:
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            Podwójny McZestaw z frytkami i colą, Pizza z Ananasem, McBurger z
-            kaktusem
+            {findLoggedPerson(store.get('userId'), details).description}
           </Typography>
         </>
       )
@@ -54,13 +58,14 @@ const FoodCard = ({ details, openCallback, ...props }) => {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            {details.name}
+            {details.restaurant}
           </Typography>
           <Typography color="textSecondary" component="p">
-            Zamawia {details.purchaser} - Dziś {details.time}
+            {displayPurchaser(store.get('userId'), details)} -{' '}
+            {displayDate(details)} {displayTime(details)}
           </Typography>
           <Typography component="p">
-            Obecnie chętnych: {details.interested}
+            Obecnie chętnych: {details.orderDetails.length}
           </Typography>
           {orderDetails()}
         </CardContent>
