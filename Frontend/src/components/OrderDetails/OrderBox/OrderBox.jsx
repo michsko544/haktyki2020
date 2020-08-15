@@ -40,8 +40,6 @@ OrderBox.propTypes = {
   image: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   closeCallback: PropTypes.func,
   children: PropTypes.any,
-  isLoading: PropTypes.bool.isRequired,
-  error: PropTypes.object,
 }
 
 export default OrderBox

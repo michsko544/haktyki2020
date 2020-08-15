@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import OrderBox from './OrderBox'
 import OrderList from './OrderBox/OrderText/OrderList'
@@ -7,23 +7,45 @@ import OrderText from './OrderBox/OrderText'
 import Button from '../Button'
 import { ButtonWrapper, Margins } from './OrderBox'
 import Store from '../App/App.store'
-import { isOrderClosed, displayDate, findLoggedPerson, isLoggedUserPurchaser, displayPurchaser } from './../../utils'
+import {
+  isOrderClosed,
+  displayDate,
+  findLoggedPerson,
+  isLoggedUserPurchaser,
+  displayPurchaser,
+} from './../../utils'
 
 const OrderDetails = ({ order, closeCallback }) => {
   const [isFirstStage, setFirstStage] = React.useState(true)
   const store = Store.useStore()
+
+  useEffect(() => {
+    const oldTitle = document.title
+    document.title = `${order.restaurant} 🍔 | TeamFood`
+    return () => {
+      document.title = oldTitle
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const showSuitableButton = () => {
     if (isFirstStage && !isOrderClosed(order))
       return (
         <ButtonWrapper>
           <Button
-            text={findLoggedPerson(store.get('userId'), order)?.description ? 'Edytuj' : 'Dołącz'}
+            text={
+              findLoggedPerson(store.get('userId'), order)?.description
+                ? 'Edytuj'
+                : 'Dołącz'
+            }
             handleOnClick={() => setFirstStage(false)}
           />
         </ButtonWrapper>
       )
-    else if (isFirstStage && isOrderClosed(order) && isLoggedUserPurchaser(store.get('userId'), order))
+    else if (
+      isFirstStage &&
+      isOrderClosed(order) &&
+      isLoggedUserPurchaser(store.get('userId'), order)
+    )
       return (
         <ButtonWrapper>
           <Button
@@ -40,7 +62,7 @@ const OrderDetails = ({ order, closeCallback }) => {
   const displayCurrentStage = () =>
     !isFirstStage ? (
       <OrderFormik
-        order={findLoggedPerson(store.get('userId'), order)?.desctiption}
+        order={findLoggedPerson(store.get('userId'), order)?.description}
         coupon={findLoggedPerson(store.get('userId'), order)?.coupon}
         date={order.date}
         time={order.time}
@@ -48,6 +70,11 @@ const OrderDetails = ({ order, closeCallback }) => {
         orderId={order.id}
         isPurchaser={isLoggedUserPurchaser(store.get('userId'), order)}
         closeCallback={closeCallback}
+        formAction={
+          findLoggedPerson(store.get('userId'), order)?.description
+            ? 'edit'
+            : 'join'
+        }
       />
     ) : (
       <OrderList
@@ -69,7 +96,10 @@ const OrderDetails = ({ order, closeCallback }) => {
         {order && (
           <OrderText
             title={order.restaurant}
-            info={`${displayPurchaser(store.get('userId'), order)} - ${displayDate(order)} ${order.time}`}
+            info={`${displayPurchaser(
+              store.get('userId'),
+              order
+            )} - ${displayDate(order)} ${order.time}`}
           >
             {displayCurrentStage()}
             {showSuitableButton()}
