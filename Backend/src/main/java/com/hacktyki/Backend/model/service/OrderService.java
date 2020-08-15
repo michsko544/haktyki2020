@@ -7,6 +7,7 @@ import com.hacktyki.Backend.model.repository.PaymentFormRepository;
 import com.hacktyki.Backend.model.responses.*;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,11 +19,11 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
-    private OrderRepository orderRepository;
-    private OrderDetailsRepository orderDetailsRepository;
-    private UserService userService;
-    private CouponService couponService;
-    private PaymentFormRepository paymentFormRepository;
+    private final OrderRepository orderRepository;
+    private final OrderDetailsRepository orderDetailsRepository;
+    private final UserService userService;
+    private final CouponService couponService;
+    private final PaymentFormRepository paymentFormRepository;
 
     public OrderService(OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, UserService userService, CouponService couponService, PaymentFormRepository paymentFormRepository) {
         this.orderDetailsRepository = orderDetailsRepository;
@@ -41,7 +42,7 @@ public class OrderService {
 
         try {
             List<Long> orderIdsContainingUserId
-                    = getOrderIdsContainingUsersIdList(userId);
+                    = getOrderIdsContainingUsersId(userId);
 
             List<FullOrderRestModel> myOrdersList
                     = orderRepository.findAll()
@@ -67,7 +68,7 @@ public class OrderService {
 
         try {
             List<Long> orderIdsContainingUserId
-                    = getOrderIdsContainingUsersIdList(userId);
+                    = getOrderIdsContainingUsersId(userId);
 
             List<FullOrderRestModel> allOrdersList
                     = orderRepository.findAll()
@@ -84,7 +85,7 @@ public class OrderService {
         }
     }
 
-    private List<Long> getOrderIdsContainingUsersIdList(long userId){
+    private List<Long> getOrderIdsContainingUsersId(long userId){
          return orderDetailsRepository.findAllById_UserId(userId)
                     .stream()
                     .map(OrderDetailsEntity::getId)
@@ -124,7 +125,6 @@ public class OrderService {
             }
             orderDetailsRepository.save(orderDetailsEntity);
 
-            // return orderEntity.getId(); optional created orders Id
         }
         catch(Exception ex){
             ex.printStackTrace();
@@ -143,7 +143,7 @@ public class OrderService {
                 orderDetailsEntity.setCouponId(couponId);
             }
             orderDetailsEntity = orderDetailsRepository.save(orderDetailsEntity);
-            // return orderDetailsEntity.getId(); optional order and user Ids pack to send
+
         }
         catch(Exception ex){
             ex.printStackTrace();
@@ -276,4 +276,21 @@ public class OrderService {
         }
     }
 
+    protected OrderEntity getOrderById(Long orderId) throws EntityNotFoundException {
+        try {
+            return orderRepository.getOne(orderId);
+        }
+        catch (EntityNotFoundException ex){
+            throw ex;
+        }
+    }
+
+    protected List<Long> getOrderUsersIdsByOrderIdWithoutOwner(Long orderId){
+        return orderDetailsRepository.findAllById_OrderId(orderId)
+                .stream()
+                .filter(orderDetailsEntity -> {return !orderDetailsEntity.isOrderOwner();})
+                .map(OrderDetailsEntity::getId)
+                .map(OrderDetailsIdentity::getUserId)
+                .collect(Collectors.toList());
+    }
 }

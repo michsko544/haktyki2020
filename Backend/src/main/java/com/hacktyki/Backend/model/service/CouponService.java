@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class CouponService {
 
-    private DiscountCouponRepository discountCouponRepository;
+    private final DiscountCouponRepository discountCouponRepository;
 
     public CouponService(DiscountCouponRepository discountCouponRepository) {
         this.discountCouponRepository = discountCouponRepository;
