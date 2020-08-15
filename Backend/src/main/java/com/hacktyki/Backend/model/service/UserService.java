@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -34,6 +34,7 @@ public class UserService {
         UserEntity user = userRepository.findByLogin(getAuthenticatedLogin());
         if(user != null){
             user.setFullName(fullname);
+            userRepository.save(user);
             return true;
         }
         return false;
