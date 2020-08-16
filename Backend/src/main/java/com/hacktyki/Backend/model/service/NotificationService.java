@@ -41,21 +41,19 @@ public class NotificationService {
             ArrayList<String> tokensList = getTokensForOrderNotification(orderId);
 
             MulticastMessage multicastMessage = MulticastMessage.builder()
-                    .setWebpushConfig(WebpushConfig
-                                    .builder()
-                                    .setNotification(WebpushNotification
-                                            .builder()
-                                            .setTitle(messageTitle)
-                                            .setBody(messageBody)
-                                            .build())
-                                    .build())
                     .setNotification(Notification
                                     .builder()
                                     .setTitle(messageTitle)
                                     .setBody(messageBody)
                                     .build())
-                    .putData("title",messageTitle)
-                    .putData("body",messageBody)
+                    .setWebpushConfig(WebpushConfig
+                            .builder()
+                            .setNotification(WebpushNotification
+                                    .builder()
+                                    .setTitle(messageTitle)
+                                    .setBody(messageBody)
+                                    .build())
+                            .build())
                     .addAllTokens(tokensList)
                     .build();
 
