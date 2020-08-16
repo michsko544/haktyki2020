@@ -3,6 +3,11 @@ import styled from 'styled-components'
 export const HeroimagePosition = styled.div`
   width: 100%;
 
+  @media (min-width: 420px) {
+    display: flex;
+    justify-content: center;
+  }
+
   @media (min-width: 1024px) {
     width: 50%;
     height: 100%;
@@ -37,7 +42,16 @@ export const OrderDetailsImg = styled(HeroimageStyled)`
   margin: 0;
   max-width: 420px;
 
-  @media (min-width: 480px) {
-    margin: 0 auto;
+  @media (min-width: 420px) {
+    margin-top: 80px;
+    height: 300px;
+    border-radius: 8px;
+  }
+
+  @media (min-width: 1024px) {
+    margin-top: 0;
+    height: unset;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 `
