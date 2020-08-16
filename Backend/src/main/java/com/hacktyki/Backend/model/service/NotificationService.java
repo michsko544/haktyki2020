@@ -31,7 +31,7 @@ public class NotificationService {
 
     public InformationStatusRestModel notifyOrderParticipants(Long orderId) throws IOException, EntityNotFoundException,NullPointerException, Exception {
 
-        subscribeToTopic(orderId);
+        //subscribeToTopic(orderId);
 
         try {
             //String topic = ORDER_TOPICS_CONSTANT + orderId.toString();
@@ -41,6 +41,14 @@ public class NotificationService {
             ArrayList<String> tokensList = getTokensForOrderNotification(orderId);
 
             MulticastMessage multicastMessage = MulticastMessage.builder()
+                    .setWebpushConfig(WebpushConfig
+                                    .builder()
+                                    .setNotification(WebpushNotification
+                                            .builder()
+                                            .setTitle(messageTitle)
+                                            .setBody(messageBody)
+                                            .build())
+                                    .build())
                     .setNotification(Notification
                                     .builder()
                                     .setTitle(messageTitle)
@@ -91,45 +99,46 @@ public class NotificationService {
         }
     }
 
-    public void subscribeToTopic(Long orderId){
-        try {
-            List<Long> userIds = orderService.getOrderUsersIdsByOrderIdWithoutOwner(orderId);
-            if (userIds.size() > 0) {
-                List<String> tokenList = new ArrayList<String>();
-                NotificationDeviceEntity notificationDeviceEntity;
-                for (Long userId : userIds) {
-                    try {
-                        notificationDeviceEntity = notificationDeviceRepository.getByUserId(userId);
-                        tokenList.add(notificationDeviceEntity.getToken());
-                        notificationDeviceEntity = null;
-                    } catch (EntityNotFoundException ex) {
-                    }
-                }
-                if (tokenList.size() > 0) {
+//    public void subscribeToTopic(Long orderId){
+//        try {
+//            List<Long> userIds = orderService.getOrderUsersIdsByOrderIdWithoutOwner(orderId);
+//            if (userIds.size() > 0) {
+//                List<String> tokenList = new ArrayList<String>();
+//                List<NotificationDeviceEntity> notificationDeviceList;
+//                for (Long userId : userIds) {
 //                    try {
-//                        //FirebaseMessaging.getInstance().subscribeToTopic(tokenList, ORDER_TOPICS_CONSTANT + orderId.toString());
-//                    } catch (FirebaseMessagingException ex) {
-//                        logger.error("Firebase subscribe to topic error", ex);
+//                        notificationDeviceList = notificationDeviceRepository.getByUserId(userId);
+//                        tokenList.add(notificationDeviceEntity.getToken());
+//                        notificationDeviceEntity = null;
+//                    } catch (EntityNotFoundException ex) {
 //                    }
-                }
-            }
-        }
-        catch (Exception ex){
-            logger.error("Error in subscribeToTopic occurred",ex);
-        }
-    }
+//                }
+//                if (tokenList.size() > 0) {
+////                    try {
+////                        //FirebaseMessaging.getInstance().subscribeToTopic(tokenList, ORDER_TOPICS_CONSTANT + orderId.toString());
+////                    } catch (FirebaseMessagingException ex) {
+////                        logger.error("Firebase subscribe to topic error", ex);
+////                    }
+//                }
+//            }
+//        }
+//        catch (Exception ex){
+//            logger.error("Error in subscribeToTopic occurred",ex);
+//        }
+//    }
 
     private ArrayList<String> getTokensForOrderNotification(Long orderId) throws NullPointerException, Exception{
         List<Long> userIds = orderService.getOrderUsersIdsByOrderIdWithoutOwner(orderId);
         if (userIds != null && userIds.size() > 0) {
             ArrayList<String> tokenList = new ArrayList<String>();
-            NotificationDeviceEntity notificationDeviceEntity;
+            List<NotificationDeviceEntity> notificationDeviceList;
             for (Long userId : userIds) {
-                notificationDeviceEntity = notificationDeviceRepository.getByUserId(userId);
-                if (notificationDeviceEntity != null) {
+                notificationDeviceList = notificationDeviceRepository.findAllByUserId(userId);
+                if (notificationDeviceList != null) {
+                    for(NotificationDeviceEntity notificationDeviceEntity : notificationDeviceList)
                     tokenList.add(notificationDeviceEntity.getToken());
                 }
-                notificationDeviceEntity = null;
+                notificationDeviceList = null;
             }
             if (tokenList.size() > 0) {
                 return tokenList;
