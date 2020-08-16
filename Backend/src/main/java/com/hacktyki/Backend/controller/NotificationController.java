@@ -39,6 +39,9 @@ public class NotificationController {
         catch(EntityNotFoundException ex){
             return new ResponseEntity<>(new InformationStatusRestModel("Order with this orderId does not exists."), HttpStatus.NOT_FOUND);
         }
+        catch(NullPointerException ex){
+            return new ResponseEntity<>(new InformationStatusRestModel("Order has no users to notify."), HttpStatus.OK);
+        }
         catch(Exception ex){
             return new ResponseEntity<>(new InformationStatusRestModel("Unexpected internal server error occurred."), HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -29,7 +29,7 @@ public class NotificationService {
         this.logger = LoggerFactory.getLogger(NotificationService.class);
     }
 
-    public InformationStatusRestModel notifyOrderParticipants(Long orderId) throws IOException, EntityNotFoundException, Exception {
+    public InformationStatusRestModel notifyOrderParticipants(Long orderId) throws IOException, EntityNotFoundException,NullPointerException, Exception {
 
         subscribeToTopic(orderId);
 
@@ -63,6 +63,10 @@ public class NotificationService {
         }
         catch (EntityNotFoundException ex){
             logger.error("Client provided not existing orderId: " + orderId, ex);
+            throw ex;
+        }
+        catch (NullPointerException ex){
+            logger.error("Got no tokens to notify", ex);
             throw ex;
         }
         catch (Exception ex){
@@ -115,26 +119,23 @@ public class NotificationService {
         }
     }
 
-    private ArrayList<String> getTokensForOrderNotification(Long orderId){
-
+    private ArrayList<String> getTokensForOrderNotification(Long orderId) throws NullPointerException, Exception{
         List<Long> userIds = orderService.getOrderUsersIdsByOrderIdWithoutOwner(orderId);
-        if (userIds.size() > 0) {
+        if (userIds != null && userIds.size() > 0) {
             ArrayList<String> tokenList = new ArrayList<String>();
             NotificationDeviceEntity notificationDeviceEntity;
             for (Long userId : userIds) {
-                try {
-                    notificationDeviceEntity = notificationDeviceRepository.getByUserId(userId);
+                notificationDeviceEntity = notificationDeviceRepository.getByUserId(userId);
+                if (notificationDeviceEntity != null) {
                     tokenList.add(notificationDeviceEntity.getToken());
-                    notificationDeviceEntity = null;
                 }
-                catch (EntityNotFoundException ex) {
-                }
+                notificationDeviceEntity = null;
             }
             if (tokenList.size() > 0) {
                 return tokenList;
             }
         }
-        return null;
+        throw new NullPointerException("No devices to notify.");
     }
 
 }
