@@ -31,13 +31,15 @@ const OrderList = ({
   const secondcolor = theme.to
 
   const OrderRecord = ({ name, order }) => {
+    const hasCoupon = () => isPurchaser && order.coupon && order.coupon.code
+
     return (
-      <RecordStyled hascoupon={isPurchaser && order.coupon}>
+      <RecordStyled hascoupon={hasCoupon()}>
         <Name color={fontcolor}>{name}</Name>
         <Order firstcolor={firstcolor} secondcolor={secondcolor}>
           {order.description}
         </Order>
-        {isPurchaser && order.coupon && (
+        {hasCoupon() && (
           <>
             <Coupon
               color={fontcolor}
@@ -46,7 +48,8 @@ const OrderList = ({
             <CouponInfo color={backgroundcolor}>
               <Name color={fontcolor}>Kod kuponu: {order.coupon.code}</Name>
               <Coupon color={fontcolor}>
-                Dodatkowe informacje: {order.coupon.description}
+                Dodatkowe informacje:{' '}
+                {order.coupon.description ? order.coupon.description : 'Brak'}
               </Coupon>
             </CouponInfo>
           </>
