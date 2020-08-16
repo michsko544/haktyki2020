@@ -15,7 +15,7 @@ public class OrderDetailsEntity implements Serializable {
     private OrderDetailsIdentity id;
     @Column(name = "coupon_id")
     private Long couponId;
-    @Column(name = "description", nullable = false, length = 200)
+    @Column(name = "description", nullable = false, length = 191)
     private String description;
     @Column(name = "order_owner", nullable = false)
     private boolean orderOwner;

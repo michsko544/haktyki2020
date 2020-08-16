@@ -27,7 +27,7 @@ public class OrderEntity {
     private Long paymentFormId;
     @Column(name = "discount_coupon_id")
     private Long DiscountCouponId;
-    @Column(name = "image_source")
+    @Column(name = "image_source", length = 191)
     private String imageSource;
 
     // joined column of payment, list of orders

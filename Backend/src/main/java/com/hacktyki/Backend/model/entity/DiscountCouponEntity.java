@@ -14,7 +14,7 @@ DiscountCouponEntity {
     private long id;
     @Column( name = "code_to_use", nullable = false, length = 20)
     private String codeToUse;
-    @Column( name = "description", nullable = false, length = 200)
+    @Column( name = "description", nullable = false, length = 191)
     private String description;
 
     public DiscountCouponEntity() {
