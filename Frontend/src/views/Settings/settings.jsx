@@ -31,7 +31,7 @@ const Settings = () => {
   const setThemeId = store.set('themeId')
   const setBackgroundThemeId = store.set('themeBackgroundId')
   const [isNotificationGranted, setIsNotificationGranted] = useState(false)
-  const addDevice = usePost('/add-device')
+  const addDevice = usePost('/notifications/add-device')
 
   useEffect(() => {
     setIsNotificationGranted(Notification.permission === 'granted')
