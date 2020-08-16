@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class NotificationService {
 
-    private final String ORDER_TOPICS_CONSTANT = "/topics/ORDER-";
+    //private final String ORDER_TOPICS_CONSTANT = "/topics/ORDER-";
 
     private final NotificationDeviceRepository notificationDeviceRepository;
     private final Logger logger;
@@ -34,11 +34,13 @@ public class NotificationService {
         subscribeToTopic(orderId);
 
         try {
-            String topic = ORDER_TOPICS_CONSTANT + orderId.toString();
+            //String topic = ORDER_TOPICS_CONSTANT + orderId.toString();
             String messageTitle = orderService.getOrderById(orderId).getRestaurant();
             String messageBody = "Twoje zamówienie już na ciebie czeka :)";
 
-            Message message = Message.builder()
+            ArrayList<String> tokensList = getTokensForOrderNotification(orderId);
+
+            MulticastMessage multicastMessage = MulticastMessage.builder()
                     .setNotification(Notification
                                     .builder()
                                     .setTitle(messageTitle)
@@ -46,12 +48,12 @@ public class NotificationService {
                                     .build())
                     .putData("title",messageTitle)
                     .putData("body",messageBody)
-                    .setTopic(topic)
+                    .addAllTokens(tokensList)
                     .build();
 
             try {
-                String response = FirebaseMessaging.getInstance().send(message);
-                logger.info("Notification sent successfully. Message Id: " + response);
+                BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(multicastMessage);
+                logger.info("Notification sent successfully. " + response.getSuccessCount() + " messages were sent successfully");
                 return new InformationStatusRestModel("Notification sent successfully.");
             }
             catch (FirebaseMessagingException ex) {
@@ -100,17 +102,39 @@ public class NotificationService {
                     }
                 }
                 if (tokenList.size() > 0) {
-                    try {
-                        FirebaseMessaging.getInstance().subscribeToTopic(tokenList, ORDER_TOPICS_CONSTANT + orderId.toString());
-                    } catch (FirebaseMessagingException ex) {
-                        logger.error("Firebase subscribe to topic error", ex);
-                    }
+//                    try {
+//                        //FirebaseMessaging.getInstance().subscribeToTopic(tokenList, ORDER_TOPICS_CONSTANT + orderId.toString());
+//                    } catch (FirebaseMessagingException ex) {
+//                        logger.error("Firebase subscribe to topic error", ex);
+//                    }
                 }
             }
         }
         catch (Exception ex){
             logger.error("Error in subscribeToTopic occurred",ex);
         }
+    }
+
+    private ArrayList<String> getTokensForOrderNotification(Long orderId){
+
+        List<Long> userIds = orderService.getOrderUsersIdsByOrderIdWithoutOwner(orderId);
+        if (userIds.size() > 0) {
+            ArrayList<String> tokenList = new ArrayList<String>();
+            NotificationDeviceEntity notificationDeviceEntity;
+            for (Long userId : userIds) {
+                try {
+                    notificationDeviceEntity = notificationDeviceRepository.getByUserId(userId);
+                    tokenList.add(notificationDeviceEntity.getToken());
+                    notificationDeviceEntity = null;
+                }
+                catch (EntityNotFoundException ex) {
+                }
+            }
+            if (tokenList.size() > 0) {
+                return tokenList;
+            }
+        }
+        return null;
     }
 
 }

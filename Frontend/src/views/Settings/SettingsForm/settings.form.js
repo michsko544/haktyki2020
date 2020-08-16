@@ -85,9 +85,11 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
               type="text"
               name="account"
               label="Numer konta do przelewów"
-              placeholder={isLoading ? 'Ładowanie' : 'PL78 2323 4333 1234 2333 0000 1234'}
+              placeholder={
+                isLoading ? 'Ładowanie' : 'PL78 2323 4333 1234 2333 0000 1234'
+              }
               error={errorHandler('account')}
-              style={ isLoading ? { textTransform: 'uppercase' } : null }
+              style={isLoading ? { textTransform: 'uppercase' } : null}
             />
           </InputStyled>
           {showSwiftWhenIBAN()}
@@ -116,14 +118,15 @@ const SettingsFormik = () => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if(!userData.isLoading && userData.response !== null && userData.response.statusCode === 200) {
-      console.log('Data: ', userData.response)
-    }
-  }, [userData.isLoading, userData.response])
-
-  useEffect(() => {
-    if (!updateData.isLoading && updateData.response !== null && updateData.response.statusCode === 200) {
-      enqueueSnackbar('Zapisano 👌', { variant: 'success', preventDuplicate: true })
+    if (
+      !updateData.isLoading &&
+      updateData.response !== null &&
+      updateData.response.statusCode === 200
+    ) {
+      enqueueSnackbar('Zapisano 👌', {
+        variant: 'success',
+        preventDuplicate: true,
+      })
       history.push('/')
     }
   }, [updateData.response, updateData.isLoading, history, enqueueSnackbar])
@@ -189,7 +192,7 @@ const SettingsFormik = () => {
       fullName: values.user,
       creditCardNumber: values.account,
       swiftBicCode: values.swift,
-      phoneNumber: values.blik
+      phoneNumber: values.blik,
     }
   }
 
@@ -201,8 +204,13 @@ const SettingsFormik = () => {
   }
 
   return (
-    <Formik enableReinitialize={true} {...{ initialValues, onSubmit, validationSchema }}>
-      {formikProps => <SettingsForm {...formikProps} isLoading={userData?.isLoading} />}
+    <Formik
+      enableReinitialize={true}
+      {...{ initialValues, onSubmit, validationSchema }}
+    >
+      {(formikProps) => (
+        <SettingsForm {...formikProps} isLoading={userData?.isLoading} />
+      )}
     </Formik>
   )
 }
