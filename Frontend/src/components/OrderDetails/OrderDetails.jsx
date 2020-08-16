@@ -14,10 +14,13 @@ import {
   isLoggedUserPurchaser,
   displayPurchaser,
 } from './../../utils'
+import { usePost } from '../../API'
 
 const OrderDetails = ({ order, closeCallback }) => {
   const [isFirstStage, setFirstStage] = React.useState(true)
   const store = Store.useStore()
+
+  const postNotification = usePost('/notifications/order-delivered')
 
   useEffect(() => {
     const oldTitle = document.title
@@ -50,9 +53,12 @@ const OrderDetails = ({ order, closeCallback }) => {
         <ButtonWrapper>
           <Button
             text={'Powiadom o dotarciu jedzenia'}
-            handleOnClick={() =>
-              console.log('Call API that order arrived to company')
-            }
+            handleOnClick={async () => {
+              await postNotification.sendData({
+                id: order.id,
+              })
+              closeCallback()
+            }}
           />
         </ButtonWrapper>
       )

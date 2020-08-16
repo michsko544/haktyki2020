@@ -19,6 +19,7 @@ import {
 import { NotificationStyled } from './Notifications/notifications.style'
 import firebase from './../../firebase'
 import { ButtonFormWrapper, default as Button } from './../../components/Button'
+import { usePost } from '../../API'
 
 /**
  * TODO
@@ -30,9 +31,23 @@ const Settings = () => {
   const setThemeId = store.set('themeId')
   const setBackgroundThemeId = store.set('themeBackgroundId')
   const [isNotificationGranted, setIsNotificationGranted] = useState(false)
+  const addDevice = usePost('/notifications/add-device')
 
   useEffect(() => {
     setIsNotificationGranted(Notification.permission === 'granted')
+    const messaging = firebase.messaging()
+    messaging
+      .requestPermission()
+      .then(() => {
+        return messaging.getToken()
+      })
+      .then((token) => {
+        console.log('Token: ', token)
+        return addDevice.sendData({
+          userId: store.get('userId'),
+          token: token
+        })
+      })
   }, [])
 
   const gradientClick = (theme) => {
