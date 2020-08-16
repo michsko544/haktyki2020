@@ -12,8 +12,8 @@ import javax.transaction.Transactional;
 @Service
 public class LoginService {
 
-    private UserRepository userRepository;
-    private JwtService jwtService;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
 

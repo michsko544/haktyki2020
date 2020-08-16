@@ -18,12 +18,10 @@ import java.util.NoSuchElementException;
 @RequestMapping("orders")
 public class OrderController {
 
-    private OrderService orderService;
-    private UserService userService;
+    private final OrderService orderService;
 
-    OrderController(OrderService orderService, UserService userService){
+    OrderController(OrderService orderService){
         this.orderService = orderService;
-        this.userService = userService;
     }
 
     @GetMapping(path = "my",
