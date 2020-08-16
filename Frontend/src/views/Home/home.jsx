@@ -13,15 +13,20 @@ import { Link } from 'react-router-dom'
 import OrderDetails from '../../components/OrderDetails'
 import Loader from '../../components/Loader'
 import { BlurChildren } from '../../components/App'
+import { useSnackbar } from 'notistack'
 import Message from './message.styled'
+
 
 const Home = () => {
   const store = Store.useStore()
   const fetchOrders = useFetch('/orders/all')
   const fetchUserOrders = useFetch('/orders/my')
+  const userData = useFetch('/users/my-details')
 
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [isDetailsVisibile, setDetailsVisibile] = useState(false)
+
+  const { enqueueSnackbar } = useSnackbar()
 
   /**
    * CDM
@@ -30,6 +35,7 @@ const Home = () => {
     document.title = 'Zamówmy coś 🍕 | TeamFood'
     fetchOrders.getData()
     fetchUserOrders.getData()
+    userData.getData()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const getFirstname = () => {
@@ -69,6 +75,38 @@ const Home = () => {
 
     return aDay > bDay
   }
+
+  const hasUserData = () => 
+      userData.response.fullName &&
+      userData.response.phoneNumber &&
+      userData.response.creditCardNumber
+
+  function renderOrderButton() {
+    if (userData.response) {
+      if (hasUserData())
+        return (
+          <Link className="button" to="/teamfood">
+            <Button text="Dodaj Zamówienie"></Button>
+          </Link>
+        )
+      else {
+        return (
+          <Link className="button" to="/settings">
+            <Button
+              text="Dodaj Zamówienie"
+              onClick={() =>
+                enqueueSnackbar(
+                  'Aby stworzyć zamówienie uzupełnij wszystkie dane ❗️',
+                  { variant: 'info', preventDuplicate: true }
+                )
+              }
+            ></Button>
+          </Link>
+        )
+      }
+    }
+    return ''
+    }
 
   const getRandomMessage = () => {
     const messages = [
@@ -110,9 +148,7 @@ const Home = () => {
               />
             </IconLink>
           </div>
-          <Link className="button" to="/teamfood">
-            <Button text="Dodaj Zamówienie"></Button>
-          </Link>
+          {renderOrderButton()}
         </Header>
         <Container>
           <div className="your-order">
