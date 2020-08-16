@@ -67,4 +67,8 @@ export const FoodKeywords = [
     match: 'włosk',
     keyword: 'italian-food',
   },
+  {
+    match: 'subway',
+    keyword: 'sandwich',
+  },
 ]

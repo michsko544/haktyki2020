@@ -22,7 +22,8 @@ export const Margins = styled.div`
     height: 100%;
     max-height: 100%;
     overflow-y: auto;
-    padding: 64px 50px 40px;
+    padding-top: 64px;
+    padding-bottom: 30px;
     width: 50%;
   }
 `
@@ -48,6 +49,7 @@ export const TextWrapper = styled.div`
     height: 100%;
     overflow-y: auto;
     max-width: unset;
+    padding: 0px 20px 10px;
   }
 `
 
