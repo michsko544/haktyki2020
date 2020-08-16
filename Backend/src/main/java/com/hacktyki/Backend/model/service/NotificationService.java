@@ -1,9 +1,5 @@
 package com.hacktyki.Backend.model.service;
 
-import com.google.api.client.util.Value;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
 import com.hacktyki.Backend.model.entity.NotificationDeviceEntity;
 import com.hacktyki.Backend.model.repository.NotificationDeviceRepository;
@@ -11,10 +7,8 @@ import com.hacktyki.Backend.model.responses.InformationStatusRestModel;
 import com.hacktyki.Backend.model.responses.NotificationDeviceRestModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,12 +17,8 @@ import java.util.List;
 @Service
 public class NotificationService {
 
-    private final String ORDER_TOPICS_CONSTANT = "ORDER-";
+    private final String ORDER_TOPICS_CONSTANT = "/topics/ORDER-";
 
-    @Value("${app.firebase-config}")
-    private String firebaseConfig;
-
-    private FirebaseApp firebaseApp;
     private final NotificationDeviceRepository notificationDeviceRepository;
     private final Logger logger;
     private final OrderService orderService;
@@ -37,24 +27,6 @@ public class NotificationService {
         this.notificationDeviceRepository = notificationDeviceRepository;
         this.orderService = orderService;
         this.logger = LoggerFactory.getLogger(NotificationService.class);
-    }
-
-    @PostConstruct
-    private void initialize() {
-        try {
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(firebaseConfig).getInputStream())).build();
-
-            if(FirebaseApp.getApps().isEmpty()){
-                this.firebaseApp = FirebaseApp.initializeApp(options);
-            } else {
-                this.firebaseApp = FirebaseApp.getInstance();
-            }
-
-        }
-        catch(IOException ex){
-            logger.error("Create firebase app error ", ex);
-        }
     }
 
     public InformationStatusRestModel notifyOrderParticipants(Long orderId) throws IOException, EntityNotFoundException, Exception {
@@ -72,11 +44,13 @@ public class NotificationService {
                                     .setTitle(messageTitle)
                                     .setBody(messageBody)
                                     .build())
+                    .putData("title",messageTitle)
+                    .putData("body",messageBody)
                     .setTopic(topic)
                     .build();
 
             try {
-                String response = FirebaseMessaging.getInstance(firebaseApp).send(message);
+                String response = FirebaseMessaging.getInstance().send(message);
                 logger.info("Notification sent successfully. Message Id: " + response);
                 return new InformationStatusRestModel("Notification sent successfully.");
             }
@@ -127,7 +101,7 @@ public class NotificationService {
                 }
                 if (tokenList.size() > 0) {
                     try {
-                        FirebaseMessaging.getInstance(firebaseApp).subscribeToTopic(tokenList, ORDER_TOPICS_CONSTANT + orderId.toString());
+                        FirebaseMessaging.getInstance().subscribeToTopic(tokenList, ORDER_TOPICS_CONSTANT + orderId.toString());
                     } catch (FirebaseMessagingException ex) {
                         logger.error("Firebase subscribe to topic error", ex);
                     }
