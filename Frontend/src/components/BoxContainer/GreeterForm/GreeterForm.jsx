@@ -52,8 +52,11 @@ const GreeterFormik = () => {
   const [completed, setCompleted] = useState(false)
 
   const transformRequest = (values) => {
-    values.name = values.name.split(' ').map(v => v.charAt(0).toUpperCase() + v.slice(1)).join(' ')
-    return values
+    const r = {
+      fullname :  values.name.split(' ').map(v => v.charAt(0).toUpperCase() + v.slice(1)).join(' ')
+    }
+    
+    return r
   }
 
   const initialValues = {

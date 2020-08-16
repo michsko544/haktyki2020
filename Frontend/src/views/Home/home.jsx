@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom'
 import OrderDetails from '../../components/OrderDetails'
 import Loader from '../../components/Loader'
 import { BlurChildren } from '../../components/App'
+import Message from './message.styled'
 
 const Home = () => {
   const store = Store.useStore()
@@ -69,6 +70,28 @@ const Home = () => {
     return aDay > bDay
   }
 
+  const getRandomMessage = () => {
+    const messages = [
+      'Nic tu nie ma, zamów coś!',
+      'Gdzie jest food? 📸',
+      's🅱inalla ヾ(•ω•`)o',
+      'Food inżyniering here, dodaj jakieś zamówienie!',
+      'Hejo, głodek z tej strony, zamów może 🍕?',
+      'Mały głód? Wielki problem, zrzuć się na 🍕!',
+      'I co teraz? Pusto tu ...',
+      '🍔 d=====(￣▽￣*)b',
+      '🍕🍔🍟🌭🍿🥞🍞'
+    ]
+
+    return messages[Math.round(Math.random() * (messages.length - 1))]
+  }
+
+  const defaultNoFoodResponse = (orders) => {
+    if (orders.response !== null && orders.response.orders.length === 0) {
+      return <Message color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}>{getRandomMessage()}</Message>
+    }
+  }
+
   return (
     <>
       <BlurChildren shouldBlur={isDetailsVisibile}>
@@ -94,6 +117,7 @@ const Home = () => {
         <Container>
           <div className="your-order">
             <H3>Twoje zamówienia</H3>
+            {defaultNoFoodResponse(fetchUserOrders)}
             {fetchUserOrders.response
               ? fetchUserOrders.response.orders
                   .sort((a, b) => orderSort(a, b))
@@ -109,6 +133,7 @@ const Home = () => {
           <div className="available-orders-wrapper">
             <H3>Dostępne zamówienia</H3>
             <div className="orders">
+              {defaultNoFoodResponse(fetchOrders)}
               {fetchOrders.response
                 ? fetchOrders.response.orders
                     .sort((a, b) => orderSort(a, b))
