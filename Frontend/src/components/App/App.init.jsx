@@ -13,6 +13,33 @@ const AppInit = () => {
   const deviceRegister = usePost('/notifications/add-device')
 
   /**
+   * LocalStorage Auth Token check
+   */
+  useEffect(() => {
+    const loginExpiry = localStorage.getItem('loginExpiry') || null
+    if(loginExpiry === null) return
+
+    const loginDate = new Date(loginExpiry)
+    if(loginDate < new Date()) {
+      console.log('This token is dead boi')
+      localStorage.removeItem('loginExpiry')
+      localStorage.removeItem('login')
+      return
+    }
+
+    const storageAuth = localStorage.getItem('login') || null
+    if(storageAuth === null) return
+
+    if(typeof storageAuth === 'string') {
+      const login = JSON.parse(storageAuth)
+      store.set('authToken')(login.authToken)
+      store.set('user')(login.fullname)
+      store.set('userId')(login.userId)
+    }
+      
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  /**
    * Auth Token Injection
    */
   useEffect(() => {
@@ -56,7 +83,7 @@ const AppInit = () => {
       const token = store.get('deviceToken')
       const user = store.get('userId')
       const isAuth = store.get('authToken').length > 0
-      if(token && token !== null && token.length > 0 && user > 0 && isAuth) {
+      if(token && token !== null && token.length > 0 && user > 0 && isAuth && !deviceRegister.isLoading && deviceRegister.response === null) {
         await deviceRegister.sendData({
           userId: user,
           token: token
@@ -64,7 +91,7 @@ const AppInit = () => {
       }
     }
     asyncToken()
-  }, [store])
+  }, [store, deviceRegister])
 
   useEffect(() => {
     window.document.body.style.background =
