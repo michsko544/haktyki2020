@@ -9,20 +9,20 @@ import { SnackbarProvider } from 'notistack'
 const App = () => {
   return (
     <Store.Container>
-      <SnackbarProvider
-        maxSnack={3}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        dense
-      >
-        <AppInit />
-        <div className="App">
-          <AppTheme>
+      <AppTheme>
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          dense
+        >
+          <AppInit />
+          <div className="App">
             <Router>
               <AppRoutes />
             </Router>
-          </AppTheme>
-        </div>
-      </SnackbarProvider>
+          </div>
+        </SnackbarProvider>
+      </AppTheme>
     </Store.Container>
   )
 }

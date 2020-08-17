@@ -76,7 +76,10 @@ const AppInit = () => {
         console.log('Setting Token:', token)
 
         messaging.onMessage((payload) => {
-          console.log('New msg: ', payload)
+          console.log(payload)
+          enqueueSnackbar(`${payload.notification.title} - ${payload.notification.body}`, {
+            variant: 'success'
+          })
         })
       }
     }
