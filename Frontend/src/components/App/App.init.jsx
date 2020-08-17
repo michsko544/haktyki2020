@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Store from './App.store'
 import { AppBackgroundThemes } from './App.themes'
 import {
@@ -12,6 +12,9 @@ const AppInit = () => {
   const store = Store.useStore()
   const deviceRegister = usePost('/notifications/add-device')
 
+  /**
+   * Auth Token Injection
+   */
   useEffect(() => {
     const token = store.get('authToken')
     if (token.length > 0) {
@@ -30,19 +33,6 @@ const AppInit = () => {
 
     store.set('themeId')(themeId)
     store.set('themeBackgroundId')(themeBgId)
-
-    const messaging = firebase.messaging()
-    messaging.requestPermission().then(()=>{
-      return messaging.getToken()
-    }).then(token=>{
-      console.log('Token : ',token)
-    }).catch((err)=>{
-      console.log(err);
-      
-    })
-    messaging.onMessage((payload) => {
-      console.log(payload)
-    })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -52,6 +42,10 @@ const AppInit = () => {
         const token = await messaging.getToken()
         store.set('deviceToken')(token)
         console.log('Setting Token:', token)
+
+        messaging.onMessage((payload) => {
+          console.log('New msg: ', payload)
+        })
       }
     }
     asyncToken()
