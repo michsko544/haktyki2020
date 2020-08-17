@@ -17,8 +17,6 @@ import java.util.List;
 @Service
 public class NotificationService {
 
-    //private final String ORDER_TOPICS_CONSTANT = "/topics/ORDER-";
-
     private final NotificationDeviceRepository notificationDeviceRepository;
     private final Logger logger;
     private final OrderService orderService;
@@ -31,10 +29,7 @@ public class NotificationService {
 
     public InformationStatusRestModel notifyOrderParticipants(Long orderId) throws IOException, EntityNotFoundException,NullPointerException, Exception {
 
-        //subscribeToTopic(orderId);
-
         try {
-            //String topic = ORDER_TOPICS_CONSTANT + orderId.toString();
             String messageTitle = orderService.getOrderById(orderId).getRestaurant();
             String messageBody = "Twoje zamówienie już na ciebie czeka :)";
 
@@ -46,14 +41,14 @@ public class NotificationService {
                                     .setTitle(messageTitle)
                                     .setBody(messageBody)
                                     .build())
-                    .setWebpushConfig(WebpushConfig
-                            .builder()
-                            .setNotification(WebpushNotification
-                                    .builder()
-                                    .setTitle(messageTitle)
-                                    .setBody(messageBody)
-                                    .build())
-                            .build())
+//                    .setWebpushConfig(WebpushConfig
+//                            .builder()
+//                            .setNotification(WebpushNotification
+//                                    .builder()
+//                                    .setTitle(messageTitle)
+//                                    .setBody(messageBody)
+//                                    .build())
+//                            .build())
                     .addAllTokens(tokensList)
                     .build();
 
@@ -97,35 +92,7 @@ public class NotificationService {
         }
     }
 
-//    public void subscribeToTopic(Long orderId){
-//        try {
-//            List<Long> userIds = orderService.getOrderUsersIdsByOrderIdWithoutOwner(orderId);
-//            if (userIds.size() > 0) {
-//                List<String> tokenList = new ArrayList<String>();
-//                List<NotificationDeviceEntity> notificationDeviceList;
-//                for (Long userId : userIds) {
-//                    try {
-//                        notificationDeviceList = notificationDeviceRepository.getByUserId(userId);
-//                        tokenList.add(notificationDeviceEntity.getToken());
-//                        notificationDeviceEntity = null;
-//                    } catch (EntityNotFoundException ex) {
-//                    }
-//                }
-//                if (tokenList.size() > 0) {
-////                    try {
-////                        //FirebaseMessaging.getInstance().subscribeToTopic(tokenList, ORDER_TOPICS_CONSTANT + orderId.toString());
-////                    } catch (FirebaseMessagingException ex) {
-////                        logger.error("Firebase subscribe to topic error", ex);
-////                    }
-//                }
-//            }
-//        }
-//        catch (Exception ex){
-//            logger.error("Error in subscribeToTopic occurred",ex);
-//        }
-//    }
-
-    private ArrayList<String> getTokensForOrderNotification(Long orderId) throws NullPointerException, Exception{
+    private ArrayList<String> getTokensForOrderNotification(Long orderId) throws Exception{
         List<Long> userIds = orderService.getOrderUsersIdsByOrderIdWithoutOwner(orderId);
         if (userIds != null && userIds.size() > 0) {
             ArrayList<String> tokenList = new ArrayList<String>();
