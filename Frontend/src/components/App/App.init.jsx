@@ -7,10 +7,12 @@ import {
 } from './../../API/ourAPI/API'
 import firebase from './../../firebase'
 import { usePost } from '../../API'
+import { useSnackbar } from 'notistack'
 
 const AppInit = () => {
   const store = Store.useStore()
   const deviceRegister = usePost('/notifications/add-device')
+  const { enqueueSnackbar } = useSnackbar()
 
   /**
    * LocalStorage Auth Token check
@@ -24,6 +26,9 @@ const AppInit = () => {
       console.log('This token is dead boi')
       localStorage.removeItem('loginExpiry')
       localStorage.removeItem('login')
+      enqueueSnackbar('Twoja sesja wygasła, zaloguj się ponownie', {
+        variant: 'warning'
+      })
       return
     }
 
