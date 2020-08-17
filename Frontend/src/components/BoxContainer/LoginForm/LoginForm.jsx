@@ -24,7 +24,7 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
             disabled={isSubmitting}
             type="email"
             name="user"
-            label="E-Mail"
+            label="E-mail"
             placeholder="XxTomekXx@gmail.com"
             error={errorHandler('user')}
           />

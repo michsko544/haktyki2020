@@ -21,7 +21,7 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             component={Input}
             type="email"
             name="user"
-            label="E-Mail"
+            label="E-mail"
             placeholder="XxTomekXx@gmail.com"
             error={errorHandler('user')}
             disabled={isSubmitting}

@@ -28,12 +28,25 @@ const FoodCard = ({ details, openCallback, ...props }) => {
   const store = Store.useStore()
   const classes = useStyles()
 
+  const savedOrderText = (order) => {
+    const time = new Date(`${order.date} ${order.time}`)
+    const now = new Date()
+
+    console.log('Old time: ', time, now, time < now)
+
+    if(time > now) {
+      return 'Zapisałeś: '
+    } else {
+      return 'Zamówiłeś: '
+    }
+  }
+
   const orderDetails = () => {
     if (findLoggedPerson(store.get('userId'), details)) {
       return (
         <>
           <Typography variant="body2" color="textSecondary" component="p">
-            Zapisałeś:
+            {savedOrderText(details)}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             {findLoggedPerson(store.get('userId'), details).description}
