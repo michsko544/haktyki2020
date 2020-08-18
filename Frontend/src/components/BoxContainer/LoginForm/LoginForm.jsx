@@ -41,7 +41,11 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
           />
         </InputStyled>
         <ButtonFormWrapper>
-          <Button disabled={isSubmitting} text="Zaloguj" type="submit" />
+          <Button
+            disabled={isSubmitting}
+            text={isSubmitting ? 'Logowanie...' : 'Zaloguj'}
+            type="submit"
+          />
         </ButtonFormWrapper>
       </Form>
     </FormWrapper>

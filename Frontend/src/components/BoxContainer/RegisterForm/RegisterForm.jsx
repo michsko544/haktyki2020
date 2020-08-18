@@ -39,7 +39,11 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
           />
         </InputStyled>
         <ButtonFormWrapper>
-          <Button disabled={isSubmitting} text="Rejestruj" type="submit" />
+          <Button
+            disabled={isSubmitting}
+            text={isSubmitting ? 'Rejestrowanie...' : 'Rejestruj'}
+            type="submit"
+          />
         </ButtonFormWrapper>
       </Form>
     </FormWrapper>
