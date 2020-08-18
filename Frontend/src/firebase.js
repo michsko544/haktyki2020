@@ -1,4 +1,5 @@
-import * as firebase from 'firebase'
+import * as firebase from 'firebase/app'
+import 'firebase/messaging'
 
 const config = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -11,7 +12,10 @@ const config = {
   measurementId: 'G-1B23RZJ8HT',
 }
 
+try {
 firebase.initializeApp(config)
-firebase.analytics()
+} catch (e) {
+  console.warn('Firebase error: ', e)
+}
 
 export default firebase

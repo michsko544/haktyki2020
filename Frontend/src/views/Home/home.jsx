@@ -32,10 +32,9 @@ const Home = () => {
   const { enqueueSnackbar } = useSnackbar()
 
   const refreshOrders = async () => {
-    console.log('Refreshing!')
     enqueueSnackbar(
       'Odświeżam zamówienia 🥩',
-      { variant: 'info', preventDuplicate: true }
+      { variant: 'info', preventDuplicate: true, autoHideDuration: 1500 }
     )
     fetchOrders.getData()
     fetchUserOrders.getData()

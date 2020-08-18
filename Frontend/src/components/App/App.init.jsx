@@ -11,7 +11,9 @@ import { useSnackbar } from 'notistack'
 
 const AppInit = () => {
   const store = Store.useStore()
-  const deviceRegister = usePost('/notifications/add-device')
+  const { response, sendData, isLoading, error } = usePost(
+    '/notifications/add-device'
+  )
   const { enqueueSnackbar } = useSnackbar()
 
   /**
@@ -19,29 +21,29 @@ const AppInit = () => {
    */
   useEffect(() => {
     const loginExpiry = localStorage.getItem('loginExpiry') || null
-    if(loginExpiry === null) return
+    if (loginExpiry === null) return
 
     const loginDate = new Date(loginExpiry)
-    if(loginDate < new Date()) {
+    if (loginDate < new Date()) {
       console.log('This token is dead boi')
       localStorage.removeItem('loginExpiry')
       localStorage.removeItem('login')
       enqueueSnackbar('Twoja sesja wygasła, zaloguj się ponownie', {
-        variant: 'warning'
+        variant: 'warning',
+        autoHideDuration: 6000,
       })
       return
     }
 
     const storageAuth = localStorage.getItem('login') || null
-    if(storageAuth === null) return
+    if (storageAuth === null) return
 
-    if(typeof storageAuth === 'string') {
+    if (typeof storageAuth === 'string') {
       const login = JSON.parse(storageAuth)
       store.set('authToken')(login.authToken)
       store.set('user')(login.fullname)
       store.set('userId')(login.userId)
     }
-      
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
@@ -69,19 +71,30 @@ const AppInit = () => {
 
   useEffect(() => {
     const asyncToken = async () => {
-      if(Notification.permission === 'granted') {
-        const messaging = firebase.messaging()
-        const token = await messaging.getToken()
-        store.set('deviceToken')(token)
-        console.log('Setting Token:', token)
+      try {
+        if (Notification.permission === 'granted') {
+          const messaging = firebase.messaging()
+          const token = await messaging.getToken()
+          store.set('deviceToken')(token)
+          console.log('Setting Token:', token)
 
-        messaging.onMessage((payload) => {
-          console.log(payload)
-          store.set('notifications')([payload.notification, ...store.get('notifications')])
-          enqueueSnackbar(`${payload.notification.title} - ${payload.notification.body}`, {
-            variant: 'success'
+          messaging.onMessage((payload) => {
+            console.log(payload)
+            store.set('notifications')([
+              payload.notification,
+              ...store.get('notifications'),
+            ])
+            enqueueSnackbar(
+              `${payload.notification.title} - ${payload.notification.body}`,
+              {
+                variant: 'success',
+                autoHideDuration: 8000,
+              }
+            )
           })
-        })
+        }
+      } catch (e) {
+        console.warn('Firebase is not supported', e)
       }
     }
     asyncToken()
@@ -92,15 +105,24 @@ const AppInit = () => {
       const token = store.get('deviceToken')
       const user = store.get('userId')
       const isAuth = store.get('authToken').length > 0
-      if(token && token !== null && token.length > 0 && user > 0 && isAuth && !deviceRegister.isLoading && deviceRegister.response === null) {
-        await deviceRegister.sendData({
+      if (
+        token &&
+        token !== null &&
+        token.length > 0 &&
+        user > 0 &&
+        isAuth &&
+        !isLoading &&
+        response === null &&
+        error === null
+      ) {
+        await sendData({
           userId: user,
-          token: token
+          token: token,
         })
       }
     }
     asyncToken()
-  }, [store, deviceRegister])
+  }, [store, isLoading, response, error, sendData])
 
   useEffect(() => {
     window.document.body.style.background =

@@ -249,7 +249,7 @@ const OrderFormik = ({
   }
 
   const onSubmit = async (values, { setSubmitting }) => {
-    enqueueSnackbar('Zapisywanie 🤞', { variant: 'info' })
+    enqueueSnackbar('Zapisywanie 🤞', { variant: 'info', autoHideDuration: 3000 })
     if (formAction === 'edit')
       await updateData.sendData(transformValuesForUpadate(values))
     else await addData.sendData(transformValuesForJoin(values))

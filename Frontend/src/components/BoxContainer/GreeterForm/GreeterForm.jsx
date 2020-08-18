@@ -98,6 +98,7 @@ const GreeterFormik = () => {
     setCompleted(false)
     enqueueSnackbar('Zapisywanie danych 🤞', {
       variant: 'info',
+      autoHideDuration: 3000
     })
     await api.sendData(transformRequest(values))
     store.set('user')(values.name)
