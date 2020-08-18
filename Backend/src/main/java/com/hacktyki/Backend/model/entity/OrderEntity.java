@@ -23,6 +23,10 @@ public class OrderEntity {
     private LocalTime orderTime;
     @Column(name = "order_closed", nullable = false)
     private boolean orderClosed;
+    @Column(name = "is_delivered", nullable = false)
+    private boolean isDelivered;
+    @Column(name = "is_paid", nullable = false)
+    private boolean isPaid;
     @Column(name = "payment_form_id")
     private Long paymentFormId;
     @Column(name = "discount_coupon_id")
@@ -46,6 +50,8 @@ public class OrderEntity {
         this.orderDate = fullOrderRestModel.getDate();
         this.orderTime = fullOrderRestModel.getTime();
         this.orderClosed = false;
+        this.isDelivered = false;
+        this.isPaid = false;
         this.imageSource = fullOrderRestModel.getImage();
     }
 
@@ -80,6 +86,22 @@ public class OrderEntity {
 
     public void setOrderClosed(boolean orderClosed) {
         this.orderClosed = orderClosed;
+    }
+
+    public boolean isDelivered() {
+        return isDelivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+        isDelivered = delivered;
+    }
+
+    public boolean isPaid() {
+        return isPaid;
+    }
+
+    public void setPaid(boolean paid) {
+        isPaid = paid;
     }
 
     public void setPaymentFormId(Long paymentFormId) {

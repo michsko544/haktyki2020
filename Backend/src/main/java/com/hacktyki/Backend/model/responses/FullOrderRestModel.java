@@ -18,6 +18,7 @@ public class FullOrderRestModel {
     private String image;
     private LocalDate date;
     private LocalTime time;
+    private boolean isDelivered;
     private PaymentFormEnum paymentForm;
     private String paymentNumber;
     private String swiftBicCode;
@@ -28,27 +29,24 @@ public class FullOrderRestModel {
 
     public FullOrderRestModel(OrderEntity orderEntity) {
         this.id = orderEntity.getId();
-        this.purchaserId = (Long) orderEntity.getOrderDetailsList()
-                                            .stream()
-                                            .filter(OrderDetailsEntity::isOrderOwner)
-                                            .findFirst()
-                                            .get()
+        this.purchaserId = (Long) getPaymentOrder(orderEntity)
                                             .getId()
                                             .getUserId();
         this.restaurant = orderEntity.getRestaurant();
         this.image = orderEntity.getImageSource();
         this.date = orderEntity.getOrderDate();
         this.time = orderEntity.getOrderTime();
+        this.isDelivered = orderEntity.isDelivered();
         this.paymentForm = orderEntity.getPaymentForm() != null ? orderEntity.getPaymentForm().getPaymentFormName() : null;
 
-        UserEntity paymentUser = getPaymentUser(orderEntity);
-        this.paymentNumber = paymentForm.toString().equals("BLIK") ?
-                                                    paymentUser.getPhoneNumber()
-                                                : paymentForm.toString().equals("TRANSFER") ?
-                                                    paymentUser.getCreditCardNumber()
-                                                : null;
-        this.swiftBicCode = paymentForm.toString().equals("TRANSFER") ?
-                                                    paymentUser.getSwiftBicCode()
+        UserEntity paymentUser = getPaymentOrder(orderEntity).getUserEntity();
+        this.paymentNumber = paymentForm.toString().equals("BLIK")
+                                                ? paymentUser.getPhoneNumber()
+                                                : paymentForm.toString().equals("TRANSFER")
+                                                    ? paymentUser.getCreditCardNumber()
+                                                    : null;
+        this.swiftBicCode = paymentForm.toString().equals("TRANSFER")
+                                                ? paymentUser.getSwiftBicCode()
                                                 : null;
         this.orderDetails = orderEntity.getOrderDetailsList()
                                         .stream()
@@ -56,13 +54,12 @@ public class FullOrderRestModel {
                                         .collect(Collectors.toList());
     }
 
-    private UserEntity getPaymentUser(OrderEntity orderEntity){
+    private OrderDetailsEntity getPaymentOrder(OrderEntity orderEntity){
         return orderEntity.getOrderDetailsList()
                 .stream()
                 .filter(OrderDetailsEntity::isOrderOwner)
                 .findFirst()
-                .get()
-                .getUserEntity();
+                .get();
     }
 
     public Long getId() {
@@ -111,6 +108,14 @@ public class FullOrderRestModel {
 
     public void setTime(LocalTime time) {
         this.time = time;
+    }
+
+    public boolean isDelivered() {
+        return isDelivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+        isDelivered = delivered;
     }
 
     public PaymentFormEnum getPaymentForm() {

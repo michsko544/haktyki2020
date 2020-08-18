@@ -4,20 +4,30 @@ import java.util.List;
 
 public class OrdersListRestModel {
 
-    private List<FullOrderRestModel> orders;
+    private List<FullOrderRestModel> myOrders;
+    private List<FullOrderRestModel> allOrders;
 
     public OrdersListRestModel() {
     }
 
-    public OrdersListRestModel(List<FullOrderRestModel> orders) {
-        this.orders = orders;
+    public OrdersListRestModel(List<FullOrderRestModel> myOrders, List<FullOrderRestModel> allOrders) {
+        this.myOrders = myOrders;
+        this.allOrders = allOrders;
     }
 
-    public List<FullOrderRestModel> getOrders() {
-        return orders;
+    public List<FullOrderRestModel> getMyOrders() {
+        return myOrders;
     }
 
-    public void setOrders(List<FullOrderRestModel> orders) {
-        this.orders = orders;
+    public void setMyOrders(List<FullOrderRestModel> myOrders) {
+        this.myOrders = myOrders;
+    }
+
+    public List<FullOrderRestModel> getAllOrders() {
+        return allOrders;
+    }
+
+    public void setAllOrders(List<FullOrderRestModel> allOrders) {
+        this.allOrders = allOrders;
     }
 }
