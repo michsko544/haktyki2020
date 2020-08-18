@@ -1,44 +1,72 @@
 import React, { useState, useEffect } from 'react'
+import { useSnackbar } from 'notistack'
+import { Link } from 'react-router-dom'
+
+import TuneIcon from '@material-ui/icons/Tune'
+import SyncIcon from '@material-ui/icons/Sync'
+
+import Store from './../../components/App/App.store'
+
 import { H1, H3, HBold } from './../../components/Headings'
 import Header from '../../components/Header/header'
+
+import { useNFetch as useFetch } from './../../API/ourAPI/useNFetch'
+
 import Container from './Container'
-import TuneIcon from '@material-ui/icons/Tune'
-import SyncIcon from '@material-ui/icons/Sync';
 import Button from './../../components/Button'
 import Card from '../../components/FoodCard/foodCard'
 import { IconLink } from './../../components/App/App.style'
-import { useFetch } from './../../API'
-import Store from './../../components/App/App.store'
+
 import { AppBackgroundThemes } from './../../components/App/App.themes'
-import { Link } from 'react-router-dom'
+
 import OrderDetails from '../../components/OrderDetails'
 import Loader from '../../components/Loader'
 import { BlurChildren } from '../../components/App'
-import { useSnackbar } from 'notistack'
-import Message from './message.styled'
 
+import { messages } from './messages'
+import Message from './message.styled'
 
 const Home = () => {
   const store = Store.useStore()
-  const fetchOrders = useFetch('/orders/all')
-  const fetchUserOrders = useFetch('/orders/my')
-  const userData = useFetch('/users/my-details')
-
-  const [selectedOrder, setSelectedOrder] = useState(null)
-  const [isDetailsVisibile, setDetailsVisibile] = useState(false)
-
-  const [notificationsLength, setNotificationsLength] = useState(0)
-
   const { enqueueSnackbar } = useSnackbar()
 
+  const { fetch: fetchOrders, isLoading: loadingOrders } = useFetch('/orders/all')
+  const { fetch: fetchUser } = useFetch('/users/my-details')
+
+  const [orders, setOrders] = useState([])
+  const [myOrders, setMyOrders] = useState([])
+  const [user, setUser] = useState({})
+  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [isDetailsVisibile, setDetailsVisibile] = useState(false)
+  const [notificationsLength, setNotificationsLength] = useState(0)
+
   const refreshOrders = async () => {
-    enqueueSnackbar(
-      'Odświeżam zamówienia 🥩',
-      { variant: 'info', preventDuplicate: true, autoHideDuration: 1500 }
-    )
-    fetchOrders.getData()
-    fetchUserOrders.getData()
-    userData.getData()
+    const handleData = (data, setter) => setter(data)
+  
+    const handleError = (message) => {
+      enqueueSnackbar(message, {
+        variant: 'error',
+        autoHideDuration: 3000,
+        preventDuplicate: true,
+      })
+    }
+
+    enqueueSnackbar('Odświeżam zamówienia 🥩', {
+      variant: 'info',
+      preventDuplicate: true,
+      autoHideDuration: 1500,
+    })
+
+    try {
+      const { allOrders: orders, myOrders } = await fetchOrders()
+
+      handleData(orders, setOrders)
+      handleData(myOrders, setMyOrders)
+      handleData(await fetchUser(), setUser)
+    } catch (error) {
+      console.warn('Err', error)
+      handleError('Serwer spadł z rowerka i nie wstaje :/')
+    }
   }
 
   /**
@@ -46,14 +74,11 @@ const Home = () => {
    */
   useEffect(() => {
     document.title = 'Zamówmy coś 🍕 | TeamFood'
-    fetchOrders.getData()
-    fetchUserOrders.getData()
-    userData.getData()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const notifications = store.get('notifications')
-    if(notifications.length !== notificationsLength) {
+    if (notifications.length !== notificationsLength) {
       setNotificationsLength(notifications.length)
     }
   }, [store, notificationsLength])
@@ -72,37 +97,22 @@ const Home = () => {
   }
 
   const handleCloseCard = () => {
-    fetchOrders.getData()
-    fetchUserOrders.getData()
+    refreshOrders()
     toggleDetailsVisibility()
     setSelectedOrder(null)
   }
 
   const orderSort = (a, b) => {
-    const aDay = new Date(a.date)
-    const bDay = new Date(b.date)
-
-    const [aHour, aMinute, aSecond] = a.time.split(':')
-    const [bHour, bMinute, bSecond] = b.time.split(':')
-
-    aDay.setHours(aHour)
-    aDay.setMinutes(aMinute)
-    aDay.setSeconds(aSecond)
-
-    bDay.setHours(bHour)
-    bDay.setMinutes(bMinute)
-    bDay.setSeconds(bSecond)
+    const aDay = new Date(`${a.date} ${a.time}`)
+    const bDay = new Date(`${b.date} ${b.time}`)
 
     return aDay > bDay
   }
 
-  const hasUserData = () => 
-      userData.response.fullName &&
-      userData.response.phoneNumber &&
-      userData.response.creditCardNumber
+  const hasUserData = () => user.fullName && user.phoneNumber && user.creditCardNumber
 
   function renderOrderButton() {
-    if (userData.response) {
+    if (user) {
       if (hasUserData())
         return (
           <Link className="button" to="/teamfood">
@@ -115,37 +125,26 @@ const Home = () => {
             <Button
               text="Dodaj Zamówienie"
               onClick={() =>
-                enqueueSnackbar(
-                  'Aby stworzyć zamówienie uzupełnij wszystkie dane ❗️',
-                  { variant: 'info', preventDuplicate: true }
-                )
+                enqueueSnackbar('Aby stworzyć zamówienie uzupełnij wszystkie dane ❗️', {
+                  variant: 'info',
+                  preventDuplicate: true,
+                })
               }
             ></Button>
           </Link>
         )
       }
     }
-    return ''
-    }
+
+    return null
+  }
 
   const getRandomMessage = () => {
-    const messages = [
-      'Nic tu nie ma, zamów coś!',
-      'Gdzie jest food? 📸',
-      's🅱inalla ヾ(•ω•`)o',
-      'Food inżyniering here, dodaj jakieś zamówienie!',
-      'Hejo, głodek z tej strony, zamów może 🍕?',
-      'Mały głód? Wielki problem, zrzuć się na 🍕!',
-      'I co teraz? Pusto tu ...',
-      '🍔 d=====(￣▽￣*)b',
-      '🍕🍔🍟🌭🍿🥞🍞'
-    ]
-
     return messages[Math.round(Math.random() * (messages.length - 1))]
   }
 
   const defaultNoFoodResponse = (orders) => {
-    if (orders.response !== null && orders.response.orders.length === 0) {
+    if (orders.length === 0) {
       return <Message color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}>{getRandomMessage()}</Message>
     }
   }
@@ -153,7 +152,7 @@ const Home = () => {
   const styleIcon = () => {
     return {
       color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
-      cursor: 'pointer'
+      cursor: 'pointer',
     }
   }
 
@@ -175,41 +174,27 @@ const Home = () => {
         <Container>
           <div className="your-order">
             <H3>Twoje zamówienia</H3>
-            {defaultNoFoodResponse(fetchUserOrders)}
-            {fetchUserOrders.response
-              ? fetchUserOrders.response.orders
+            {defaultNoFoodResponse(myOrders)}
+            {myOrders.length > 0
+              ? myOrders
                   .sort((a, b) => orderSort(a, b))
-                  .map((order) => (
-                    <Card
-                      key={order.id}
-                      details={order}
-                      openCallback={() => handleShowCard(order)}
-                    />
-                  ))
-              : fetchUserOrders.isLoading && <Loader />}
+                  .map((order) => <Card key={order.id} details={order} openCallback={() => handleShowCard(order)} />)
+              : loadingOrders && <Loader />}
           </div>
           <div className="available-orders-wrapper">
             <H3>Dostępne zamówienia</H3>
             <div className="orders">
-              {defaultNoFoodResponse(fetchOrders)}
-              {fetchOrders.response
-                ? fetchOrders.response.orders
+              {defaultNoFoodResponse(orders)}
+              {orders.length > 0
+                ? orders
                     .sort((a, b) => orderSort(a, b))
-                    .map((order) => (
-                      <Card
-                        key={order.id}
-                        details={order}
-                        openCallback={() => handleShowCard(order)}
-                      />
-                    ))
-                : fetchOrders.isLoading && <Loader />}
+                    .map((order) => <Card key={order.id} details={order} openCallback={() => handleShowCard(order)} />)
+                : loadingOrders && <Loader />}
             </div>
           </div>
         </Container>
       </BlurChildren>
-      {isDetailsVisibile && (
-        <OrderDetails order={selectedOrder} closeCallback={handleCloseCard} />
-      )}
+      {isDetailsVisibile && <OrderDetails order={selectedOrder} closeCallback={handleCloseCard} />}
     </>
   )
 }
