@@ -3,6 +3,7 @@ import { H1, H3, HBold } from './../../components/Headings'
 import Header from '../../components/Header/header'
 import Container from './Container'
 import TuneIcon from '@material-ui/icons/Tune'
+import SyncIcon from '@material-ui/icons/Sync';
 import Button from './../../components/Button'
 import Card from '../../components/FoodCard/foodCard'
 import { IconLink } from './../../components/App/App.style'
@@ -26,7 +27,20 @@ const Home = () => {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [isDetailsVisibile, setDetailsVisibile] = useState(false)
 
+  const [notificationsLength, setNotificationsLength] = useState(0)
+
   const { enqueueSnackbar } = useSnackbar()
+
+  const refreshOrders = async () => {
+    console.log('Refreshing!')
+    enqueueSnackbar(
+      'Odświeżam zamówienia 🥩',
+      { variant: 'info', preventDuplicate: true }
+    )
+    fetchOrders.getData()
+    fetchUserOrders.getData()
+    userData.getData()
+  }
 
   /**
    * CDM
@@ -38,13 +52,20 @@ const Home = () => {
     userData.getData()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const getFirstname = () => {
-    return store.get('user')?.split(' ')[0]
-  }
+  useEffect(() => {
+    const notifications = store.get('notifications')
+    if(notifications.length !== notificationsLength) {
+      setNotificationsLength(notifications.length)
+    }
+  }, [store, notificationsLength])
 
-  const toggleDetailsVisibility = () => {
-    setDetailsVisibile(!isDetailsVisibile)
-  }
+  useEffect(() => {
+    refreshOrders()
+  }, [notificationsLength]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const getFirstname = () => store.get('user')?.split(' ')[0]
+
+  const toggleDetailsVisibility = () => setDetailsVisibile(!isDetailsVisibile)
 
   const handleShowCard = (order) => {
     toggleDetailsVisibility()
@@ -130,6 +151,13 @@ const Home = () => {
     }
   }
 
+  const styleIcon = () => {
+    return {
+      color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+      cursor: 'pointer'
+    }
+  }
+
   return (
     <>
       <BlurChildren shouldBlur={isDetailsVisibile}>
@@ -138,14 +166,9 @@ const Home = () => {
             Cześć <HBold>{getFirstname() || 'Nieznajomy'},</HBold>
           </H1>
           <div className="icons">
+            <SyncIcon onClick={refreshOrders} style={styleIcon()} />
             <IconLink to="/settings">
-              <TuneIcon
-                style={{
-                  color:
-                    AppBackgroundThemes[store.get('themeBackgroundId')]
-                      .fontColor,
-                }}
-              />
+              <TuneIcon style={styleIcon()} />
             </IconLink>
           </div>
           {renderOrderButton()}
