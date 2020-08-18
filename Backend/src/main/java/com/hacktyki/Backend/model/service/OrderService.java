@@ -5,6 +5,8 @@ import com.hacktyki.Backend.model.repository.OrderDetailsRepository;
 import com.hacktyki.Backend.model.repository.OrderRepository;
 import com.hacktyki.Backend.model.repository.PaymentFormRepository;
 import com.hacktyki.Backend.model.responses.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -25,18 +27,33 @@ public class OrderService {
     private final CouponService couponService;
     private final PaymentFormRepository paymentFormRepository;
 
+    private final Logger logger;
+
     public OrderService(OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, UserService userService, CouponService couponService, PaymentFormRepository paymentFormRepository) {
         this.orderDetailsRepository = orderDetailsRepository;
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.couponService = couponService;
         this.paymentFormRepository = paymentFormRepository;
+        this.logger = LoggerFactory.getLogger(OrderService.class);
+    }
+
+    public OrdersListRestModel getOrdersLists() throws Exception {
+        try {
+            checkOrdersTime();
+
+            return new OrdersListRestModel(
+                    getMyOrdersList(),
+                    getAllOrdersList());
+        }
+        catch (Exception ex){
+            logger.error("Getting orders Lists exception happened.", ex);
+            throw ex;
+        }
     }
 
     // Returns all orders logged user joined to
-    public OrdersListRestModel getMyOrdersList() throws Exception {
-
-        checkOrdersTime(); // orders temporary refreshing due to limited time on heroku
+    private List<FullOrderRestModel> getMyOrdersList() throws Exception {
 
         long userId = userService.getAuthenticatedId();
 
@@ -44,25 +61,21 @@ public class OrderService {
             List<Long> orderIdsContainingUserId
                     = getOrderIdsContainingUsersId(userId);
 
-            List<FullOrderRestModel> myOrdersList
-                    = orderRepository.findAll()
-                    .stream()
-                    .filter(orderEntity -> { return orderIdsContainingUserId.contains(orderEntity.getId()); })
-                    .map(FullOrderRestModel::new)
-                    .collect(Collectors.toList());
-
-            return new OrdersListRestModel(myOrdersList);
+            return orderRepository.findAll()
+            .stream()
+            .filter(orderEntity -> (orderIdsContainingUserId.contains(orderEntity.getId()) && !orderEntity.isPaid()))
+            .map(FullOrderRestModel::new)
+            .collect(Collectors.toList());
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("Getting my orders list error happened.",ex);
             throw ex;
         }
     }
 
     // Returns all orders that logged user didn't join to
-    public OrdersListRestModel getAllOrdersList() throws Exception {
+    private List<FullOrderRestModel> getAllOrdersList() throws Exception {
 
-        checkOrdersTime(); // orders temporary refreshing due to limited time on heroku
 
         long userId = userService.getAuthenticatedId();
 
@@ -70,17 +83,14 @@ public class OrderService {
             List<Long> orderIdsContainingUserId
                     = getOrderIdsContainingUsersId(userId);
 
-            List<FullOrderRestModel> allOrdersList
-                    = orderRepository.findAll()
-                    .stream()
-                    .filter(orderEntity -> { return !orderIdsContainingUserId.contains(orderEntity.getId()) && !orderEntity.isOrderClosed(); })
-                    .map(FullOrderRestModel::new)
-                    .collect(Collectors.toList());
-
-            return new OrdersListRestModel(allOrdersList);
+            return orderRepository.findAll()
+            .stream()
+            .filter(orderEntity -> (!orderIdsContainingUserId.contains(orderEntity.getId()) && !orderEntity.isOrderClosed()))
+            .map(FullOrderRestModel::new)
+            .collect(Collectors.toList());
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("Getting all orders list error happened.",ex);
             throw ex;
         }
     }
@@ -127,7 +137,7 @@ public class OrderService {
 
         }
         catch(Exception ex){
-            ex.printStackTrace();
+            logger.error("When adding new order error happened.",ex);
             throw ex;
         }
 
@@ -135,18 +145,18 @@ public class OrderService {
 
     // Tries to add joining user order details to order
     @Transactional
-    public void joinToOrder(JoinOrderRestModel joinOrderRestModel) throws NullPointerException, Exception {
+    public void joinToOrder(JoinOrderRestModel joinOrderRestModel) throws Exception {
         try {
             OrderDetailsEntity orderDetailsEntity = new OrderDetailsEntity(joinOrderRestModel);
             Long couponId = couponService.addCoupon(joinOrderRestModel.getCoupon());
             if(couponId != null){
                 orderDetailsEntity.setCouponId(couponId);
             }
-            orderDetailsEntity = orderDetailsRepository.save(orderDetailsEntity);
+            orderDetailsRepository.save(orderDetailsEntity);
 
         }
         catch(Exception ex){
-            ex.printStackTrace();
+            logger.error("When joining order error happened.",ex);
             throw ex;
         }
     }
@@ -186,7 +196,7 @@ public class OrderService {
             }
 
             if (isCoupon || isDescription) {
-                orderDetailsEntity = orderDetailsRepository.save(orderDetailsEntity);
+                orderDetailsRepository.save(orderDetailsEntity);
             }
 
             if (isOwner) {
@@ -212,53 +222,53 @@ public class OrderService {
             throw ex;
         }
         catch(Exception ex){
-            ex.printStackTrace();
+            logger.error("While editing order error happened.",ex);
             throw ex;
         }
     }
 
-    public OrderCouponsRestModel getOrderCouponsList(Long orderId) throws Exception{
-        try {
-            OrderEntity orderEntity = orderRepository.getOne(orderId);
-
-            List<Long> couponIdList = orderDetailsRepository.findAllById_OrderId(orderId)
-                    .stream()
-                    .map(OrderDetailsEntity::getCouponId)
-                    .collect(Collectors.toList());
-            List<DiscountCouponEntity> couponList = couponService.getAllByIds(couponIdList);
-
-            OrderCouponsRestModel orderCouponsRestModel = new OrderCouponsRestModel(orderId, orderEntity.getDiscountCouponId(), couponList);
-            return orderCouponsRestModel;
-        }
-        catch(Exception ex){
-            ex.printStackTrace();
-            throw ex;
-        }
-    }
-
-    public void setNewCoupon(CouponChangeRestModel couponChangeRestModel) throws NoSuchElementException, Exception {
-        try {
-            OrderEntity orderEntity = orderRepository.getOne(couponChangeRestModel.getOrderId());
-            boolean isCouponExisiting = false;
-
-            for (OrderDetailsEntity orderDetails : orderEntity.getOrderDetailsList()) {
-                if (couponChangeRestModel.getCouponId().equals(orderDetails.getCouponId())) {
-                    isCouponExisiting = true;
-                    break;
-                }
-            }
-            if (isCouponExisiting) {
-                orderEntity.setDiscountCouponId(couponChangeRestModel.getCouponId());
-                orderRepository.save(orderEntity);
-                return;
-            }
-            throw new NoSuchElementException("No such coupon in order details list found.");
-        }
-        catch(Exception ex){
-            ex.printStackTrace();
-            throw ex;
-        }
-    }
+//    public OrderCouponsRestModel getOrderCouponsList(Long orderId) throws Exception{
+//        try {
+//            OrderEntity orderEntity = orderRepository.getOne(orderId);
+//
+//            List<Long> couponIdList = orderDetailsRepository.findAllById_OrderId(orderId)
+//                    .stream()
+//                    .map(OrderDetailsEntity::getCouponId)
+//                    .collect(Collectors.toList());
+//            List<DiscountCouponEntity> couponList = couponService.getAllByIds(couponIdList);
+//
+//            OrderCouponsRestModel orderCouponsRestModel = new OrderCouponsRestModel(orderId, orderEntity.getDiscountCouponId(), couponList);
+//            return orderCouponsRestModel;
+//        }
+//        catch(Exception ex){
+//            logger.error("While getting coupons error happened.",ex);
+//            throw ex;
+//        }
+//    }
+//
+//    public void setNewCoupon(CouponChangeRestModel couponChangeRestModel) throws NoSuchElementException, Exception {
+//        try {
+//            OrderEntity orderEntity = orderRepository.getOne(couponChangeRestModel.getOrderId());
+//            boolean isCouponExisiting = false;
+//
+//            for (OrderDetailsEntity orderDetails : orderEntity.getOrderDetailsList()) {
+//                if (couponChangeRestModel.getCouponId().equals(orderDetails.getCouponId())) {
+//                    isCouponExisiting = true;
+//                    break;
+//                }
+//            }
+//            if (isCouponExisiting) {
+//                orderEntity.setDiscountCouponId(couponChangeRestModel.getCouponId());
+//                orderRepository.save(orderEntity);
+//                return;
+//            }
+//            throw new NoSuchElementException("No such coupon in order details list found.");
+//        }
+//        catch(Exception ex){
+//            logger.error("While changing coupon error happened.",ex);
+//            throw ex;
+//        }
+//    }
 
     public void checkOrdersTime(){
         List<OrderEntity> openOrders = orderRepository.findAllByOrderClosed(false);
@@ -288,9 +298,26 @@ public class OrderService {
     protected List<Long> getOrderUsersIdsByOrderIdWithoutOwner(Long orderId){
         return orderDetailsRepository.findAllById_OrderId(orderId)
                 .stream()
-                .filter(orderDetailsEntity -> {return !orderDetailsEntity.isOrderOwner();})
+                .filter(orderDetailsEntity -> !orderDetailsEntity.isOrderOwner())
                 .map(OrderDetailsEntity::getId)
                 .map(OrderDetailsIdentity::getUserId)
                 .collect(Collectors.toList());
+    }
+
+    public void changeOrderToDelivered(Long orderId) {
+        OrderEntity orderEntity = orderRepository.getOne(orderId);
+        orderEntity.setDelivered(true);
+        orderRepository.save(orderEntity);
+    }
+
+    public void changeOrderToPaid(Long orderId) {
+        try {
+            OrderEntity orderEntity = orderRepository.getOne(orderId);
+            orderEntity.setPaid(true);
+            orderRepository.save(orderEntity);
+        }
+        catch( EntityNotFoundException ex){
+            logger.error("Not found any entity with that id.", ex);
+        }
     }
 }
