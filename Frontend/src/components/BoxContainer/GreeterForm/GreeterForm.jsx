@@ -9,7 +9,7 @@ import { FormWrapper } from '../LoginForm'
 import { FormContainer } from '../BoxContainer.style'
 import { usePost } from './../../../API'
 import { useSnackbar } from 'notistack'
-import { useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom'
 import Store from './../../App/App.store'
 
 const GreeterForm = ({ errors, touched, isSubmitting }) => {
@@ -34,7 +34,7 @@ const GreeterForm = ({ errors, touched, isSubmitting }) => {
           <ButtonFormWrapper>
             <Button
               disabled={isSubmitting}
-              text="Przejdź do aplikacji"
+              text={isSubmitting ? 'Zapisywanie...' : 'Przejdź do aplikacji'}
               type="submit"
             />
           </ButtonFormWrapper>
@@ -53,14 +53,17 @@ const GreeterFormik = () => {
 
   const transformRequest = (values) => {
     const r = {
-      fullname :  values.name.split(' ').map(v => v.charAt(0).toUpperCase() + v.slice(1)).join(' ')
+      fullname: values.name
+        .split(' ')
+        .map((v) => v.charAt(0).toUpperCase() + v.slice(1))
+        .join(' '),
     }
-    
+
     return r
   }
 
   const initialValues = {
-    name: ''
+    name: '',
   }
 
   const validationSchema = Yup.object().shape({
@@ -79,7 +82,12 @@ const GreeterFormik = () => {
   })
 
   useEffect(() => {
-    if(!api.isLoading && api.response !== null && api.response.statusCode === 200 && !completed) {
+    if (
+      !api.isLoading &&
+      api.response !== null &&
+      api.response.statusCode === 200 &&
+      !completed
+    ) {
       console.log('Loaded: ', api.response)
       history.push('/')
       setCompleted(true)
@@ -89,14 +97,18 @@ const GreeterFormik = () => {
   const onSubmit = async (values, { setSubmitting }) => {
     setCompleted(false)
     enqueueSnackbar('Zapisywanie danych 🤞', {
-      variant: 'info'
+      variant: 'info',
     })
     await api.sendData(transformRequest(values))
     store.set('user')(values.name)
     setSubmitting(false)
   }
 
-  return <Formik {...{ initialValues, validationSchema, onSubmit }}>{GreeterForm}</Formik>
+  return (
+    <Formik {...{ initialValues, validationSchema, onSubmit }}>
+      {GreeterForm}
+    </Formik>
+  )
 }
 
 export default GreeterFormik
