@@ -49,16 +49,15 @@
       "type": "image/png"
     },
     {
-      "src": "logo192.png",
+      "src": "logo196.png",
       "type": "image/png",
-      "sizes": "192x192",
+      "sizes": "196x196",
       "purpose": "any maskable"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
+      "sizes": "512x512"
     }
   ],
   "start_url": ".",
