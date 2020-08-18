@@ -6,14 +6,12 @@ import {
   removeTokenFromHeader,
 } from './../../API/ourAPI/API'
 import firebase from './../../firebase'
-import { usePost } from '../../API'
 import { useSnackbar } from 'notistack'
+import { useNPost } from './../../API/ourAPI/useNPost';
 
 const AppInit = () => {
   const store = Store.useStore()
-  const { response, sendData, isLoading, error } = usePost(
-    '/notifications/add-device'
-  )
+  const { send: device } = useNPost('/notifications/add-device')
   const { enqueueSnackbar } = useSnackbar()
 
   /**
@@ -24,14 +22,18 @@ const AppInit = () => {
     if (loginExpiry === null) return
 
     const loginDate = new Date(loginExpiry)
+
     if (loginDate < new Date()) {
-      console.log('This token is dead boi')
+      console.debug('This token is dead boi')
+
       localStorage.removeItem('loginExpiry')
       localStorage.removeItem('login')
+
       enqueueSnackbar('Twoja sesja wygasła, zaloguj się ponownie', {
         variant: 'warning',
         autoHideDuration: 6000,
       })
+
       return
     }
 
@@ -69,21 +71,27 @@ const AppInit = () => {
     store.set('themeBackgroundId')(themeBgId)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  /**
+   * Setup Firebase
+   */
   useEffect(() => {
     const asyncToken = async () => {
       try {
         if (Notification.permission === 'granted') {
           const messaging = firebase.messaging()
           const token = await messaging.getToken()
+
+          console.debug('Setting Token:', token)
           store.set('deviceToken')(token)
-          console.log('Setting Token:', token)
 
           messaging.onMessage((payload) => {
-            console.log(payload)
+            console.debug(payload)
+
             store.set('notifications')([
               payload.notification,
               ...store.get('notifications'),
             ])
+            
             enqueueSnackbar(
               `${payload.notification.title} - ${payload.notification.body}`,
               {
@@ -95,35 +103,55 @@ const AppInit = () => {
         }
       } catch (e) {
         console.warn('Firebase is not supported', e)
+        enqueueSnackbar(
+          'Kolego, twoja przeglądarka jest za stara na nasz wspaniały program.',
+          { variant: 'info', autoHideDuration: 8000 }
+        )
+        enqueueSnackbar(
+          'Ściągnij sobie jakiegoś Chromka, Firefoxa czy innego Edga （〃｀ 3′〃）',
+          { variant: 'info', autoHideDuration: 8000 }
+        )
       }
     }
+
     asyncToken()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  /**
+   * Add Device to Server
+   */
   useEffect(() => {
     const asyncToken = async () => {
       const token = store.get('deviceToken')
       const user = store.get('userId')
-      const isAuth = store.get('authToken').length > 0
+      const isUserValid = user > 0
+      const isTokenValid = token && token !== null && token.length > 0
+      const isAuthenticated = store.get('authToken').length > 0
+
       if (
-        token &&
-        token !== null &&
-        token.length > 0 &&
-        user > 0 &&
-        isAuth &&
-        !isLoading &&
-        response === null &&
-        error === null
+        isTokenValid &&
+        isUserValid &&
+        isAuthenticated
       ) {
-        await sendData({
-          userId: user,
-          token: token,
-        })
+        try {
+          const response = await device({
+            userId: user,
+            token: token
+          })
+
+          console.log(response)
+        } catch (error) {
+          console.warn('Failed to add device', error)
+        }
       }
     }
-    asyncToken()
-  }, [store, isLoading, response, error, sendData])
 
+    asyncToken()
+  }, [store, device])
+
+  /**
+   * Style body background
+   */
   useEffect(() => {
     window.document.body.style.background =
       AppBackgroundThemes[store.get('themeBackgroundId')].background

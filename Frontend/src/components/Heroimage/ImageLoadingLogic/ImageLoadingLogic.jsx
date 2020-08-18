@@ -26,7 +26,7 @@ const ImageLoadingLogic = ({
 }
 
 ImageLoadingLogic.propTypes = {
-  image: PropTypes.oneOfType(PropTypes.string, PropTypes.bool, PropTypes.func),
+  image: PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.func]),
   isLoading: PropTypes.bool.isRequired,
   error: PropTypes.object,
   alt: PropTypes.string.isRequired,
