@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { Form, Field, Formik } from 'formik'
 import * as Yup from 'yup'
@@ -7,8 +7,8 @@ import { ButtonFormWrapper } from '../../Button'
 import { Input } from '../../Inputs'
 import { InputStyled } from '../../Inputs'
 import { FormWrapper } from '../LoginForm'
-import { usePost } from './../../../API'
 import { useSnackbar } from 'notistack'
+import { useNPost } from './../../../API/ourAPI/useNPost'
 
 const RegisterForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -51,56 +51,55 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
 }
 
 const RegisterFormik = () => {
-  const registerAPI = usePost('/register')
+  const { send: register } = useNPost('/register')
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
-
-  useEffect(() => {
-    if (registerAPI.error) {
-      if (registerAPI.error.code === -1) {
-        enqueueSnackbar(registerAPI.error.text, {
-          variant: 'error',
-        })
-      } else if (registerAPI.error.code === 400) {
-        enqueueSnackbar('Ten email jest już używany', {
-          variant: 'error',
-        })
-      } else if (
-        registerAPI.error.code >= 400 &&
-        registerAPI.error.code <= 599
-      ) {
-        enqueueSnackbar(registerAPI.error.text, {
-          variant: 'error',
-        })
-      }
-    }
-  }, [registerAPI.error, enqueueSnackbar])
-
-  useEffect(() => {
-    if (!registerAPI.isLoading && registerAPI.response?.statusCode === 201) {
-      enqueueSnackbar('Zarejestrowano pomyślnie!', {
-        variant: 'success',
-      })
-
-      setTimeout(() => {
-        history.replace('/')
-      }, 1500)
-    }
-  }, [registerAPI.response, registerAPI.isLoading, enqueueSnackbar, history])
 
   const initialValues = {
     user: '',
     password: '',
   }
 
+  const transformValues = (values) => {
+    return {
+      login: values.user,
+      password: values.password
+    }
+  }
+
+  const handleError = (message) => {
+    enqueueSnackbar(message, {
+      variant: 'error',
+      autoHideDuration: 2500,
+    })
+  }
+
   const onSubmit = async (values, { setSubmitting }) => {
     enqueueSnackbar('Rejestrowanie', {
       variant: 'info',
+      autoHideDuration: 1500,
     })
-    await registerAPI.sendData({
-      login: values.user,
-      password: values.password,
-    })
+
+    try {
+      const response = await register(transformValues(values))
+
+      if (response.statusCode === 201) {
+        enqueueSnackbar('Zarejestrowano pomyślnie!', {
+          variant: 'success',
+          autoHideDuration: 3000,
+        })
+
+        setTimeout(() => { history.replace('/') }, 1500)
+      }
+    } catch (e) {
+      console.warn('HTTP Error: ', e)
+      if (e?.response?.status === 400) {
+        handleError('Ten email jest już używany')
+      } else {
+        handleError('Ten error jest zbyt potężny')
+      }
+    }
+
     setSubmitting(false)
   }
 

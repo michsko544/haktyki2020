@@ -15,13 +15,13 @@ const useRandomThematicImg = () => {
       )
       setImage({ ...response.data })
       if (process.env.REACT_APP_DEBUG === 'true')
-        console.log('unsplash', response.data)
+        console.debug('unsplash', response.data)
     } catch (error) {
       setError({
         code: error.response?.status?.toString(),
         text: 'Nie można załadować zdjęcia',
       })
-      if (process.env.REACT_APP_DEBUG === 'true') console.log(error.response)
+      if (process.env.REACT_APP_DEBUG === 'true') console.debug(error.response)
     } finally {
       setIsLoading(false)
     }

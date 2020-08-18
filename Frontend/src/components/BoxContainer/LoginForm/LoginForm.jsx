@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
@@ -8,9 +8,9 @@ import { Input } from '../../Inputs'
 import { InputStyled } from '../../Inputs'
 import { FormWrapper } from './'
 import Store from './../../App/App.store'
-import { usePost } from './../../../API'
 import { Field } from 'formik'
 import { useSnackbar } from 'notistack'
+import { useNPost } from './../../../API/ourAPI/useNPost'
 
 const LoginForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -55,66 +55,60 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
 const LoginFormik = () => {
   const store = Store.useStore()
   const history = useHistory()
-  const loginAPI = usePost('/login')
+  const { send: login } = useNPost('/login')
   const { enqueueSnackbar } = useSnackbar()
-  const [completed, setCompleted] = useState(false)
-
-  useEffect(() => {
-    if (!loginAPI.isLoading && loginAPI.response && !completed) {
-      if (loginAPI.response.statusCode === 200) {
-        enqueueSnackbar('Pomyślnie zalogowano', {
-          variant: 'success',
-        })
-      }
-      store.set('authToken')(loginAPI.response.authToken)
-      store.set('user')(loginAPI.response.fullname || '')
-      store.set('userId')(loginAPI.response.userId)
-      localStorage.setItem('login', JSON.stringify(loginAPI.response))
-      const loginExpiry = new Date()
-      loginExpiry.setDate(loginExpiry.getDate() + 1)
-      localStorage.setItem('loginExpiry', loginExpiry.toISOString())
-      setCompleted(true)
-      if (!loginAPI.response.fullname) history.push('/greeter')
-      else history.push('/')
-    }
-  }, [
-    loginAPI.isLoading,
-    loginAPI.response,
-    history,
-    completed,
-    store,
-    enqueueSnackbar,
-  ])
-
-  useEffect(() => {
-    if (loginAPI.error) {
-      if (loginAPI.error.code === -1) {
-        enqueueSnackbar(loginAPI.error.text, {
-          variant: 'error',
-        })
-      } else if (loginAPI.error.code === 401) {
-        enqueueSnackbar('Niepoprawny email lub hasło', {
-          variant: 'error',
-        })
-      } else if (loginAPI.error.code >= 400 && loginAPI.error.code <= 599) {
-        enqueueSnackbar(loginAPI.error.text, {
-          variant: 'error',
-        })
-      }
-    }
-  }, [loginAPI.error, enqueueSnackbar])
 
   const initialValues = {
     user: '',
     password: '',
   }
 
-  const onSubmit = async (values, { setSubmitting }) => {
-    setCompleted(false)
-    enqueueSnackbar('Logowanie', {
-      variant: 'info',
+  const setLocalStorage = (response) => {
+    const loginExpiry = new Date()
+    loginExpiry.setDate(loginExpiry.getDate() + 1)
+
+    localStorage.setItem('login', JSON.stringify(response))
+    localStorage.setItem('loginExpiry', loginExpiry.toISOString())
+  }
+
+  const transformValues = (values) => {
+    return { login: values.user, password: values.password }
+  }
+
+  const handleError = (message) => {
+    enqueueSnackbar(message, {
+      variant: 'error',
+      autoHideDuration: 2500,
     })
-    await loginAPI.sendData({ login: values.user, password: values.password })
+  }
+
+  const onSubmit = async (values, { setSubmitting }) => {
+    try {
+      const response = await login(transformValues(values))
+
+      store.set('authToken')(response.authToken)
+      store.set('user')(response.fullname || '')
+      store.set('userId')(response.userId)
+
+      setLocalStorage(response)
+
+      if (!response.fullname) {
+        history.push('/greeter')
+      } else {
+        history.push('/')
+      }
+    } catch (error) {
+      if (error?.response?.status === -1) {
+        handleError('Błąd wewnętrzny, odśwież apkę?')
+      } else if (error?.response?.status === 401) {
+        handleError('Niepoprawny email lub hasło ψ(._. )>')
+      } else if (error?.response?.status >= 400 && error?.response?.status <= 599) {
+        handleError('Błąd serwera, spróbuj ponownie później (ヘ･_･)ヘ┳━┳')
+      } else {
+        handleError('Bardzo mocne ojej! Spadliśmy właśnie z planszy (╯‵□′)╯︵┻━┻')
+      }
+    }
+    
     setSubmitting(false)
   }
 

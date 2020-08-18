@@ -24,14 +24,18 @@ const AppInit = () => {
     if (loginExpiry === null) return
 
     const loginDate = new Date(loginExpiry)
+
     if (loginDate < new Date()) {
-      console.log('This token is dead boi')
+      console.debug('This token is dead boi')
+
       localStorage.removeItem('loginExpiry')
       localStorage.removeItem('login')
+
       enqueueSnackbar('Twoja sesja wygasła, zaloguj się ponownie', {
         variant: 'warning',
         autoHideDuration: 6000,
       })
+
       return
     }
 
@@ -76,14 +80,16 @@ const AppInit = () => {
           const messaging = firebase.messaging()
           const token = await messaging.getToken()
           store.set('deviceToken')(token)
-          console.log('Setting Token:', token)
+          console.debug('Setting Token:', token)
 
           messaging.onMessage((payload) => {
-            console.log(payload)
+            console.debug(payload)
+
             store.set('notifications')([
               payload.notification,
               ...store.get('notifications'),
             ])
+            
             enqueueSnackbar(
               `${payload.notification.title} - ${payload.notification.body}`,
               {
@@ -105,10 +111,11 @@ const AppInit = () => {
       const token = store.get('deviceToken')
       const user = store.get('userId')
       const isAuth = store.get('authToken').length > 0
+
+      const isTokenValid = token && token !== null && token.length > 0
+
       if (
-        token &&
-        token !== null &&
-        token.length > 0 &&
+        isTokenValid &&
         user > 0 &&
         isAuth &&
         !isLoading &&
@@ -121,6 +128,7 @@ const AppInit = () => {
         })
       }
     }
+
     asyncToken()
   }, [store, isLoading, response, error, sendData])
 
