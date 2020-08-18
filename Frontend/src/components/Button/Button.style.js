@@ -58,7 +58,7 @@ export const ButtonStyled = styled.button`
     font-weight: bold;
     font-size: 18px;
     text-transform: uppercase;
-    background: -webkit-linear-gradient(162deg, ${(props) =>
+    background: linear-gradient(34deg, ${(props) =>
       props.firstColor} 0%, ${(props) => props.secondColor} 100%);
     background-clip: text;
     -webkit-background-clip: text;
