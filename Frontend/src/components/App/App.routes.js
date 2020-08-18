@@ -36,7 +36,7 @@ const AppRoutes = () => {
       <GuardedRoute exact path="/" component={Home} />
       <CustomRoute
         customGuard={!isLogged()}
-        redirectTo="/"
+        redirectTo="/greeter"
         path="/login"
         component={Login}
       />
