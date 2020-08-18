@@ -6,5 +6,6 @@ export default createConnectedStore({
   themeBackgroundId: 0,
   userId: 0,
   user: '',
-  deviceToken: ''
+  deviceToken: '',
+  notifications: []
 })

@@ -77,6 +77,7 @@ const AppInit = () => {
 
         messaging.onMessage((payload) => {
           console.log(payload)
+          store.set('notifications')([payload.notification, ...store.get('notifications')])
           enqueueSnackbar(`${payload.notification.title} - ${payload.notification.body}`, {
             variant: 'success'
           })
