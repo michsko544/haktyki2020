@@ -14,6 +14,30 @@ const AppInit = () => {
   const { send: device } = usePost('/notifications/add-device')
   const { enqueueSnackbar } = useSnackbar()
 
+  useEffect(() => {
+    const log = console.log
+    const warn = console.warn
+    const error = console.error
+
+    console.log = (...args) => {
+      console.debug('[LOG] ', ...args)
+    }
+
+    console.warn = (...args) => {
+      console.debug('[WARN] ', ...args)
+    }
+
+    console.error = (...args) => {
+      console.debug('[ERROR] ', ...args)
+    }
+
+    return () => {
+      console.log = log
+      console.warn = warn
+      console.error = error
+    }
+  }, [])
+
   /**
    * LocalStorage Auth Token check
    */

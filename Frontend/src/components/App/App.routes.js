@@ -26,11 +26,7 @@ const AppRoutes = () => {
 
   const hasFullname = () => store.get('user').length > 0
 
-  const canActivate = () => {
-    const can = isLogged() && !hasFullname()
-    console.log('Can? ', can, isLogged(), !hasFullname())
-    return can
-  }
+  const canActivate = () => isLogged() && !hasFullname()
 
   return (
     <AnimatedSwitch
