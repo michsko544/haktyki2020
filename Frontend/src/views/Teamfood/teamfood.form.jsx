@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
-import * as Yup from 'yup'
 import { Formik, Field } from 'formik'
 import { FormStyled } from './Container/form.style'
 import { Input, InputStyled, RadioGroupFormik } from '../../components/Inputs'
@@ -24,24 +23,32 @@ import { TeamfoodDefaultImages } from './teamfood.default.images'
 import { usePost } from './../../API'
 import { AppBackgroundThemes } from './../../components/App/App.themes'
 import { useHistory } from 'react-router-dom';
+import { teamfoodFormValidationSchema } from './teamfood.form.validation.schema';
+import { useResizer } from './../../utils/useResizer';
 
 const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
   const store = Store.useStore()
   const errorHandler = (name) => touched[name] && errors[name]
   const images = usePhotoSearch()
   const [photos, setPhotos] = useState(TeamfoodDefaultImages)
-  const [imageProps, setImageProps] = useState({
-    w: 160,
-    h: 100,
-    dpr: window.devicePixelRatio,
-  })
   const { enqueueSnackbar } = useSnackbar()
+  const {
+    onResize,
+    imageProps,
+    timeoutRef,
+  } = useResizer('photos', photos.map(p => p.urls.raw), 350)
 
   const photoUrlBuilder = (photo, w, h, dpr) =>
     `${photo.urls.raw}&w=${w}&h=${h}&dpr=${dpr}&auto=format&fit=crop`
 
   useEffect(() => {
     images.setKeywords(['food'])
+    window.addEventListener('resize', onResize)
+
+    return () => {
+      window.removeEventListener('resize', onResize, true)
+      clearTimeout(timeoutRef)
+    }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -52,65 +59,6 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
       document.title = 'Nowe Zamówienie | TeamFood'
     }
   }, [values])
-
-  useEffect(() => {
-    let rtime
-    let timeout = false
-    const delta = 250
-    let timeoutRef
-
-    const onResize = () => {
-      rtime = new Date()
-      if (timeout === false) {
-        timeout = true
-        timeoutRef = setTimeout(resizeEnd, delta)
-      }
-    }
-
-    const resizeEnd = async () => {
-      if (new Date() - rtime < delta) {
-        timeoutRef = setTimeout(resizeEnd, delta)
-      } else {
-        timeout = false
-        if (typeof document.querySelector('.photos') === 'object') {
-          const p = document.querySelector('.photos')
-          const width = p?.clientWidth
-          const height = p?.clientHeight
-          const dpr = window?.devicePixelRatio
-          if (
-            width !== imageProps.w ||
-            height !== imageProps.h ||
-            dpr !== imageProps.dpr
-          ) {
-            await Promise.all(
-              photos.map(
-                (p) =>
-                  new Promise((resolve, reject) => {
-                    const img = new Image()
-                    img.onload = () => resolve()
-                    img.onerror = () => reject()
-                    img.src = photoUrlBuilder(p, width, height, dpr)
-                  })
-              )
-            )
-
-            setImageProps({
-              w: width,
-              h: height,
-              dpr: dpr,
-            })
-          }
-        }
-      }
-    }
-
-    window.addEventListener('resize', onResize)
-
-    return () => {
-      window.removeEventListener('resize', onResize, true)
-      clearTimeout(timeoutRef)
-    }
-  })
 
   const photoSelectionHandler = (photo) => {
     let photocopy = [...photos]
@@ -232,7 +180,7 @@ const TeamfoodForm = ({ errors, touched, isSubmitting, values, setValues }) => {
             { value: 'TRANSFER', label: 'Przelew' },
             { value: 'CASH', label: 'Gotówka' },
           ]}
-          error={() => errorHandler('paymentForm')}
+          error={errorHandler('paymentForm')}
           label={'Forma Płatności'}
           component={RadioGroupFormik}
           aria-label="payment"
@@ -322,14 +270,7 @@ const TeamfoodFormik = () => {
     image: '',
   }
 
-  const validationSchema = Yup.object().shape({
-    restaurant: Yup.string().required('Wypełnij to pole'),
-    date: Yup.string().required('Wypełnij to pole'),
-    time: Yup.string().required('Wypełnij to pole'),
-    description: Yup.string().required('Wypełnij to pole'),
-    paymentForm: Yup.string().required('Musisz zaznaczyć jedną z opcji'),
-    image: Yup.string().required('Wybierz zdjęcie (☞ﾟヮﾟ)☞'),
-  })
+  const validationSchema = teamfoodFormValidationSchema
 
   const onSubmit = async (values, { setSubmitting }) => {
     console.log('Submitted values: ', values)

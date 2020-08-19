@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { preloader } from './preloader'
 import { imgUrlBuilder } from './imgUrlBuilder';
 
-export const useResizer = (className, url, delta) => {
+export const useResizer = (className, urls, delta) => {
     const [ timeoutRef, setTimeoutRef ] = useState(null)
     const [ rtime, setRtime ] = useState(null)
     const [ timeout, setTimeout] = useState(false)
@@ -23,7 +23,7 @@ export const useResizer = (className, url, delta) => {
       }
 
       const resizeEnd = async () => {
-        console.log('[DEBUG]', timeoutRef, rtime, timeout, imageProps, className, url, delta)
+        console.log('[DEBUG]', timeoutRef, rtime, timeout, imageProps, className, urls, delta)
 
         if (new Date() - rtime < delta) {
           clearTimeout(timeoutRef)
@@ -44,9 +44,11 @@ export const useResizer = (className, url, delta) => {
               dpr !== imageProps.dpr
             ) {
               try {
-                await preloader(imgUrlBuilder(url, width, height, dpr))
+                await Promise.all(
+                  urls.map(url => preloader(imgUrlBuilder(url, width, height, dpr)))
+                )
               } catch (e) {
-                console.warn('Preloader failder: ', e)
+                console.warn('Preloader failed: ', e)
               }
   
               setImageProps({

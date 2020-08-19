@@ -34,7 +34,7 @@ const FoodCard = ({ details, openCallback, ...props }) => {
     onResize,
     imageProps,
     timeoutRef,
-  } = useResizer(classes.media, details.image, 250)
+  } = useResizer(classes.media, [details.image], 250)
 
   const savedOrderText = (order) => {
     const time = new Date(`${order.date} ${order.time}`)

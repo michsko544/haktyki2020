@@ -10,10 +10,10 @@ export const GuardedRoute = ({ component: Component, ...rest }) => {
     }
 
     const isFullyRegistered = () => {
-        return store.get('user').length === 0
+        return store.get('user').length > 0
     }
 
-    const canActivate = () => isFullyRegistered() && isAuthenticated()
+    const canActivate = () => isAuthenticated() && isFullyRegistered()
 
     return (
         <Route {...rest} render={(props) => (
