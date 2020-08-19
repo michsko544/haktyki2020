@@ -39,6 +39,10 @@ public class OrderService {
         try {
             checkOrdersTime();
 
+            long userId = userService.getAuthenticatedId();
+            List<Long> orderIdsContainingUserId = getOrderIdsContainingUsersId(userId);
+            orderRepository.findAll();
+
             return new OrdersListRestModel(
                     getMyOrdersList(),
                     getAllOrdersList());
@@ -100,6 +104,24 @@ public class OrderService {
                     .map(OrderDetailsEntity::getId)
                     .map(OrderDetailsIdentity::getOrderId)
                     .collect(Collectors.toList());
+    }
+
+    public void checkOrdersTime(){
+        logger.info("DB-shot find.");
+        List<OrderEntity> openOrders = orderRepository.findAllByOrderClosed(false);
+        boolean hasAnyChanges = false;
+        for( OrderEntity order : openOrders){
+            if(order.getOrderDate().isBefore(LocalDate.now())
+                    || ( order.getOrderDate().isEqual(LocalDate.now())
+                    && order.getOrderTime().isBefore(LocalTime.now()) ) ){
+                order.setOrderClosed(true);
+                hasAnyChanges = true;
+            }
+        }
+        if(hasAnyChanges) {
+            logger.info("DB-shot save.");
+            orderRepository.saveAll(openOrders);
+        }
     }
 
     // Tries to add new order with order owners details
@@ -228,24 +250,6 @@ public class OrderService {
         catch(Exception ex){
             logger.error("While editing order error happened.",ex);
             throw ex;
-        }
-    }
-
-    public void checkOrdersTime(){
-        logger.info("DB-shot find.");
-        List<OrderEntity> openOrders = orderRepository.findAllByOrderClosed(false);
-        boolean hasAnyChanges = false;
-        for( OrderEntity order : openOrders){
-            if(order.getOrderDate().isBefore(LocalDate.now())
-                    || ( order.getOrderDate().isEqual(LocalDate.now())
-                        && order.getOrderTime().isBefore(LocalTime.now()) ) ){
-                order.setOrderClosed(true);
-                hasAnyChanges = true;
-            }
-        }
-        if(hasAnyChanges) {
-            logger.info("DB-shot save.");
-            orderRepository.saveAll(openOrders);
         }
     }
 
