@@ -40,13 +40,21 @@ const Home = () => {
   const [isDetailsVisibile, setDetailsVisibile] = useState(false)
   const [notificationsLength, setNotificationsLength] = useState(0)
 
-  const handleData = (data, setter) => setter(data)
-
   /**
    * Initialize
    */
   useEffect(() => {
-    const asyncUser = async () => handleData(await fetchUser(), setUser)
+    const asyncUser = async () => {
+      try {
+        setUser(await fetchUser())
+      } catch (error) {
+        console.warn('Cannot download user data: ', error)
+        enqueueSnackbar('Nie udało się pobrać twoich danych z serwera. Spróbuj ponownie później', {
+          variant: 'error',
+          autoHideDuration: 3000,
+        })
+      }
+    }
 
     document.title = 'Zamówmy coś 🍕 | TeamFood'
     asyncUser()
@@ -67,11 +75,10 @@ const Home = () => {
 
     try {
       const { allOrders: orders, myOrders } = await fetchOrders()
-
-      handleData(orders, setOrders)
-      handleData(myOrders, setMyOrders)
+      setOrders(orders)
+      setMyOrders(myOrders)
     } catch (error) {
-      console.warn('Err', error)
+      console.warn('Fetch orders error:', error)
       handleError('Serwer spadł z rowerka i nie wstaje :/')
     }
   }
@@ -98,8 +105,8 @@ const Home = () => {
   const toggleDetailsVisibility = () => setDetailsVisibile(!isDetailsVisibile)
 
   const handleShowCard = (order) => {
-    toggleDetailsVisibility()
     setSelectedOrder(order)
+    toggleDetailsVisibility()
   }
 
   const handleCloseCard = () => {
@@ -108,16 +115,11 @@ const Home = () => {
     setSelectedOrder(null)
   }
 
-  const orderSort = (a, b) => {
-    const aDay = new Date(`${a.date} ${a.time}`)
-    const bDay = new Date(`${b.date} ${b.time}`)
+  const orderSort = (a, b) => new Date(`${a.date} ${a.time}`) > new Date(`${b.date} ${b.time}`)
 
-    return aDay > bDay
-  }
+  const renderOrderButton = () => {
+    const hasUserData = () => user.fullName && user.phoneNumber && user.creditCardNumber
 
-  const hasUserData = () => user.fullName && user.phoneNumber && user.creditCardNumber
-
-  function renderOrderButton() {
     if (user) {
       if (hasUserData())
         return (
@@ -131,7 +133,7 @@ const Home = () => {
             <Button
               text="Dodaj Zamówienie"
               onClick={() =>
-                enqueueSnackbar('Aby stworzyć zamówienie uzupełnij wszystkie dane ❗️', {
+                enqueueSnackbar('Przed wyruszeniem w drogę należy zebrać informacje!', {
                   variant: 'info',
                 })
               }
@@ -147,7 +149,7 @@ const Home = () => {
   const defaultNoFoodResponse = (orders) => {
     const getRandomMessage = () => messages[Math.round(Math.random() * (messages.length - 1))]
 
-    if (orders.length === 0) {
+    if (orders.length === 0 && !loadingOrders) {
       return <Message color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}>{getRandomMessage()}</Message>
     }
   }
