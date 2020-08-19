@@ -75,6 +75,10 @@ export const ButtonWrapper = styled.div`
     transform: unset;
     left: 0;
   }
+
+  & > :last-child {
+    margin-top: 16px;
+  }
 `
 
 export const CloseBtnBackground = styled.div`

@@ -4,8 +4,8 @@ export const useNPost = (url) => {
     const send = async (data) => {
         const response = await axiosAPI.post(url, data)
         if (process.env.REACT_APP_DEBUG === 'true') {
-            console.debug(`Posting data on ${url}`, data)
-            console.debug('Response: ', response)
+            console.log(`Posting data on ${url}`, data)
+            console.log('Response: ', response)
           }
 
           return { 

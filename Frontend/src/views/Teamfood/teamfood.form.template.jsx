@@ -4,11 +4,9 @@ import { useSnackbar } from 'notistack'
 import Button from '@material-ui/core/Button'
 
 import Store from '../../components/App/App.store'
-import { AppThemes, AppBackgroundThemes } from '../../components/App/App.themes'
+import { AppBackgroundThemes } from '../../components/App/App.themes'
 
 import usePhotoSearch from './../../API/unsplashAPI/usePhotoSearch'
-
-import { useResizer } from './../../utils/useResizer';
 
 import { Input, InputStyled, RadioGroupFormik } from '../../components/Inputs'
 import {
@@ -18,7 +16,7 @@ import {
 import Loader from '../../components/Loader'
 import ErrorMessage from '../../components/ErrorMessage'
 
-import { PhotoSelectionStyled } from './PhotoSelection/photo.selection.style'
+import PhotoSelection from './PhotoSelection/photo.selection'
 import { PhotoSelectionContainer } from './PhotoSelection/photo.selection.container.style'
 
 import { FormStyled } from './Container/form.style'
@@ -33,23 +31,9 @@ export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, se
     const images = usePhotoSearch()
     const [photos, setPhotos] = useState(TeamfoodDefaultImages)
     const { enqueueSnackbar } = useSnackbar()
-    const {
-      onResize,
-      imageProps,
-      timeoutRef,
-    } = useResizer('photos', photos.map(p => p.urls.raw), 350)
-  
-    const photoUrlBuilder = (photo, w, h, dpr) =>
-      `${photo.urls.raw}&w=${w}&h=${h}&dpr=${dpr}&auto=format&fit=crop`
   
     useEffect(() => {
       images.setKeywords(['food'])
-      window.addEventListener('resize', onResize)
-  
-      return () => {
-        window.removeEventListener('resize', onResize, true)
-        clearTimeout(timeoutRef)
-      }
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
   
     useEffect(() => {
@@ -113,7 +97,7 @@ export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, se
   
       if (matched.length === 0) {
         console.log('Empty.')
-        matched.push('dinner', 'food')
+        matched.push('fastfood', 'food')
       }
   
       console.log('Matched keywords: ', matched)
@@ -121,13 +105,6 @@ export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, se
     }
   
     useEffect(checkKeywords, [values])
-  
-    useEffect(() => {
-      console.log('Photos: ', photos.filter((i) => i.selected)[0])
-    }, [photos])
-  
-    const photoUrl = (photo) =>
-      photoUrlBuilder(photo, imageProps.w, imageProps.h, imageProps.dpr)
   
     return (
       <FormStyled>
@@ -195,14 +172,10 @@ export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, se
             {showLoaderIfLoading()}
             {showErrorIfError()}
             {photos.map((photo) => (
-              <PhotoSelectionStyled
-                className="photos"
-                onClick={(e) => photoSelectionHandler(photo, e)}
+              <PhotoSelection
                 key={photo.id}
-                selected={photo.selected}
-                url={photoUrl(photo)}
-                from={AppThemes[store.get('themeId')].from}
-                to={AppThemes[store.get('themeId')].to}
+                onClick={(e) => photoSelectionHandler(photo, e)}
+                photo={photo}
               />
             ))}
             <p

@@ -11,7 +11,7 @@ export const useNFetch = (url) => {
       response = await axiosAPI.get(url)
 
       if (process.env.REACT_APP_DEBUG === 'true') {
-        console.debug('Response: ', response)
+        console.log('Response: ', response)
       }
     } catch (e) {
       throw e

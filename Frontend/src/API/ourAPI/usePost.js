@@ -14,8 +14,8 @@ const usePost = (url) => {
       setIsLoading(false)
       setResponse({ ...response.data, statusCode: response.status })
       if (process.env.REACT_APP_DEBUG === 'true') {
-        console.debug(`Posting data on ${url}`, data)
-        console.debug('Response: ', response)
+        console.log(`Posting data on ${url}`, data)
+        console.log('Response: ', response)
       }
     } catch (error) {
       setError({
@@ -23,7 +23,7 @@ const usePost = (url) => {
         text: 'Coś poszło nie tak',
       })
       if (process.env.REACT_APP_DEBUG === 'true')
-        console.debug('Error', error.response)
+        console.log('Error', error.response)
     } finally {
       setIsLoading(false)
     }

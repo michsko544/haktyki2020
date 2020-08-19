@@ -45,7 +45,7 @@ const TeamfoodFormik = () => {
 
     try {
       const response = await addOrder(transformRequest(values))
-      console.debug('Response: ', response)
+      console.log('Response: ', response)
       
       if(response.statusCode >= 200) {
         setTimeout(() => history.replace('/'), 1500)
