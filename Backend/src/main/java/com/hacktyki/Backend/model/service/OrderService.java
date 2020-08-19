@@ -3,7 +3,6 @@ package com.hacktyki.Backend.model.service;
 import com.hacktyki.Backend.model.entity.*;
 import com.hacktyki.Backend.model.repository.OrderDetailsRepository;
 import com.hacktyki.Backend.model.repository.OrderRepository;
-import com.hacktyki.Backend.model.repository.PaymentFormRepository;
 import com.hacktyki.Backend.model.responses.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,16 +24,14 @@ public class OrderService {
     private final OrderDetailsRepository orderDetailsRepository;
     private final UserService userService;
     private final CouponService couponService;
-    private final PaymentFormRepository paymentFormRepository;
 
     private final Logger logger;
 
-    public OrderService(OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, UserService userService, CouponService couponService, PaymentFormRepository paymentFormRepository) {
+    public OrderService(OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository, UserService userService, CouponService couponService) {
         this.orderDetailsRepository = orderDetailsRepository;
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.couponService = couponService;
-        this.paymentFormRepository = paymentFormRepository;
         this.logger = LoggerFactory.getLogger(OrderService.class);
     }
 
@@ -117,14 +114,10 @@ public class OrderService {
             }
 
             if(fullOrderRestModel.getPaymentForm() != null){
-                logger.info("DB-shot find.");
-                PaymentFormEntity paymentFormEntity = paymentFormRepository.findByPaymentFormName(fullOrderRestModel.getPaymentForm());
-                if( paymentFormEntity != null) {
-                    orderEntity.setPaymentFormId(paymentFormEntity.getId());
-                }
-                else {
-                    throw new NullPointerException("Payment entity with null value. Value not found.");
-                }
+//                logger.info("DB-shot find.");
+//                PaymentFormEntity paymentFormEntity = paymentFormRepository.findByPaymentFormName(fullOrderRestModel.getPaymentForm());
+                logger.info("PaymentFormEnum: " + fullOrderRestModel.getPaymentForm().toString() + " and its value: " + fullOrderRestModel.getPaymentForm().getValue());
+                orderEntity.setPaymentFormId((long) fullOrderRestModel.getPaymentForm().getValue());
             }
             else {
                 throw new NullPointerException("Provided payment variable with null value.");
@@ -217,8 +210,9 @@ public class OrderService {
                         optOrderEntity.get().setOrderTime(editOrderRestModel.getTime());
                     }
                     if (isPaymentType) {
-                        logger.info("DB-shot find.");
-                        optOrderEntity.get().setPaymentFormId(paymentFormRepository.findByPaymentFormName(editOrderRestModel.getPaymentForm()).getId());
+//                        logger.info("DB-shot find.");
+//                        optOrderEntity.get().setPaymentFormId(paymentFormRepository.findByPaymentFormName(editOrderRestModel.getPaymentForm()).getId());
+                        optOrderEntity.get().setPaymentFormId(editOrderRestModel.getPaymentForm().getValue());
                     }
                     logger.info("DB-shot save.");
                     orderRepository.save(optOrderEntity.get());
