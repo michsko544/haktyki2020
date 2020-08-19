@@ -94,6 +94,15 @@ const GreeterFormik = () => {
     }
   }, [api.response, api.isLoading, history, completed])
 
+  const setLocalStorage = (fullname) => {
+    const login = localStorage.getItem('login')
+    if(login === null) return
+    const json = JSON.parse(login)
+
+    json.fullname = fullname
+    localStorage.setItem('login', JSON.stringify(json))
+  }
+
   const onSubmit = async (values, { setSubmitting }) => {
     setCompleted(false)
     enqueueSnackbar('Zapisywanie danych 🤞', {
@@ -102,6 +111,7 @@ const GreeterFormik = () => {
     })
     await api.sendData(transformRequest(values))
     store.set('user')(values.name)
+    setLocalStorage(values.name)
     setSubmitting(false)
   }
 
