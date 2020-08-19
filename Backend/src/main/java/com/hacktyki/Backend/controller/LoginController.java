@@ -21,7 +21,7 @@ public class LoginController {
     }
 
     @PostMapping(path = "register",
-            consumes = "application/json")
+                 consumes = "application/json")
     public ResponseEntity<InformationStatusRestModel> signUp(@RequestBody UserSignInRestModel user) {
         try {
             return new ResponseEntity<>(new InformationStatusRestModel(loginService.addNewUser(user)), HttpStatus.CREATED);
@@ -32,7 +32,8 @@ public class LoginController {
     }
 
     @PostMapping(path = "login",
-                consumes = "application/json", produces = "application/json")
+                 consumes = "application/json",
+                 produces = "application/json")
     public ResponseEntity<LoginRestModel> login(@RequestBody UserSignInRestModel user){
 
         try {
