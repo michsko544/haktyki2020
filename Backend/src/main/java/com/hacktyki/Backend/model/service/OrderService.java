@@ -61,6 +61,7 @@ public class OrderService {
             List<Long> orderIdsContainingUserId
                     = getOrderIdsContainingUsersId(userId);
 
+            logger.info("DB-shot find.");
             return orderRepository.findAll()
             .stream()
             .filter(orderEntity -> (orderIdsContainingUserId.contains(orderEntity.getId()) && !orderEntity.isPaid()))
@@ -82,7 +83,7 @@ public class OrderService {
         try {
             List<Long> orderIdsContainingUserId
                     = getOrderIdsContainingUsersId(userId);
-
+            logger.info("DB-shot find.");
             return orderRepository.findAll()
             .stream()
             .filter(orderEntity -> (!orderIdsContainingUserId.contains(orderEntity.getId()) && !orderEntity.isOrderClosed()))
@@ -96,6 +97,7 @@ public class OrderService {
     }
 
     private List<Long> getOrderIdsContainingUsersId(long userId){
+        logger.info("DB-shot find.");
          return orderDetailsRepository.findAllById_UserId(userId)
                     .stream()
                     .map(OrderDetailsEntity::getId)
@@ -115,6 +117,7 @@ public class OrderService {
             }
 
             if(fullOrderRestModel.getPaymentForm() != null){
+                logger.info("DB-shot find.");
                 PaymentFormEntity paymentFormEntity = paymentFormRepository.findByPaymentFormName(fullOrderRestModel.getPaymentForm());
                 if( paymentFormEntity != null) {
                     orderEntity.setPaymentFormId(paymentFormEntity.getId());
@@ -126,13 +129,14 @@ public class OrderService {
             else {
                 throw new NullPointerException("Provided payment variable with null value.");
             }
-
+            logger.info("DB-shot save.");
             orderEntity = orderRepository.save(orderEntity);
 
             OrderDetailsEntity orderDetailsEntity = new OrderDetailsEntity(fullOrderRestModel.getOrderDetails().get(0), orderEntity.getId());
             if(couponId != null){
                 orderDetailsEntity.setCouponId(couponId);
             }
+            logger.info("DB-shot save.");
             orderDetailsRepository.save(orderDetailsEntity);
 
         }
@@ -152,6 +156,7 @@ public class OrderService {
             if(couponId != null){
                 orderDetailsEntity.setCouponId(couponId);
             }
+            logger.info("DB-shot save.");
             orderDetailsRepository.save(orderDetailsEntity);
 
         }
@@ -165,6 +170,7 @@ public class OrderService {
     @Transactional
     public void editOrder(EditOrderRestModel editOrderRestModel ) throws NoSuchElementException, Exception {
         try {
+            logger.info("DB-shot find.");
             OrderDetailsEntity orderDetailsEntity = orderDetailsRepository.findAllById_UserIdAndId_OrderId(editOrderRestModel.getUserOrderDetails().getUserId(), editOrderRestModel.getOrderId());
 
             boolean isDescription = editOrderRestModel.getUserOrderDetails().getDescription() != null;
@@ -196,10 +202,12 @@ public class OrderService {
             }
 
             if (isCoupon || isDescription) {
+                logger.info("DB-shot save.");
                 orderDetailsRepository.save(orderDetailsEntity);
             }
 
             if (isOwner) {
+                logger.info("DB-shot find.");
                 Optional<OrderEntity> optOrderEntity = orderRepository.findById(editOrderRestModel.getOrderId());
                 if(optOrderEntity.isPresent()) {
                     if (isDate) {
@@ -209,8 +217,10 @@ public class OrderService {
                         optOrderEntity.get().setOrderTime(editOrderRestModel.getTime());
                     }
                     if (isPaymentType) {
+                        logger.info("DB-shot find.");
                         optOrderEntity.get().setPaymentFormId(paymentFormRepository.findByPaymentFormName(editOrderRestModel.getPaymentForm()).getId());
                     }
+                    logger.info("DB-shot save.");
                     orderRepository.save(optOrderEntity.get());
                 }
                 else{
@@ -227,50 +237,8 @@ public class OrderService {
         }
     }
 
-//    public OrderCouponsRestModel getOrderCouponsList(Long orderId) throws Exception{
-//        try {
-//            OrderEntity orderEntity = orderRepository.getOne(orderId);
-//
-//            List<Long> couponIdList = orderDetailsRepository.findAllById_OrderId(orderId)
-//                    .stream()
-//                    .map(OrderDetailsEntity::getCouponId)
-//                    .collect(Collectors.toList());
-//            List<DiscountCouponEntity> couponList = couponService.getAllByIds(couponIdList);
-//
-//            OrderCouponsRestModel orderCouponsRestModel = new OrderCouponsRestModel(orderId, orderEntity.getDiscountCouponId(), couponList);
-//            return orderCouponsRestModel;
-//        }
-//        catch(Exception ex){
-//            logger.error("While getting coupons error happened.",ex);
-//            throw ex;
-//        }
-//    }
-//
-//    public void setNewCoupon(CouponChangeRestModel couponChangeRestModel) throws NoSuchElementException, Exception {
-//        try {
-//            OrderEntity orderEntity = orderRepository.getOne(couponChangeRestModel.getOrderId());
-//            boolean isCouponExisiting = false;
-//
-//            for (OrderDetailsEntity orderDetails : orderEntity.getOrderDetailsList()) {
-//                if (couponChangeRestModel.getCouponId().equals(orderDetails.getCouponId())) {
-//                    isCouponExisiting = true;
-//                    break;
-//                }
-//            }
-//            if (isCouponExisiting) {
-//                orderEntity.setDiscountCouponId(couponChangeRestModel.getCouponId());
-//                orderRepository.save(orderEntity);
-//                return;
-//            }
-//            throw new NoSuchElementException("No such coupon in order details list found.");
-//        }
-//        catch(Exception ex){
-//            logger.error("While changing coupon error happened.",ex);
-//            throw ex;
-//        }
-//    }
-
     public void checkOrdersTime(){
+        logger.info("DB-shot find.");
         List<OrderEntity> openOrders = orderRepository.findAllByOrderClosed(false);
         boolean hasAnyChanges = false;
         for( OrderEntity order : openOrders){
@@ -282,12 +250,14 @@ public class OrderService {
             }
         }
         if(hasAnyChanges) {
+            logger.info("DB-shot save.");
             orderRepository.saveAll(openOrders);
         }
     }
 
     protected OrderEntity getOrderById(Long orderId) throws EntityNotFoundException {
         try {
+            logger.info("DB-shot get.");
             return orderRepository.getOne(orderId);
         }
         catch (EntityNotFoundException ex){
@@ -296,6 +266,7 @@ public class OrderService {
     }
 
     protected List<Long> getOrderUsersIdsByOrderIdWithoutOwner(Long orderId){
+        logger.info("DB-shot find.");
         return orderDetailsRepository.findAllById_OrderId(orderId)
                 .stream()
                 .filter(orderDetailsEntity -> !orderDetailsEntity.isOrderOwner())
@@ -305,15 +276,19 @@ public class OrderService {
     }
 
     public void changeOrderToDelivered(Long orderId) {
+        logger.info("DB-shot get.");
         OrderEntity orderEntity = orderRepository.getOne(orderId);
         orderEntity.setDelivered(true);
+        logger.info("DB-shot save.");
         orderRepository.save(orderEntity);
     }
 
     public void changeOrderToPaid(Long orderId) {
         try {
+            logger.info("DB-shot get.");
             OrderEntity orderEntity = orderRepository.getOne(orderId);
             orderEntity.setPaid(true);
+            logger.info("DB-shot save.");
             orderRepository.save(orderEntity);
         }
         catch( EntityNotFoundException ex){

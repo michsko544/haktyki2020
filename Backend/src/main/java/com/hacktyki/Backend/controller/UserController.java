@@ -20,28 +20,6 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @GetMapping(path = "all")
-//    public ResponseEntity<List<UserDetailsRestModel>> listAllUsers(){
-//        final List<UserDetailsRestModel> allUsersList = userService.getAll();
-//        return ResponseEntity.ok(allUsersList);
-//    }
-
-//    @GetMapping(path = "me")
-//    public ResponseEntity<String> getMyLogin(){
-//
-//        final String username = userService.getAuthenticatedLogin();
-//
-//        if(username != null) {
-//            return new ResponseEntity<>(username, HttpStatus.OK);
-//        }
-//        return new ResponseEntity<>("Idk who I am", HttpStatus.NOT_FOUND);
-//    }
-
-    @GetMapping(path = "my-fullname")
-    public ResponseEntity<UserFullnameRestModel> getMyFullname() {
-        return ResponseEntity.ok(new UserFullnameRestModel(userService.getMyFullname()));
-    }
-
     @PostMapping(path = "my-fullname",
                 consumes = "application/json")
     public ResponseEntity<InformationStatusRestModel> setMyFullname(@RequestBody UserFullnameRestModel person) {

@@ -24,21 +24,6 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-//    @GetMapping(path = "my",
-//            produces = "application/json")
-//    public ResponseEntity<OrdersListRestModel> getMyOrders(){
-//        try {
-//            OrdersListRestModel ordersList = orderService.getMyOrdersList();
-//            return new ResponseEntity<>(ordersList, HttpStatus.OK);
-//        }
-//        catch(NullPointerException ex){
-//            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-//        }
-//        catch(Exception ex){
-//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @GetMapping(path = "all",
             produces = "application/json")
     public ResponseEntity<OrdersListRestModel> getAllOrders(){
@@ -119,40 +104,5 @@ public class OrderController {
             return new ResponseEntity<InformationStatusRestModel>(new InformationStatusRestModel("Internal server error."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-//    @GetMapping(path = "coupons",
-//                consumes = "application/json")
-//    public ResponseEntity<OrderCouponsRestModel> getAllCoupons(@RequestBody IdRestModel orderIdRestModel) {
-//        try {
-//            if (orderIdRestModel != null && orderIdRestModel.getId() != null) {
-//
-//                OrderCouponsRestModel orderCouponsRestModel = orderService.getOrderCouponsList(orderIdRestModel.getId());
-//                return new ResponseEntity<>(orderCouponsRestModel, HttpStatus.OK);
-//            }
-//            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-//
-//        } catch (Exception ex){
-//        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//
-//    @PostMapping(path = "change-coupon",
-//                 consumes = "application/json")
-//    public ResponseEntity<InformationStatusRestModel> setChoosenCoupon(@RequestBody CouponChangeRestModel couponChangeRestModel){
-//        try {
-//            if (couponChangeRestModel != null
-//                    && couponChangeRestModel.getOrderId() != null
-//                    && couponChangeRestModel.getCouponId() != null) {
-//                orderService.setNewCoupon(couponChangeRestModel);
-//                return new ResponseEntity<>(new InformationStatusRestModel("Changed successfully"), HttpStatus.OK);
-//            }
-//            return new ResponseEntity<>(new InformationStatusRestModel("Not changed, bad request"), HttpStatus.BAD_REQUEST);
-//
-//        } catch (NoSuchElementException ex){
-//            return new ResponseEntity<>(new InformationStatusRestModel("Not changed. " + ex.getMessage()), HttpStatus.BAD_REQUEST);
-//        } catch (Exception ex){
-//            return new ResponseEntity<>(new InformationStatusRestModel("Not changed, server error"), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
 }
