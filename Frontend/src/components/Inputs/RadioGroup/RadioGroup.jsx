@@ -13,8 +13,7 @@ import { FormControlLabelStyled } from '../../../views/Teamfood/form.control.lab
 const RadioGroupFormik = ({ field, error, name, label, options, ...props }) => {
   const store = Store.useStore()
   const fieldName = name || field.name
-  const fontcolor =
-    AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
+  const fontcolor = AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
 
   return (
     <FormControl component="fieldset">
@@ -29,7 +28,7 @@ const RadioGroupFormik = ({ field, error, name, label, options, ...props }) => {
             label={option.label}
           />
         ))}
-        <InputError>{error}</InputError>
+        <InputError error={error} color={fontcolor} />
       </RadioGroup>
     </FormControl>
   )

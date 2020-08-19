@@ -7,13 +7,7 @@ import OrderText from './OrderBox/OrderText'
 import Button from '../Button'
 import { ButtonWrapper, Margins } from './OrderBox'
 import Store from '../App/App.store'
-import {
-  isOrderClosed,
-  displayDate,
-  findLoggedPerson,
-  isLoggedUserPurchaser,
-  displayPurchaser,
-} from './../../utils'
+import { isOrderClosed, displayDate, findLoggedPerson, isLoggedUserPurchaser, displayPurchaser } from './../../utils'
 import { usePost } from '../../API'
 
 const OrderDetails = ({ order, closeCallback }) => {
@@ -35,20 +29,12 @@ const OrderDetails = ({ order, closeCallback }) => {
       return (
         <ButtonWrapper>
           <Button
-            text={
-              findLoggedPerson(store.get('userId'), order)?.description
-                ? 'Edytuj'
-                : 'Dołącz'
-            }
+            text={findLoggedPerson(store.get('userId'), order)?.description ? 'Edytuj' : 'Dołącz'}
             handleOnClick={() => setFirstStage(false)}
           />
         </ButtonWrapper>
       )
-    else if (
-      isFirstStage &&
-      isOrderClosed(order) &&
-      isLoggedUserPurchaser(store.get('userId'), order)
-    )
+    else if (isFirstStage && isOrderClosed(order) && isLoggedUserPurchaser(store.get('userId'), order))
       return (
         <ButtonWrapper>
           <Button
@@ -76,15 +62,11 @@ const OrderDetails = ({ order, closeCallback }) => {
         orderId={order.id}
         isPurchaser={isLoggedUserPurchaser(store.get('userId'), order)}
         closeCallback={closeCallback}
-        formAction={
-          findLoggedPerson(store.get('userId'), order)?.description
-            ? 'edit'
-            : 'join'
-        }
+        formAction={findLoggedPerson(store.get('userId'), order)?.description ? 'edit' : 'join'}
       />
     ) : (
       <OrderList
-        orders={order.orderDetails}
+        order={order}
         purchaserId={order.purchaserId}
         isPurchaser={isLoggedUserPurchaser(store.get('userId'), order)}
         payment={{
@@ -102,10 +84,7 @@ const OrderDetails = ({ order, closeCallback }) => {
         {order && (
           <OrderText
             title={order.restaurant}
-            info={`${displayPurchaser(
-              store.get('userId'),
-              order
-            )} - ${displayDate(order)} ${order.time}`}
+            info={`${displayPurchaser(store.get('userId'), order)} - ${displayDate(order)} ${order.time}`}
           >
             {displayCurrentStage()}
             {showSuitableButton()}
