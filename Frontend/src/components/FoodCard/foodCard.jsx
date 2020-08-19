@@ -9,13 +9,7 @@ import { FoodCardStyled } from './foodCard.style'
 import Store from './../App/App.store'
 import { AppBackgroundThemes } from './../App/App.themes'
 
-import {
-  displayPurchaser,
-  displayDate,
-  displayTime,
-  findLoggedPerson,
-  useResizeObserver
-} from './../../utils'
+import { displayPurchaser, displayDate, displayTime, findLoggedPerson, useResizeObserver } from './../../utils'
 
 const useStyles = makeStyles({
   root: {
@@ -63,30 +57,17 @@ const FoodCard = ({ details, openCallback, ...props }) => {
   }, [details.image, setImage])
 
   return (
-    <FoodCardStyled {...props}
-      background={
-        AppBackgroundThemes[store.get('themeBackgroundId')].cardBackground
-      }
-      className={classes.root}
-    >
+    <FoodCardStyled {...props} background={AppBackgroundThemes[store.get('themeBackgroundId')].cardBackground} className={classes.root}>
       <CardActionArea onClick={openCallback}>
-        <CardMedia
-          className={classes.media}
-          title={details.name}
-          image={imageUrl || details.image}
-          ref={imageRef}
-        />
+        <CardMedia className={classes.media} title={details.name} image={imageUrl || details.image} ref={imageRef} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             {details.restaurant}
           </Typography>
           <Typography color="textSecondary" component="p">
-            {displayPurchaser(store.get('userId'), details)} -{' '}
-            {displayDate(details)} {displayTime(details)}
+            {displayPurchaser(store.get('userId'), details)} - {displayDate(details)} {displayTime(details)}
           </Typography>
-          <Typography component="p">
-            Obecnie chętnych: {details.orderDetails.length}
-          </Typography>
+          <Typography component="p">Obecnie chętnych: {details.orderDetails.length}</Typography>
           {orderDetails()}
         </CardContent>
       </CardActionArea>

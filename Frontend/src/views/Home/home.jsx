@@ -15,6 +15,7 @@ import useFetch from './../../API/ourAPI/useNFetch'
 import Container from './Container'
 import Button from './../../components/Button'
 import Card from '../../components/FoodCard/foodCard'
+import CardSkeleton from './../../components/FoodCard/foodCard.skeleton'
 import { IconLink } from './../../components/App/App.style'
 
 import { AppBackgroundThemes } from './../../components/App/App.themes'
@@ -162,12 +163,11 @@ const Home = () => {
   }
 
   const hideIfEmpty = () => {
-    console.error(myOrders.length === 0 ? 'empty' : null)
-    return myOrders.length === 0 ? 'empty' : null
+    return myOrders.length === 0 && !loadingOrders ? 'empty' : null
   }
 
   const expandIfEmpty = () => {
-    return myOrders.length === 0 ? 'expand' : null
+    return myOrders.length === 0 && !loadingOrders ? 'expand' : null
   }
 
   return (
@@ -193,7 +193,7 @@ const Home = () => {
               ? myOrders
                   .sort((a, b) => orderSort(a, b))
                   .map((order) => <Card key={order.id} details={order} openCallback={() => handleShowCard(order)} />)
-              : loadingOrders && <Loader />}
+              : loadingOrders && <><CardSkeleton /><CardSkeleton /></>}
           </div>
           <div className={`available-orders-wrapper ${expandIfEmpty()}`}>
             <H3>Dostępne zamówienia</H3>
@@ -203,7 +203,7 @@ const Home = () => {
                 ? orders
                     .sort((a, b) => orderSort(a, b))
                     .map((order) => <Card key={order.id} details={order} openCallback={() => handleShowCard(order)} />)
-                : loadingOrders && <Loader />}
+                : loadingOrders && <><CardSkeleton /><CardSkeleton /><CardSkeleton /><CardSkeleton /></>}
             </div>
           </div>
         </Container>
