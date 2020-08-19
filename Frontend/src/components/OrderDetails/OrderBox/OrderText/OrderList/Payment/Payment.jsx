@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Store from '../../../../../App/App.store'
+import { paymentTypes } from '../../../../../../constants'
 import { AppThemes, AppBackgroundThemes } from '../../../../../App/App.themes'
 import { Number } from './Payment.style'
 import { SmallTitle } from '../../Header'
 
-const Payment = ({ payment, isOrderClosed }) => {
+const Payment = ({ payment, loggedPersonOrder }) => {
   const store = Store.useStore()
   const theme = AppThemes[store.get('themeId')]
   const backgroundTheme = AppBackgroundThemes[store.get('themeBackgroundId')]
@@ -13,11 +14,13 @@ const Payment = ({ payment, isOrderClosed }) => {
   const firstcolor = theme.from
   const secondcolor = theme.to
 
+  React.useEffect(() => console.log(loggedPersonOrder), [])
+
   const displayPaymentType = () => {
     switch (payment.type) {
-      case 'CASH':
+      case paymentTypes.cash:
         return 'GOTÓWKA'
-      case 'TRANSFER':
+      case paymentTypes.transfer:
         return 'PRZELEW'
       default:
         return payment.type
@@ -37,7 +40,7 @@ const Payment = ({ payment, isOrderClosed }) => {
     )
 
   const displayPaymentNumber = () => {
-    if (payment.number && isOrderClosed) {
+    if (payment.number && loggedPersonOrder?.description) {
       return (
         <>
           <SmallTitle fontcolor={fontcolor}>na numer: </SmallTitle>
@@ -53,18 +56,19 @@ const Payment = ({ payment, isOrderClosed }) => {
 
   return (
     <div>
-      <SmallTitle fontcolor={fontcolor}>
-        Preferowana forma zwrotu - {displayPaymentType()}
-      </SmallTitle>
+      <SmallTitle fontcolor={fontcolor}>Preferowana forma zwrotu - {displayPaymentType()}</SmallTitle>
       {displayPaymentNumber()}
     </div>
   )
 }
 
 Payment.propTypes = {
-  payment: PropTypes.object.isRequired,
-  isOrderClosed: PropTypes.PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
-    .isRequired,
+  payment: PropTypes.shape({
+    type: PropTypes.string.isRequired,
+    number: PropTypes.string,
+    swift: PropTypes.string,
+  }).isRequired,
+  loggedPersonOrder: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
 }
 
 export default Payment

@@ -121,7 +121,7 @@ const OrderDetails = ({ order, closeCallback }) => {
       />
     ) : (
       <OrderList
-        orders={order.orderDetails}
+        order={order}
         purchaserId={order.purchaserId}
         isPurchaser={isLoggedUserPurchaser(store.get('userId'), order)}
         payment={{

@@ -11,28 +11,12 @@ import {
     default as Button,
   } from './../../../components/Button'
 
-export const SettingsFormTemplate = ({ errors, touched, isSubmitting, isLoading, values }) => {
+  export const SettingsFormTemplate = ({ errors, touched, isSubmitting, isLoading, isIBANNotFromPoland, values }) => {
     const errorHandler = (name) => touched[name] && errors[name]
-  
-    const isIBANNotFromPoland = () => {
-      const IBAN = (values.account[0] + values.account[1])
-        .toString()
-        .toUpperCase()
-  
-      const isItIBAN = /^[A-Z]*$/.test(IBAN)
-      const isNotPolishIBAN = IBAN !== 'PL'
-  
-      return (
-        values.account !== '' &&
-        values.account.length > 1 &&
-        isItIBAN &&
-        isNotPolishIBAN
-      )
-    }
   
     const showSwiftWhenIBAN = () => {
       return (
-        isIBANNotFromPoland() && (
+        isIBANNotFromPoland(values.account) && (
           <SmallerInputStyled>
             <Field
               component={Input}
@@ -48,7 +32,7 @@ export const SettingsFormTemplate = ({ errors, touched, isSubmitting, isLoading,
       )
     }
   
-    const superHolder = (val) => isLoading ? 'Ładowanie' : val
+    const superHolder = (val) => (isLoading ? 'Ładowanie' : val)
   
     return (
       <>
@@ -83,21 +67,15 @@ export const SettingsFormTemplate = ({ errors, touched, isSubmitting, isLoading,
                 type="text"
                 name="account"
                 label="Numer konta do przelewów"
-                placeholder={
-                  superHolder('PL78 2323 4333 1234 2333 0000 1234')
-                }
+                placeholder={superHolder('GB78 2323 S3XY 1234 2333 0000 1234')}
                 error={errorHandler('account')}
-                style={isLoading ? { textTransform: 'uppercase' } : null}
+                style={!isLoading ? { textTransform: 'uppercase' } : null}
               />
             </InputStyled>
             {showSwiftWhenIBAN()}
           </RowOnMediumScreen>
           <ButtonFormWrapper>
-            <Button
-              disabled={isSubmitting || isLoading}
-              text="Zapisz i wróć"
-              type="submit"
-            />
+            <Button disabled={isSubmitting || isLoading} text={isSubmitting ? 'Zapisywanie...' : 'Zapisz i wróć'} type="submit" />
           </ButtonFormWrapper>
         </Form>
       </>
