@@ -64,11 +64,7 @@ const LoginFormik = () => {
   }
 
   const setLocalStorage = (response) => {
-    const loginExpiry = new Date()
-    loginExpiry.setDate(loginExpiry.getDate() + 1)
-
     localStorage.setItem('login', JSON.stringify(response))
-    localStorage.setItem('loginExpiry', loginExpiry.toISOString())
   }
 
   const transformValues = (values) => {

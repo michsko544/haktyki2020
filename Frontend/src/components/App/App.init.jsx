@@ -42,23 +42,17 @@ const AppInit = () => {
    * LocalStorage Auth Token check
    */
   useEffect(() => {
-    const loginExpiry = localStorage.getItem('loginExpiry') || null
-    if (loginExpiry === null) return
+    const isTokenValid = (token) => {
+      const accountB64 = token.split('.')[1]
+      const account = atob(accountB64)
+      const unixtime = account.exp * 1000
+      const date = new Date(unixtime)
 
-    const loginDate = new Date(loginExpiry)
+      const now = new Date()
+      const buffer = 1 //hour
+      now.setHours(now.getHours() + buffer)
 
-    if (loginDate < new Date()) {
-      console.debug('This token is dead boi')
-
-      localStorage.removeItem('loginExpiry')
-      localStorage.removeItem('login')
-
-      enqueueSnackbar('Twoja sesja wygasła, zaloguj się ponownie', {
-        variant: 'warning',
-        autoHideDuration: 6000,
-      })
-
-      return
+      return date > now
     }
 
     const storageAuth = localStorage.getItem('login') || null
@@ -66,6 +60,15 @@ const AppInit = () => {
 
     if (typeof storageAuth === 'string') {
       const login = JSON.parse(storageAuth)
+
+      if(!isTokenValid(login.authToken)) {
+        enqueueSnackbar('Twoja sesja wygasła, zaloguj się ponownie', {
+          variant: 'warning',
+          autoHideDuration: 6000,
+        })
+        
+        return
+      }    
      
       store.set('authToken')(login.authToken)
       store.set('user')(login.fullname || '')

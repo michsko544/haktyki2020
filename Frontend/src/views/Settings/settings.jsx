@@ -69,7 +69,6 @@ const Settings = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('loginExpiry')
     localStorage.removeItem('login')
     store.set('authToken')('')
   }
