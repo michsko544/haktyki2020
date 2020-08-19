@@ -8,7 +8,7 @@ import { Input } from '../../Inputs'
 import { InputStyled } from '../../Inputs'
 import { FormWrapper } from '../LoginForm'
 import { useSnackbar } from 'notistack'
-import usePost from './../../../API/ourAPI/useNPost'
+import { usePost } from '../../../API'
 
 const RegisterForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]

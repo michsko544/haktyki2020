@@ -7,7 +7,7 @@ import {
 } from './../../API/ourAPI/API'
 import firebase from './../../firebase'
 import { useSnackbar } from 'notistack'
-import usePost from './../../API/ourAPI/useNPost';
+import { usePost } from '../../API';
 
 const AppInit = () => {
   const store = Store.useStore()

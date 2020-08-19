@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack'
 import { useHistory } from 'react-router-dom';
 
 import Store from '../../components/App/App.store'
-import usePost from './../../API/ourAPI/useNPost'
+import { usePost } from '../../API'
 
 import validationSchema from './teamfood.form.validation.schema';
 import TeamfoodForm from './teamfood.form.template'

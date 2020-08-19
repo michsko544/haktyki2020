@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Store from './../App/App.store'
 import { AppBackgroundThemes } from './../App/App.themes'
 import { makeStyles } from '@material-ui/core/styles'
 import CardActionArea from '@material-ui/core/CardActionArea'
 import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import { FoodCardStyled } from './foodCard.style'
 import Skeleton from '@material-ui/lab/Skeleton';

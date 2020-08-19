@@ -3,8 +3,7 @@ import { Formik } from 'formik'
 import { useHistory } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 
-import usePost from '../../../API/ourAPI/useNPost'
-import useFetch from './../../../API/ourAPI/useNFetch'
+import { usePost, useFetch } from '../../../API'
 
 import validationSchema from './settings.form.validation'
 import SettingsForm from './settings.form.template'
