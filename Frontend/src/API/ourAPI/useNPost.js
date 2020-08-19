@@ -19,3 +19,4 @@ export const useNPost = (url) => {
     }
 }
 
+export default useNPost
