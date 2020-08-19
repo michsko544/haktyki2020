@@ -10,7 +10,7 @@ import Store from './../../components/App/App.store'
 import { H1, H3, HBold } from './../../components/Headings'
 import Header from '../../components/Header/header'
 
-import { useNFetch as useFetch } from './../../API/ourAPI/useNFetch'
+import useFetch from './../../API/ourAPI/useNFetch'
 
 import Container from './Container'
 import Button from './../../components/Button'

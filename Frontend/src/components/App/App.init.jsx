@@ -7,11 +7,11 @@ import {
 } from './../../API/ourAPI/API'
 import firebase from './../../firebase'
 import { useSnackbar } from 'notistack'
-import { useNPost } from './../../API/ourAPI/useNPost';
+import usePost from './../../API/ourAPI/useNPost';
 
 const AppInit = () => {
   const store = Store.useStore()
-  const { send: device } = useNPost('/notifications/add-device')
+  const { send: device } = usePost('/notifications/add-device')
   const { enqueueSnackbar } = useSnackbar()
 
   /**

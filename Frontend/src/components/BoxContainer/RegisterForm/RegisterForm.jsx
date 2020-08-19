@@ -8,7 +8,7 @@ import { Input } from '../../Inputs'
 import { InputStyled } from '../../Inputs'
 import { FormWrapper } from '../LoginForm'
 import { useSnackbar } from 'notistack'
-import { useNPost } from './../../../API/ourAPI/useNPost'
+import usePost from './../../../API/ourAPI/useNPost'
 
 const RegisterForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -51,7 +51,7 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
 }
 
 const RegisterFormik = () => {
-  const { send: register } = useNPost('/register')
+  const { send: register } = usePost('/register')
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
 
