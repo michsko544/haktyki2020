@@ -48,3 +48,7 @@ export const settingsFormValidation = Yup.object().shape({
         'Pole musi zawierać tylko duże litery i/lub cyfry'
       ),
   })
+
+  export default settingsFormValidation
+
+  

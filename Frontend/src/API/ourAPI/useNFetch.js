@@ -30,3 +30,5 @@ export const useNFetch = (url) => {
     isLoading,
   }
 }
+
+export default useNFetch
