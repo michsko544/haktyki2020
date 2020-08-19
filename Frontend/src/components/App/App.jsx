@@ -13,6 +13,7 @@ const App = () => {
         <SnackbarProvider
           maxSnack={3}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          preventDuplicate={true}
           dense
         >
           <AppInit />

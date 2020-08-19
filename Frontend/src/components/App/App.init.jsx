@@ -42,8 +42,9 @@ const AppInit = () => {
 
     if (typeof storageAuth === 'string') {
       const login = JSON.parse(storageAuth)
+     
       store.set('authToken')(login.authToken)
-      store.set('user')(login.fullname)
+      store.set('user')(login.fullname || '')
       store.set('userId')(login.userId)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

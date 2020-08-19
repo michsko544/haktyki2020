@@ -161,8 +161,7 @@ const OrderFormik = ({
       updateData.response.statusCode === 200
     ) {
       enqueueSnackbar('Zapisano 👌', {
-        variant: 'success',
-        preventDuplicate: true,
+        variant: 'success'
       })
       closeCallback()
     }
@@ -181,7 +180,6 @@ const OrderFormik = ({
     ) {
       enqueueSnackbar('Dołączono 👌', {
         variant: 'success',
-        preventDuplicate: true,
       })
       closeCallback()
     }

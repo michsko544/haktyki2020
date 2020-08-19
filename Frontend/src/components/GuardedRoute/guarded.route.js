@@ -9,9 +9,15 @@ export const GuardedRoute = ({ component: Component, ...rest }) => {
         return store.get('authToken') !== ''
     }
 
+    const isFullyRegistered = () => {
+        return store.get('user').length === 0
+    }
+
+    const canActivate = () => isFullyRegistered() && isAuthenticated()
+
     return (
         <Route {...rest} render={(props) => (
-            isAuthenticated() ? <Component {...props} /> : <Redirect to='/login' />
+            canActivate() ? <Component {...props} /> : <Redirect to='/login' />
         )} />
     )
 
