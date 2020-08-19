@@ -14,8 +14,6 @@ const Payment = ({ payment, loggedPersonOrder }) => {
   const firstcolor = theme.from
   const secondcolor = theme.to
 
-  React.useEffect(() => console.log(loggedPersonOrder), [])
-
   const displayPaymentType = () => {
     switch (payment.type) {
       case paymentTypes.cash:

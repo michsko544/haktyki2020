@@ -44,10 +44,9 @@ const AppInit = () => {
   useEffect(() => {
     const isTokenValid = (token) => {
       const accountB64 = token.split('.')[1]
-      const account = atob(accountB64)
+      const account = JSON.parse(atob(accountB64))
       const unixtime = account.exp * 1000
       const date = new Date(unixtime)
-
       const now = new Date()
       const buffer = 1 //hour
       now.setHours(now.getHours() + buffer)
