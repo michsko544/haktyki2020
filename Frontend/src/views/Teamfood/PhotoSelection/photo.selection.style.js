@@ -4,7 +4,7 @@ import { device } from './../../../responsive.breakpoints'
 
 export const PhotoSelectionStyled = styled.div`
     width: 100%;
-    height: max(160px, 20vh);
+    height: max(240px, 20vh);
     border-radius: 7px;
     background: transparent;
     cursor: pointer;

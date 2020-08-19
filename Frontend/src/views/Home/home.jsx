@@ -161,6 +161,15 @@ const Home = () => {
     }
   }
 
+  const hideIfEmpty = () => {
+    console.error(myOrders.length === 0 ? 'empty' : null)
+    return myOrders.length === 0 ? 'empty' : null
+  }
+
+  const expandIfEmpty = () => {
+    return myOrders.length === 0 ? 'expand' : null
+  }
+
   return (
     <>
       <BlurChildren shouldBlur={isDetailsVisibile}>
@@ -177,7 +186,7 @@ const Home = () => {
           {renderOrderButton()}
         </Header>
         <Container>
-          <div className="your-order">
+          <div className={`your-order ${hideIfEmpty()}`}>
             <H3>Twoje zamówienia</H3>
             {defaultNoFoodResponse(myOrders)}
             {myOrders.length > 0
@@ -186,7 +195,7 @@ const Home = () => {
                   .map((order) => <Card key={order.id} details={order} openCallback={() => handleShowCard(order)} />)
               : loadingOrders && <Loader />}
           </div>
-          <div className="available-orders-wrapper">
+          <div className={`available-orders-wrapper ${expandIfEmpty()}`}>
             <H3>Dostępne zamówienia</H3>
             <div className="orders">
               {defaultNoFoodResponse(orders)}

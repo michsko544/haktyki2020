@@ -19,7 +19,7 @@ import {
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 340,
+    maxWidth: 335,
   },
   media: {
     height: 200,

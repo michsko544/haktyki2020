@@ -10,7 +10,7 @@ export const validationSchema = Yup.object().shape({
         /^[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+\s+[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+ ?$/,
         'Podaj imię i nazwisko'
       )
-      .min(3, 'Pole musi mieć minimum 3 znaki')
-      .max(50, 'Pole musi mieć maximum 50 znaków')
+      .min(3, 'Minimum 3 znaki. Po znajomości')
+      .max(50, 'Maksymalnie 50 znaków szefie')
       .required('Wypełnij to pole'),
   })

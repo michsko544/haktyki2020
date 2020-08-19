@@ -16,6 +16,10 @@ export const ContainerStyled = styled.div`
     margin: 24px 0 16px;
   }
 
+  div.your-order.empty {
+    display: none
+  }
+
   div.your-order {
     & > *:not(h3) {
       margin: 0 0 24px 0;
@@ -50,6 +54,10 @@ export const ContainerStyled = styled.div`
 
     div.your-order {
       margin-right: 24px;
+    }
+
+    div.available-orders-wrapper.expand {
+      grid-column: span 2;
     }
   }
 

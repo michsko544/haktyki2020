@@ -197,13 +197,13 @@ const OrderFormik = ({
 
   const validationSchema = Yup.object().shape({
     orderContent: Yup.string()
-      .min(5, 'Pole musi mieć minimum 5 znaków')
-      .max(200, 'Pole musi mieć maksimum 200 znaków')
+      .min(5, 'może zawierać minimalnie 5 znaków')
+      .max(191, 'Pole może zawierać maksymalnie 190 znaków')
       .required('Wypełnij to pole'),
-    coupon: Yup.string().max(20, 'Pole musi mieć maksimum 20 znaków'),
+    coupon: Yup.string().max(20, 'Pole może zawierać maksymalnie 20 znaków'),
     couponDescription: Yup.string().max(
       100,
-      'Pole musi mieć maksimum 100 znaków'
+      'Pole może zawierać maksymalnie 100 znaków'
     ),
     date: isPurchaser
       ? Yup.string().required('Wypełnij to pole')

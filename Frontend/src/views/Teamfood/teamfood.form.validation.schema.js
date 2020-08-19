@@ -2,7 +2,7 @@ import * as Yup from 'yup'
 
 export const teamfoodFormValidationSchema = Yup.object().shape({
   // eslint-disable-next-line
-  restaurant: Yup.string().required('Wypełnij to pole').min(5, 'Wybierz dłuższą nazwę, minimum ${min} znaków').max(193, 'Serwer nie ogarnie! Za długa nazwa'),
+  restaurant: Yup.string().required('Wypełnij to pole').min(5, 'Wybierz dłuższą nazwę, minimum ${min} znaków').max(191, 'Serwer nie ogarnie! Za długa nazwa'),
   date: Yup.string()
     .required('Wypełnij to pole')
     .test('datetime-test', 'Data nie może być w przeszłości', function (date) {
@@ -25,7 +25,7 @@ export const teamfoodFormValidationSchema = Yup.object().shape({
     }),
   time: Yup.string().required('Wypełnij to pole'),
   // eslint-disable-next-line
-  description: Yup.string().required('Wypełnij to pole').min(5, 'Wprowadź dłuższy opis, minimum ${min} znaków').max(193, 'Serwer nie ogarnie! Za długi opis szefuniu'),
+  description: Yup.string().required('Wypełnij to pole').min(5, 'Wprowadź dłuższy opis, minimum ${min} znaków').max(191, 'Serwer nie ogarnie! Za długi opis szefuniu'),
   paymentForm: Yup.string().required('Musisz zaznaczyć jedną z opcji'),
   image: Yup.string().required('Wybierz zdjęcie (☞ﾟヮﾟ)☞'),
 })
