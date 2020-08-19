@@ -10,7 +10,7 @@ export const GuardedRoute = ({ component: Component, ...rest }) => {
     }
 
     const isFullyRegistered = () => {
-        return store.get('user') !== ''
+        return store.get('user').length === 0
     }
 
     const canActivate = () => isFullyRegistered() && isAuthenticated()

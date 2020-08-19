@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react'
-import * as Yup from 'yup'
+import React, { useEffect, useState } from 'react'
 import { Formik, Form, Field } from 'formik'
 import {
   Input,
@@ -11,9 +10,12 @@ import {
   ButtonFormWrapper,
   default as Button,
 } from './../../../components/Button'
-import { usePost, useFetch } from './../../../API/ourAPI'
 import { useHistory } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
+import { settingsFormValidation } from './settings.form.validation'
+import { useNPost as usePost } from '../../../API/ourAPI/useNPost'
+import { useNFetch as useFetch } from './../../../API/ourAPI/useNFetch';
+
 
 const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -52,6 +54,8 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
     )
   }
 
+  const superHolder = (val) => isLoading ? 'Ładowanie' : val
+
   return (
     <>
       <Form>
@@ -61,7 +65,7 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
             type="text"
             name="user"
             label="Imię i nazwisko"
-            placeholder={isLoading ? 'Ładowanie' : 'Jan Kowalski'}
+            placeholder={superHolder('Jan Kowalski')}
             error={errorHandler('user')}
             style={{ textTransform: 'capitalize' }}
             disabled={isLoading}
@@ -73,7 +77,7 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
             type="tel"
             name="blik"
             label="Numer telefonu do BLIK"
-            placeholder={isLoading ? 'Ładowanie' : '420 420 420'}
+            placeholder={superHolder('420 420 420')}
             error={errorHandler('blik')}
             disabled={isLoading}
           />
@@ -86,7 +90,7 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
               name="account"
               label="Numer konta do przelewów"
               placeholder={
-                isLoading ? 'Ładowanie' : 'PL78 2323 4333 1234 2333 0000 1234'
+                superHolder('PL78 2323 4333 1234 2333 0000 1234')
               }
               error={errorHandler('account')}
               style={isLoading ? { textTransform: 'uppercase' } : null}
@@ -107,85 +111,35 @@ const SettingsForm = ({ errors, touched, isSubmitting, isLoading, values }) => {
 }
 
 const SettingsFormik = () => {
-  const userData = useFetch('/users/my-details')
-  const updateData = usePost('/users/my-details')
+  const { fetch: fetchUser, isLoading } = useFetch('/users/my-details')
+  const [ user, setUser ] = useState({})
+  const { send: update } = usePost('/users/my-details')
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
 
-  useEffect(() => {
-    document.title = 'Ustawienia 👏 | TeamFood'
-    userData.getData()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (
-      !updateData.isLoading &&
-      updateData.response !== null &&
-      updateData.response.statusCode === 200
-    ) {
-      enqueueSnackbar('Zapisano 👌', {
-        variant: 'success',
-        preventDuplicate: true,
-      })
-      history.push('/')
+  const getData = async () => {
+    try {
+      const response = await fetchUser()
+      console.log('User: ', response)
+      setUser(response)
+    } catch (error) {
+      console.warn('Erroro :c')
     }
-  }, [updateData.response, updateData.isLoading, history, enqueueSnackbar])
-
-  const initialValues = {
-    user: userData?.response?.fullName || '',
-    blik: userData?.response?.phoneNumber || '',
-    account: userData?.response?.creditCardNumber || '',
-    swift: userData?.response?.swiftBicCode || '',
   }
 
-  const validationSchema = Yup.object().shape({
-    user: Yup.string()
-      .matches(
-        /^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ ]*$/,
-        'Pole nie może zawierać znaków specjalnych, ani cyfr'
-      )
-      .matches(
-        /^[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+\s+[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+ ?$/,
-        'Podaj dwa wyrazy'
-      )
-      .min(3, 'Pole musi mieć minimum 3 znaki')
-      .max(50, 'Pole musi mieć maksimum 50 znaków')
-      .required('Wypełnij to pole'),
-    blik: Yup.string()
-      .min(9, 'Pole musi mieć minimum 9 znaków')
-      .max(12, 'Pole musi mieć maksimum 12 znaków')
-      .matches(
-        /^[0-9]{3}[ ]{0,1}[0-9]{3}[ ]{0,1}[0-9]{3} ?$/,
-        'Podaj poprawny, 9-cyfrowy numer telefonu'
-      )
-      .required('Wypełnij to pole'),
-    account: Yup.string()
-      .min(22, 'Pole musi mieć minimum 22 znaków')
-      .max(35, 'Pole musi mieć maksimum 35 znaków')
-      .matches(
-        /^[A-Za-z]{0,2}[0-9]{2}[ ]{0,1}[A-Za-z0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{2,4}[ ]{0,1}[0-9]{0,4} ?$/,
-        'Podaj poprawny numer konta'
-      )
-      .required('Wypełnij to pole'),
-    swift: Yup.string()
-      .when('account', {
-        is: (account) =>
-          account
-            ? account.length > 1 &&
-              /^[A-Z]*$/.test(
-                (account[0] + account[1]).toString().toUpperCase()
-              ) &&
-              (account[0] + account[1]).toString().toUpperCase() !== 'PL'
-            : false,
-        then: Yup.string().required('Wypełnij to pole'),
-      })
-      .min(8, 'Pole musi mieć minimum 8 znaków')
-      .max(11, 'Pole musi mieć maksimum 11 znaków')
-      .matches(
-        /^[A-Za-z0-9]*$/,
-        'Pole musi zawierać tylko duże litery i/lub cyfry'
-      ),
-  })
+  useEffect(() => {
+    document.title = 'Ustawienia 👏 | TeamFood'
+    getData()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const initialValues = {
+    user: user?.fullName || '',
+    blik: user?.phoneNumber || '',
+    account: user?.creditCardNumber || '',
+    swift: user?.swiftBicCode || '',
+  }
+
+  const validationSchema = settingsFormValidation
 
   const transformValues = (values) => {
     return {
@@ -199,7 +153,21 @@ const SettingsFormik = () => {
   const onSubmit = async (values, { setSubmitting }) => {
     enqueueSnackbar('Zapisywanie 🤞', { variant: 'info' })
     console.log('Sending values: ', transformValues(values))
-    await updateData.sendData(transformValues(values))
+
+    try {
+      const response = await update(transformValues(values))
+      console.log('Response: ', response)
+
+      enqueueSnackbar('Zapisano 👌', {
+        variant: 'success',
+        autoHideDuration: 3000
+      })
+      
+      setTimeout(() => history.push('/'), 1500)
+    } catch(error) {
+
+    }
+    
     setSubmitting(false)
   }
 
@@ -209,7 +177,7 @@ const SettingsFormik = () => {
       {...{ initialValues, onSubmit, validationSchema }}
     >
       {(formikProps) => (
-        <SettingsForm {...formikProps} isLoading={userData?.isLoading} />
+        <SettingsForm {...formikProps} isLoading={isLoading} />
       )}
     </Formik>
   )

@@ -24,7 +24,13 @@ const AppRoutes = () => {
    */
   const isLogged = () => store.get('authToken') !== ''
 
-  const hasFullname = () => store.get('user') !== ''
+  const hasFullname = () => store.get('user').length > 0
+
+  const canActivate = () => {
+    const can = isLogged() && !hasFullname()
+    console.log('Can? ', can, isLogged(), !hasFullname())
+    return can
+  }
 
   return (
     <AnimatedSwitch
@@ -33,7 +39,6 @@ const AppRoutes = () => {
       atActive={{ opacity: 1 }}
       className="route-wrapper"
     >
-      <GuardedRoute exact path="/" component={Home} />
       <CustomRoute
         customGuard={!isLogged()}
         redirectTo="/greeter"
@@ -47,11 +52,12 @@ const AppRoutes = () => {
         component={Register}
       />
       <CustomRoute
-        customGuard={isLogged() && !hasFullname()}
+        customGuard={canActivate()}
         redirectTo="/"
         path="/greeter"
         component={Greeter}
       />
+      <GuardedRoute exact path="/" component={Home} />
       <GuardedRoute path="/settings" component={Settings} />
       <GuardedRoute path="/teamfood" component={Teamfood} />
       <Route path="*" component={NotFound} />

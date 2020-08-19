@@ -40,21 +40,29 @@ const Home = () => {
   const [isDetailsVisibile, setDetailsVisibile] = useState(false)
   const [notificationsLength, setNotificationsLength] = useState(0)
 
-  const refreshOrders = async () => {
-    const handleData = (data, setter) => setter(data)
-  
+  const handleData = (data, setter) => setter(data)
+
+  /**
+   * Initialize
+   */
+  useEffect(() => {
+    const asyncUser = async () => handleData(await fetchUser(), setUser)
+
+    document.title = 'Zamówmy coś 🍕 | TeamFood'
+    asyncUser()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const refreshOrders = async () => {  
     const handleError = (message) => {
       enqueueSnackbar(message, {
         variant: 'error',
         autoHideDuration: 3000,
-        preventDuplicate: true,
       })
     }
 
     enqueueSnackbar('Odświeżam zamówienia 🥩', {
       variant: 'info',
-      preventDuplicate: true,
-      autoHideDuration: 1500,
+      autoHideDuration: 1500
     })
 
     try {
@@ -62,7 +70,6 @@ const Home = () => {
 
       handleData(orders, setOrders)
       handleData(myOrders, setMyOrders)
-      handleData(await fetchUser(), setUser)
     } catch (error) {
       console.warn('Err', error)
       handleError('Serwer spadł z rowerka i nie wstaje :/')
@@ -70,12 +77,8 @@ const Home = () => {
   }
 
   /**
-   * CDM
+   * Increment Notification count for refreshando
    */
-  useEffect(() => {
-    document.title = 'Zamówmy coś 🍕 | TeamFood'
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => {
     const notifications = store.get('notifications')
     if (notifications.length !== notificationsLength) {
@@ -83,6 +86,9 @@ const Home = () => {
     }
   }, [store, notificationsLength])
 
+  /**
+   * Refresh orders (SOMETHING CHANGED!)
+   */
   useEffect(() => {
     refreshOrders()
   }, [notificationsLength]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -127,7 +133,6 @@ const Home = () => {
               onClick={() =>
                 enqueueSnackbar('Aby stworzyć zamówienie uzupełnij wszystkie dane ❗️', {
                   variant: 'info',
-                  preventDuplicate: true,
                 })
               }
             ></Button>
@@ -139,11 +144,9 @@ const Home = () => {
     return null
   }
 
-  const getRandomMessage = () => {
-    return messages[Math.round(Math.random() * (messages.length - 1))]
-  }
-
   const defaultNoFoodResponse = (orders) => {
+    const getRandomMessage = () => messages[Math.round(Math.random() * (messages.length - 1))]
+
     if (orders.length === 0) {
       return <Message color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}>{getRandomMessage()}</Message>
     }
@@ -161,7 +164,7 @@ const Home = () => {
       <BlurChildren shouldBlur={isDetailsVisibile}>
         <Header>
           <H1 className="small">
-            Cześć <HBold>{getFirstname() || 'Nieznajomy'},</HBold>
+            Cześć <HBold style={{ textTransform: 'capitallize' }}>{getFirstname() || 'Nieznajomy'},</HBold>
           </H1>
           <div className="icons">
             <SyncIcon onClick={refreshOrders} style={styleIcon()} />
