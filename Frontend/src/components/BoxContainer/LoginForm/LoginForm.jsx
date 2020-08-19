@@ -10,7 +10,7 @@ import { FormWrapper } from './'
 import Store from './../../App/App.store'
 import { Field } from 'formik'
 import { useSnackbar } from 'notistack'
-import { useNPost } from './../../../API/ourAPI/useNPost'
+import usePost from './../../../API/ourAPI/useNPost'
 
 const LoginForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
@@ -55,7 +55,7 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
 const LoginFormik = () => {
   const store = Store.useStore()
   const history = useHistory()
-  const { send: login } = useNPost('/login')
+  const { send: login } = usePost('/login')
   const { enqueueSnackbar } = useSnackbar()
 
   const initialValues = {
