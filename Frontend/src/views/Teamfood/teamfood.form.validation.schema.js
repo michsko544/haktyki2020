@@ -8,3 +8,6 @@ export const teamfoodFormValidationSchema = Yup.object().shape({
     paymentForm: Yup.string().required('Musisz zaznaczyć jedną z opcji'),
     image: Yup.string().required('Wybierz zdjęcie (☞ﾟヮﾟ)☞'),
   })
+
+  export default teamfoodFormValidationSchema
+  
