@@ -56,7 +56,9 @@ export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, se
   }
 
   const newPhotosHandler = async (e) => {
-    enqueueSnackbar('Ładowanie nowych zdjęć ^_+')
+    enqueueSnackbar('Ładowanie nowych zdjęć ^_+', {
+      variant: 'info',
+    })
     await images.search(6)
   }
 

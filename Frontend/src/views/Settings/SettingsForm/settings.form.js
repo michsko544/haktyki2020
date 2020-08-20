@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import Store from '../../../components/App/App.store'
 import { Formik } from 'formik'
 import { useHistory } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
@@ -9,7 +10,10 @@ import useFetch from './../../../API/ourAPI/useNFetch'
 import validationSchema from './settings.form.validation'
 import SettingsForm from './settings.form.template'
 
+import { capitalizeAllWords } from '../../../utils'
+
 const SettingsFormik = () => {
+  const store = Store.useStore()
   const { fetch: fetchUser, isLoading } = useFetch('/users/my-details')
   const [user, setUser] = useState({})
   const { send: update } = usePost('/users/my-details')
@@ -21,7 +25,7 @@ const SettingsFormik = () => {
       setUser(await fetchUser())
     } catch (error) {
       enqueueSnackbar('Nie udało się pobrać twoich danych z serwera (⓿_⓿)', {
-        variant: 'warn',
+        variant: 'error',
         autoHideDuration: 3000,
       })
     }
@@ -91,7 +95,7 @@ const SettingsFormik = () => {
 
   const transformValues = (values) => {
     return {
-      fullName: values.user,
+      fullName: capitalizeAllWords(values.user),
       creditCardNumber: isIBANNotFromPoland(values.account)
         ? insertSpaces(values.account.toUpperCase(), 4)
         : insertSpaces(deletePolishIBAN(values.account.toUpperCase()), 4, 2),
@@ -109,6 +113,7 @@ const SettingsFormik = () => {
         variant: 'success',
         autoHideDuration: 1500,
       })
+      store.set('user')(capitalizeAllWords(values.user))
 
       setTimeout(() => history.push('/'), 1500)
     } catch (error) {

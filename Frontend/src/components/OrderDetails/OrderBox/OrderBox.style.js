@@ -59,6 +59,7 @@ export const ButtonWrapper = styled.div`
   left: 0;
   width: 100%;
   padding: 0 28px;
+  z-index: 31;
 
   @media (min-width: 420px) {
     left: 50%;
@@ -68,7 +69,6 @@ export const ButtonWrapper = styled.div`
 
   @media (min-width: 1024px) {
     margin-top: 20px;
-    /* margin-bottom: 40px; */
     padding: 0;
     max-width: unset;
     position: unset;

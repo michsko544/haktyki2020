@@ -115,7 +115,7 @@ const OrderDetails = ({ order, closeCallback }) => {
         payment={order.paymentForm}
         orderId={order.id}
         isPurchaser={isLoggedUserPurchaser(store.get('userId'), order)}
-        closeCallback={closeCallback}
+        closeCallback={() => closeCallback()}
         formAction={findLoggedPerson(store.get('userId'), order)?.description ? 'edit' : 'join'}
       />
     ) : (
