@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
-    public List<OrderEntity> findAllByOrderClosed(boolean OrderClosed);
+    List<OrderEntity> findAllByOrderClosed(boolean OrderClosed);
 }
