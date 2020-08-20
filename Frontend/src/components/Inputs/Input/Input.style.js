@@ -1,7 +1,6 @@
-import { Field } from 'formik'
 import styled from 'styled-components'
 
-export const FieldStyled = styled(Field)`
+export const FieldStyled = styled.input`
   border: none;
   padding: 5px 17px 6px;
   background: none;
@@ -11,7 +10,6 @@ export const FieldStyled = styled(Field)`
   color: ${(props) => props.color};
   width: 100%;
   line-height: 22px;
-  resize: vertical;
   box-shadow: none;
 
   &[type='time'],
@@ -30,9 +28,24 @@ export const FieldStyled = styled(Field)`
   }
 `
 
-FieldStyled.defaultProps = {
-  isdarkmode: 'true',
-}
+export const TextareaStyled = styled.textarea`
+  border: none;
+  padding: 5px 17px 6px;
+  background: none;
+  outline: none;
+  font-size: 18px;
+  font-family: 'Montserrat';
+  color: ${(props) => props.color};
+  width: 100%;
+  line-height: 22px;
+  resize: vertical;
+  box-shadow: none;
+
+  &::placeholder {
+    color: ${(props) => props.color};
+    opacity: 0.6;
+  }
+`
 
 export const Underline = styled.div`
   position: relative;

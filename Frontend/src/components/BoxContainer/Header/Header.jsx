@@ -2,11 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { H1, H3, HBold } from './../../Headings'
 import { H3Styled, DescriptionStyled } from './Header.style'
-import Store from './../../App/App.store'
-import { AppBackgroundThemes } from './../../App/App.themes'
+import { useColors } from '../../../utils'
 
 const Header = ({ title, subtitle, description }) => {
-  const store = Store.useStore()
+  const { mode } = useColors()
 
   const renderSubtitle = () =>
     subtitle && (
@@ -15,10 +14,7 @@ const Header = ({ title, subtitle, description }) => {
       </H3Styled>
     )
 
-  const renderDescription = () =>
-    description && (
-      <DescriptionStyled color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}>{description}</DescriptionStyled>
-    )
+  const renderDescription = () => description && <DescriptionStyled color={mode.fontColor}>{description}</DescriptionStyled>
 
   return (
     <>

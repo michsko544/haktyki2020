@@ -3,21 +3,17 @@ import styled from 'styled-components'
 export const HeroimagePosition = styled.div`
   width: 100%;
 
+  @media (min-width: 420px) {
+    display: flex;
+    justify-content: center;
+  }
+
   @media (min-width: 1024px) {
     width: 50%;
     height: 100%;
     position: absolute;
     right: 0;
     top: 0;
-  }
-`
-export const LoaderPosition = styled.div`
-  @media (min-width: 1024px) {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    text-align: center;
   }
 `
 
@@ -45,8 +41,18 @@ export const OrderDetailsImg = styled(HeroimageStyled)`
   height: 200px;
   margin: 0;
   max-width: 420px;
+  display: block;
 
-  @media (min-width: 480px) {
-    margin: 0 auto;
+  @media (min-width: 420px) {
+    margin-top: 80px;
+    height: 300px;
+    border-radius: 8px;
+  }
+
+  @media (min-width: 1024px) {
+    margin-top: 0;
+    height: unset;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 `

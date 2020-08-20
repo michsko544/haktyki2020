@@ -4,6 +4,7 @@ import { device } from './../../../responsive.breakpoints'
 export const PhotoSelectionContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
+  grid-template-rows: repeat(6, auto);
   margin: 8px 0;
   gap: 8px;
 
@@ -20,11 +21,5 @@ export const PhotoSelectionContainer = styled.div`
       grid-column: span 2;
       justify-self: center !important;
     }
-  }
-
-  @media ${device.laptop} {
-  }
-
-  @media ${device.laptopL} {
   }
 `

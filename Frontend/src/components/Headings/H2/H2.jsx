@@ -1,13 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { H2Styled } from './H2.style'
-import { AppBackgroundThemes } from '../../App/App.themes'
-import Store from '../../App/App.store'
+import { useColors } from '../../../utils'
 
 const H2 = ({ children, ...props }) => {
-  const store = Store.useStore()
+  const { mode } = useColors()
 
-  return <H2Styled {...props} color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}>{children}</H2Styled>
+  return (
+    <H2Styled {...props} color={mode.fontColor}>
+      {children}
+    </H2Styled>
+  )
 }
 
 H2.propTypes = {

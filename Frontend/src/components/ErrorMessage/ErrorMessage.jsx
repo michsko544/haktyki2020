@@ -1,21 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Store from '../App/App.store'
-import { AppBackgroundThemes } from '../App/App.themes'
 import { ErrorStyled, Advice } from './ErrorMessage.style'
+import { useColors } from '../../utils'
 
 const ErrorMessage = ({ error, advice }) => {
-  const store = Store.useStore()
-  const fontcolor =
-    AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
+  const { mode } = useColors()
 
   return (
     <>
-      <ErrorStyled color={fontcolor}>Wystąpił błąd {':('}</ErrorStyled>
-      {error && (
-        <ErrorStyled color={fontcolor}>{`Kod błędu: ${error}`}</ErrorStyled>
-      )}
-      <Advice color={fontcolor}>{advice || 'Spróbuj ponownie później'}</Advice>
+      <ErrorStyled color={mode.fontColor}>Wystąpił błąd {':('}</ErrorStyled>
+      {error && <ErrorStyled color={mode.fontColor}>{`Kod błędu: ${error}`}</ErrorStyled>}
+      <Advice color={mode.fontColor}>{advice || 'Spróbuj ponownie później'}</Advice>
     </>
   )
 }

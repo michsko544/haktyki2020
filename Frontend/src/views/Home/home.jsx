@@ -1,58 +1,173 @@
 import React, { useState, useEffect } from 'react'
+import { useSnackbar } from 'notistack'
+import { Link } from 'react-router-dom'
+
+import TuneIcon from '@material-ui/icons/Tune'
+import SyncIcon from '@material-ui/icons/Sync'
+
+import Store from './../../components/App/App.store'
+
 import { H1, H3, HBold } from './../../components/Headings'
 import Header from '../../components/Header/header'
+
+import { useFetch } from '../../API'
+
 import Container from './Container'
-import TuneIcon from '@material-ui/icons/Tune'
 import Button from './../../components/Button'
 import Card from '../../components/FoodCard/foodCard'
+import CardSkeleton from './../../components/FoodCard/foodCard.skeleton'
 import { IconLink } from './../../components/App/App.style'
-import { useFetch } from './../../API'
-import Store from './../../components/App/App.store'
-import { AppBackgroundThemes } from './../../components/App/App.themes'
-import { Link } from 'react-router-dom'
+
 import OrderDetails from '../../components/OrderDetails'
-import Loader from '../../components/Loader'
 import { BlurChildren } from '../../components/App'
+
+import { messages } from './messages'
+import Message from './message.styled'
+import { useColors } from '../../utils'
+import { FormControlLabelStyled } from '../Teamfood/form.control.label.style'
 
 const Home = () => {
   const store = Store.useStore()
-  const fetchOrders = useFetch('/orders')
-  const fetchUserOrders = useFetch('/user/orders')
+  const { enqueueSnackbar } = useSnackbar()
+  const { mode } = useColors()
 
+  const { fetch: fetchOrders, isLoading: loadingOrders } = useFetch('/orders/all')
+  const { fetch: fetchUser } = useFetch('/users/my-details')
+
+  const [orders, setOrders] = useState([])
+  const [myOrders, setMyOrders] = useState([])
+  const [user, setUser] = useState({})
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [isDetailsVisibile, setDetailsVisibile] = useState(false)
+  const [notificationsLength, setNotificationsLength] = useState(0)
 
-  const logout = () => {
-    console.log('Logout!, Bye.')
-    store.set('authToken')('')
-    store.set('user')('')
-    store.set('userId')(0)
+  /**
+   * Initialize
+   */
+  useEffect(() => {
+    const asyncUser = async () => {
+      try {
+        setUser(await fetchUser())
+      } catch (error) {
+        console.warn('Cannot download user data: ', error)
+        enqueueSnackbar('Nie udało się pobrać twoich danych z serwera. Spróbuj ponownie później', {
+          variant: 'error',
+          autoHideDuration: 3000,
+        })
+      }
+    }
+
+    document.title = 'Zamówmy coś 🍕 | TeamFood'
+    asyncUser()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const refreshOrders = async () => {
+    const handleError = (message) => {
+      enqueueSnackbar(message, {
+        variant: 'error',
+        autoHideDuration: 3000,
+      })
+    }
+
+    enqueueSnackbar('Odświeżam zamówienia 🥩', {
+      variant: 'info',
+      autoHideDuration: 1500,
+    })
+
+    try {
+      const { allOrders: orders, myOrders } = await fetchOrders()
+      setOrders(orders)
+      setMyOrders(myOrders)
+    } catch (error) {
+      console.warn('Fetch orders error:', error)
+      handleError('Serwer spadł z rowerka i nie wstaje :/')
+    }
   }
 
   /**
-   * CDM
+   * Increment Notification count for refreshando
    */
   useEffect(() => {
-    fetchOrders.getData()
-    fetchUserOrders.getData()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    const notifications = store.get('notifications')
+    if (notifications.length !== notificationsLength) {
+      setNotificationsLength(notifications.length)
+    }
+  }, [store, notificationsLength])
 
-  const getFirstname = () => {
-    return store.get('user').split(' ')[0]
-  }
+  /**
+   * Refresh orders (SOMETHING CHANGED!)
+   */
+  useEffect(() => {
+    refreshOrders()
+  }, [notificationsLength]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const toggleDetailsVisibility = () => {
-    setDetailsVisibile(!isDetailsVisibile)
-  }
+  const getFirstname = () => store.get('user')?.split(' ')[0]
 
-  const handleShowCard = (id) => {
+  const toggleDetailsVisibility = () => setDetailsVisibile(!isDetailsVisibile)
+
+  const handleShowCard = (order) => {
+    setSelectedOrder(order)
     toggleDetailsVisibility()
-    setSelectedOrder(id)
   }
 
   const handleCloseCard = () => {
+    refreshOrders()
     toggleDetailsVisibility()
     setSelectedOrder(null)
+  }
+
+  const orderSort = (a, b) => new Date(`${a.date} ${a.time}`) > new Date(`${b.date} ${b.time}`)
+
+  const renderOrderButton = () => {
+    const hasUserData = () => user.fullName && user.phoneNumber && user.creditCardNumber
+
+    if (user) {
+      if (hasUserData())
+        return (
+          <Link className="button" to="/teamfood">
+            <Button text="Dodaj Zamówienie"></Button>
+          </Link>
+        )
+      else {
+        return (
+          <Link className="button" to="/settings">
+            <Button
+              text="Dodaj Zamówienie"
+              onClick={() =>
+                enqueueSnackbar('Przed wyruszeniem w drogę należy zebrać informacje!', {
+                  variant: 'warn',
+                })
+              }
+            ></Button>
+          </Link>
+        )
+      }
+    }
+
+    return null
+  }
+
+  const defaultNoFoodResponse = (orders) => {
+    const getRandomMessage = () => messages[Math.round(Math.random() * (messages.length - 1))]
+
+    if (orders.length === 0 && !loadingOrders) {
+      return <Message color={mode.fontColor}>{getRandomMessage()}</Message>
+    }
+  }
+
+  const styleIcon = () => {
+    return {
+      color: mode.fontColor,
+      cursor: 'pointer',
+    }
+  }
+
+  const hideIfEmpty = () => {
+    return myOrders.length === 0 && !loadingOrders ? 'empty' : null
+  }
+
+  const expandIfEmpty = () => {
+    return myOrders.length === 0 && !loadingOrders ? 'expand' : null
   }
 
   return (
@@ -60,55 +175,52 @@ const Home = () => {
       <BlurChildren shouldBlur={isDetailsVisibile}>
         <Header>
           <H1 className="small">
-            Cześć <HBold>{getFirstname() || 'Nieznajomy'},</HBold>
+            Cześć <HBold style={{ textTransform: 'capitallize' }}>{getFirstname() || 'Nieznajomy'},</HBold>
           </H1>
           <div className="icons">
+            <SyncIcon onClick={refreshOrders} style={styleIcon()} />
             <IconLink to="/settings">
-              <TuneIcon
-                style={{
-                  color:
-                    AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
-                }}
-              />
+              <TuneIcon style={styleIcon()} />
             </IconLink>
           </div>
-          <Link className="button" to="/teamfood">
-            <Button text="Dodaj Zamówienie"></Button>
-          </Link>
+          {renderOrderButton()}
         </Header>
         <Container>
-          <div className="your-order">
+          <div className={`your-order ${hideIfEmpty()}`}>
             <H3>Twoje zamówienia</H3>
-            {fetchUserOrders.response
-              ? fetchUserOrders.response.orders.map((order) => (
-                  <Card
-                    key={order.id}
-                    details={order}
-                    openCallback={() => handleShowCard(order.id)}
-                  />
-                ))
-              : fetchUserOrders.isLoading && <Loader />}
+            {defaultNoFoodResponse(myOrders)}
+            {myOrders.length > 0
+              ? myOrders
+                  .sort((a, b) => orderSort(a, b))
+                  .map((order) => <Card key={order.id} details={order} openCallback={() => handleShowCard(order)} />)
+              : loadingOrders && (
+                  <>
+                    <CardSkeleton />
+                    <CardSkeleton />
+                  </>
+                )}
           </div>
-          <div className="available-orders-wrapper">
+          <div className={`available-orders-wrapper ${expandIfEmpty()}`}>
             <H3>Dostępne zamówienia</H3>
             <div className="orders">
-              {fetchOrders.response
-                ? fetchOrders.response.orders.map((order) => (
-                    <Card
-                      key={order.id}
-                      details={order}
-                      openCallback={() => handleShowCard(order.id)}
-                    />
-                  ))
-                : fetchOrders.isLoading && <Loader />}
+              {defaultNoFoodResponse(orders)}
+              {orders.length > 0
+                ? orders
+                    .sort((a, b) => orderSort(a, b))
+                    .map((order) => <Card key={order.id} details={order} openCallback={() => handleShowCard(order)} />)
+                : loadingOrders && (
+                    <>
+                      <CardSkeleton />
+                      <CardSkeleton />
+                      <CardSkeleton />
+                      <CardSkeleton />
+                    </>
+                  )}
             </div>
           </div>
         </Container>
-        <p onClick={logout}>Wyloguj</p>
       </BlurChildren>
-      {isDetailsVisibile && (
-        <OrderDetails orderId={selectedOrder} closeCallback={handleCloseCard} />
-      )}
+      {isDetailsVisibile && <OrderDetails order={selectedOrder} closeCallback={handleCloseCard} />}
     </>
   )
 }

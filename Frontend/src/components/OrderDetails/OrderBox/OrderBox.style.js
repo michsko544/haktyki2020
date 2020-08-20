@@ -22,7 +22,8 @@ export const Margins = styled.div`
     height: 100%;
     max-height: 100%;
     overflow-y: auto;
-    padding: 64px 50px 40px;
+    padding-top: 64px;
+    padding-bottom: 30px;
     width: 50%;
   }
 `
@@ -48,6 +49,7 @@ export const TextWrapper = styled.div`
     height: 100%;
     overflow-y: auto;
     max-width: unset;
+    padding: 0px 20px 10px;
   }
 `
 
@@ -57,6 +59,7 @@ export const ButtonWrapper = styled.div`
   left: 0;
   width: 100%;
   padding: 0 28px;
+  z-index: 31;
 
   @media (min-width: 420px) {
     left: 50%;
@@ -66,12 +69,15 @@ export const ButtonWrapper = styled.div`
 
   @media (min-width: 1024px) {
     margin-top: 20px;
-    /* margin-bottom: 40px; */
     padding: 0;
     max-width: unset;
     position: unset;
     transform: unset;
     left: 0;
+  }
+
+  & > :last-child {
+    margin-top: 16px;
   }
 `
 

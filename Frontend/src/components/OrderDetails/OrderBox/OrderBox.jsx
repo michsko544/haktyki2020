@@ -1,21 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import BoxContainer from '../../BoxContainer'
 import CloseIcon from '@material-ui/icons/Close'
-import {
-  OrderDetailsImg,
-  HeroimagePosition,
-} from '../../Heroimage/Heroimage.style'
-import defaultImage from '../../../images/frytki.png'
+import { OrderDetailsImg, HeroimagePosition } from '../../Heroimage/Heroimage.style'
 import { FixedContainer, CloseBtnBackground } from './OrderBox.style'
-import Store from '../../App/App.store'
-import { AppBackgroundThemes } from '../../App/App.themes'
+import { imgUrlBuilder, useColors } from '../../../utils'
+import { useResizeObserver } from '../../../utils/useResizeObserver'
 
 const OrderBox = ({ children, image, closeCallback }) => {
-  const store = Store.useStore()
+  const { mode } = useColors()
 
-  const background =
-    AppBackgroundThemes[store.get('themeBackgroundId')].background
+  const { imageRef, imageUrl, setImage } = useResizeObserver()
+
+  const background = mode.background
+
+  useEffect(() => {
+    setImage(image)
+  }, [image, setImage])
 
   return (
     <FixedContainer>
@@ -23,13 +24,12 @@ const OrderBox = ({ children, image, closeCallback }) => {
         <CloseBtnBackground onClick={closeCallback} background={background}>
           <CloseIcon
             style={{
-              color:
-                AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+              color: mode.fontColor,
             }}
           />
         </CloseBtnBackground>
         <HeroimagePosition>
-          <OrderDetailsImg src={image || defaultImage} alt="food-order-photo" />
+          <OrderDetailsImg ref={imageRef} src={imageUrl || imgUrlBuilder(image, 320, 480, 1)} alt="food-order-photo" />
         </HeroimagePosition>
         {children}
       </BoxContainer>

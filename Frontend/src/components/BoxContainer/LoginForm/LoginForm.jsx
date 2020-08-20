@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { withFormik, Form } from 'formik'
+import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import Button from '../../Button'
 import { ButtonFormWrapper } from '../../Button'
@@ -8,26 +8,30 @@ import { Input } from '../../Inputs'
 import { InputStyled } from '../../Inputs'
 import { FormWrapper } from './'
 import Store from './../../App/App.store'
-import { usePost } from './../../../API'
+import { Field } from 'formik'
+import { useSnackbar } from 'notistack'
+import { usePost } from '../../../API'
 
 const LoginForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
 
   return (
     <FormWrapper>
-      <Form>
+      <Form autoComplete={'on'}>
         <InputStyled>
-          <Input
+          <Field
+            component={Input}
             disabled={isSubmitting}
             type="email"
             name="user"
-            label="eMail"
+            label="E-mail"
             placeholder="XxTomekXx@gmail.com"
             error={errorHandler('user')}
           />
         </InputStyled>
         <InputStyled>
-          <Input
+          <Field
+            component={Input}
             disabled={isSubmitting}
             type="password"
             name="password"
@@ -37,7 +41,11 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
           />
         </InputStyled>
         <ButtonFormWrapper>
-          <Button disabled={isSubmitting} text="Zaloguj" type="submit" />
+          <Button
+            disabled={isSubmitting}
+            text={isSubmitting ? 'Logowanie...' : 'Zaloguj'}
+            type="submit"
+          />
         </ButtonFormWrapper>
       </Form>
     </FormWrapper>
@@ -45,44 +53,73 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
 }
 
 const LoginFormik = () => {
-  const history = useHistory()
   const store = Store.useStore()
-  const login = usePost('/login')
+  const history = useHistory()
+  const { send: login } = usePost('/login')
+  const { enqueueSnackbar } = useSnackbar()
 
-  const handleSubmit = (values) => {
-    login.sendData(values)
+  const initialValues = {
+    user: '',
+    password: '',
   }
 
-  useEffect(() => {
-    console.log('LoginEffect: ', login.response)
-    store.set('authToken')(login.response.authToken)
-    store.set('user')(login.response.fullname)
-    store.set('userId')(login.response.userId)
-  }, [login.response])
+  const setLocalStorage = (response) => {
+    localStorage.setItem('login', JSON.stringify(response))
+  }
 
-  useEffect(() => {
-    console.log('ErrorEffect: ', login.error)
-  }, [login.error])
+  const transformValues = (values) => {
+    return { login: values.user, password: values.password }
+  }
 
-  const LoginWithFormik = withFormik({
-    mapPropsToValues({ user, password }) {
-      return {
-        user: user || '',
-        password: password || '',
+  const handleError = (message) => {
+    enqueueSnackbar(message, {
+      variant: 'error',
+      autoHideDuration: 2500,
+    })
+  }
+
+  const onSubmit = async (values, { setSubmitting }) => {
+    try {
+      const response = await login(transformValues(values))
+
+      store.set('authToken')(response.authToken)
+      store.set('user')(response.fullname || '')
+      store.set('userId')(response.userId)
+
+      setLocalStorage(response)
+
+      if (!response.fullname) {
+        history.push('/greeter')
+      } else {
+        history.push('/')
       }
-    },
+    } catch (error) {
+      if (error?.response?.status === -1) {
+        handleError('Błąd wewnętrzny, odśwież apkę?')
+      } else if (error?.response?.status === 401) {
+        handleError('Niepoprawny email lub hasło ψ(._. )>')
+      } else if (error?.response?.status >= 400 && error?.response?.status <= 599) {
+        handleError('Błąd serwera, spróbuj ponownie później (ヘ･_･)ヘ┳━┳')
+      } else {
+        handleError('Bardzo mocne ojej! Spadliśmy właśnie z planszy (╯‵□′)╯︵┻━┻')
+      }
+    }
+    
+    setSubmitting(false)
+  }
 
-    validationSchema: Yup.object().shape({
-      user: Yup.string()
-        .email('Podaj poprawny email')
-        .required('Wypełnij to pole'),
-      password: Yup.string().required('Wypełnij to pole'),
-    }),
+  const validationSchema = Yup.object().shape({
+    user: Yup.string()
+      .email('Podaj poprawny email')
+      .required('Wypełnij to pole'),
+    password: Yup.string().required('Wypełnij to pole'),
+  })
 
-    handleSubmit: handleSubmit,
-  })(LoginForm)
-
-  return <LoginWithFormik />
+  return (
+    <Formik {...{ initialValues, onSubmit, validationSchema }}>
+      {LoginForm}
+    </Formik>
+  )
 }
 
 export default LoginFormik

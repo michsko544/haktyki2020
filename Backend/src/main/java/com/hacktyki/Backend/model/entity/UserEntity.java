@@ -3,19 +3,24 @@ package com.hacktyki.Backend.model.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table( name = "user" )
 public class UserEntity {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(nullable = false)
+    @Column(name = "login", nullable = false, length = 50)
     private String login;
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false, length = 60)
     private String password;
+    @Column(name = "fullname", length = 80)
     private String fullName;
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
+    @Column(name = "credit_card_number", length = 40)
     private String creditCardNumber;
+    @Column(name = "swift_bic_code", length = 12)
+    private String swiftBicCode;
 
     public UserEntity() {
     }
@@ -23,14 +28,6 @@ public class UserEntity {
     public UserEntity(String login, String password) {
         this.login = login;
         this.password = password;
-    }
-
-    public UserEntity(String login, String password, String fullName, String phoneNumber, String creditCardNumber) {
-        this.login = login;
-        this.password = password;
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-        this.creditCardNumber = creditCardNumber;
     }
 
     public long getId() {
@@ -71,5 +68,13 @@ public class UserEntity {
 
     public void setCreditCardNumber(String creditCardNumber) {
         this.creditCardNumber = creditCardNumber;
+    }
+
+    public String getSwiftBicCode() {
+        return swiftBicCode;
+    }
+
+    public void setSwiftBicCode(String swiftBicCode) {
+        this.swiftBicCode = swiftBicCode;
     }
 }

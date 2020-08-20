@@ -3,8 +3,7 @@ import { OptionLinkStyled } from './'
 import { FormContainer } from '../BoxContainer.style'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
-import Store from './../../App/App.store'
-import { AppBackgroundThemes } from './../../App/App.themes'
+import { useColors } from '../../../utils'
 
 const FormWithLink = ({ children, linkText, link }) => {
   const history = useHistory()
@@ -12,9 +11,7 @@ const FormWithLink = ({ children, linkText, link }) => {
   return (
     <FormContainer>
       {children}
-      {linkText && link && (
-        <OptionLink text={linkText} onClick={() => history.push(link)} />
-      )}
+      {linkText && link && <OptionLink text={linkText} onClick={() => history.push(link)} />}
     </FormContainer>
   )
 }
@@ -26,13 +23,10 @@ FormWithLink.propTypes = {
 }
 
 const OptionLink = ({ text, ...props }) => {
-  const store = Store.useStore()
+  const { mode } = useColors()
 
   return (
-    <OptionLinkStyled
-      color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}
-      {...props}
-    >
+    <OptionLinkStyled color={mode.fontColor} {...props}>
       {text}
     </OptionLinkStyled>
   )

@@ -1,5 +1,7 @@
 package com.hacktyki.Backend.controller;
 
+import com.hacktyki.Backend.model.responses.InformationStatusRestModel;
+import com.hacktyki.Backend.model.responses.LoginRestModel;
 import com.hacktyki.Backend.model.responses.UserSignInRestModel;
 import com.hacktyki.Backend.model.service.JwtService;
 import com.hacktyki.Backend.model.service.LoginService;
@@ -12,31 +14,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
-    private LoginService loginService;
-    private JwtService jwtService;
+    private final LoginService loginService;
 
-    public LoginController(LoginService loginService, JwtService jwtService) {
+    public LoginController(LoginService loginService) {
         this.loginService = loginService;
-        this.jwtService = jwtService;
     }
 
     @PostMapping(path = "register",
-            consumes = "application/json")
-    public ResponseEntity<String> signUp(@RequestBody UserSignInRestModel user)
-    {
-        return ResponseEntity.ok(loginService.addNewUser(user));
+                 consumes = "application/json")
+    public ResponseEntity<InformationStatusRestModel> signUp(@RequestBody UserSignInRestModel user) {
+        try {
+            return new ResponseEntity<>(new InformationStatusRestModel(loginService.addNewUser(user)), HttpStatus.CREATED);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(new InformationStatusRestModel(e.getMessage()),HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping(path = "login",
-                consumes = "application/json")
-    public ResponseEntity<String> login(@RequestBody UserSignInRestModel user){
+                 consumes = "application/json",
+                 produces = "application/json")
+    public ResponseEntity<LoginRestModel> login(@RequestBody UserSignInRestModel user){
 
         try {
             loginService.authenticate(user);
-            return new ResponseEntity<>(jwtService.createJwt(user.getLogin()), HttpStatus.OK);
+            LoginRestModel responseBody = loginService.getLoginBody(user.getLogin());
+            return new ResponseEntity<>(responseBody, HttpStatus.OK);
         }
         catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
     }

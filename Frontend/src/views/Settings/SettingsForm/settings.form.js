@@ -1,170 +1,135 @@
-import React from 'react'
-import * as Yup from 'yup'
-import { withFormik, useFormikContext, Form } from 'formik'
-import {
-  Input,
-  InputStyled,
-  SmallerInputStyled,
-  RowOnMediumScreen,
-} from './../../../components/Inputs'
-import {
-  ButtonFormWrapper,
-  default as Button,
-} from './../../../components/Button'
-import Store from './../../../components/App/App.store'
+import React, { useEffect, useState } from 'react'
+import Store from '../../../components/App/App.store'
+import { Formik } from 'formik'
+import { useHistory } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 
-const SettingsForm = ({ errors, values, touched, isSubmitting }) => {
-  const errorHandler = (name) => touched[name] && errors[name]
+import { usePost, useFetch } from '../../../API'
 
-  const isIBANNotFromPoland = () => {
-    const IBAN = (values.account[0] + values.account[1])
-      .toString()
-      .toUpperCase()
+import validationSchema from './settings.form.validation'
+import SettingsForm from './settings.form.template'
+
+import { capitalizeAllWords } from '../../../utils'
+
+const SettingsFormik = () => {
+  const store = Store.useStore()
+  const { fetch: fetchUser, isLoading } = useFetch('/users/my-details')
+  const [user, setUser] = useState({})
+  const { send: update } = usePost('/users/my-details')
+  const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
+
+  const getData = async () => {
+    try {
+      setUser(await fetchUser())
+    } catch (error) {
+      enqueueSnackbar('Nie udało się pobrać twoich danych z serwera (⓿_⓿)', {
+        variant: 'error',
+        autoHideDuration: 3000,
+      })
+    }
+  }
+
+  useEffect(() => {
+    document.title = 'Ustawienia 👏 | TeamFood'
+    getData()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const initialValues = {
+    user: user?.fullName || '',
+    blik: user?.phoneNumber || '',
+    account: user?.creditCardNumber || '',
+    swift: user?.swiftBicCode || '',
+  }
+
+  const isPolishIBAN = (accountNumber) => {
+    const IBAN = (accountNumber[0] + accountNumber[1]).toString().toUpperCase()
+    return IBAN === 'PL'
+  }
+
+  const deletePolishIBAN = (accountNumber) => (isPolishIBAN(accountNumber) ? accountNumber.slice(2) : accountNumber)
+
+  const isIBANNotFromPoland = (accountNumber) => {
+    const IBAN = (accountNumber[0] + accountNumber[1]).toString().toUpperCase()
 
     const isItIBAN = /^[A-Z]*$/.test(IBAN)
     const isNotPolishIBAN = IBAN !== 'PL'
 
-    return (
-      values.account !== '' &&
-      values.account.length > 1 &&
-      isItIBAN &&
-      isNotPolishIBAN
-    )
+    return accountNumber !== '' && accountNumber.length > 1 && isItIBAN && isNotPolishIBAN
   }
 
-  const showSwiftWhenIBAN = () => {
-    return (
-      isIBANNotFromPoland() && (
-        <SmallerInputStyled>
-          <Input
-            type="text"
-            name="swift"
-            label="SWIFT/BIC"
-            placeholder="REVOGB21XXX"
-            error={errorHandler('swift')}
-            style={{ textTransform: 'uppercase' }}
-          />
-        </SmallerInputStyled>
-      )
-    )
+  const insertSpaces = (input, howOften, whenStart) => {
+    //When there is no whenStart, adding space should start at howOften index
+    whenStart = whenStart < 1 ? howOften : whenStart
+    const START = whenStart || howOften
+
+    var output = ''
+
+    let spacesCounter = 0
+    let i = 0
+    //pointer is index of last suspect element in input array (string)
+    let pointer = START + i * howOften
+    //suspect is a fragment of input (suspect.length = howOften + 1)
+    let suspect = input.substring(0, START + 1)
+
+    while (pointer - howOften <= input.length) {
+      if (i === 0 && suspect[START] !== ' ') {
+        //only first suspect check
+        output = output + suspect.substring(0, suspect.length - 1) + ' '
+      } else if (suspect[howOften] !== ' ' && suspect[howOften] !== undefined) {
+        //if last char in suspect is not space add there space
+        output = output + suspect.substring(0, suspect.length - 1) + ' '
+      } else {
+        //else add without space
+        output += suspect
+        ++spacesCounter
+      }
+
+      ++i
+      pointer = START + i * howOften + spacesCounter
+      suspect = input.substring(pointer - howOften, pointer + 1)
+    }
+    return output
+  }
+
+  const transformValues = (values) => {
+    return {
+      fullName: capitalizeAllWords(values.user),
+      creditCardNumber: isIBANNotFromPoland(values.account)
+        ? insertSpaces(values.account.toUpperCase(), 4)
+        : insertSpaces(deletePolishIBAN(values.account.toUpperCase()), 4, 2),
+      swiftBicCode: isIBANNotFromPoland(values.account) ? values.swift.toUpperCase() : '',
+      phoneNumber: insertSpaces(values.blik.toString(), 3),
+    }
+  }
+
+  const onSubmit = async (values, { setSubmitting }) => {
+    enqueueSnackbar('Zapisywanie 🤞', { variant: 'info', autoHideDuration: 1500 })
+
+    try {
+      await update(transformValues(values))
+      enqueueSnackbar('Zapisano 👌', {
+        variant: 'success',
+        autoHideDuration: 1500,
+      })
+      store.set('user')(capitalizeAllWords(values.user))
+
+      setTimeout(() => history.push('/'), 1500)
+    } catch (error) {
+      enqueueSnackbar('Serwer się sypnął, daj znać adminowi ;/', {
+        variant: 'error',
+        autoHideDuration: 3000,
+      })
+    }
+
+    setSubmitting(false)
   }
 
   return (
-    <>
-      <Form>
-        <InputStyled>
-          <Input
-            type="text"
-            name="user"
-            label="Imię i nazwisko"
-            placeholder="Tomek Adamczyk"
-            error={errorHandler('user')}
-            style={{ textTransform: 'capitalize' }}
-          />
-        </InputStyled>
-        <InputStyled>
-          <Input
-            type="tel"
-            name="blik"
-            label="Numer telefonu do BLIK"
-            placeholder="603 424 420"
-            error={errorHandler('blik')}
-          />
-        </InputStyled>
-        <RowOnMediumScreen>
-          <InputStyled>
-            <Input
-              type="text"
-              name="account"
-              label="Numer konta do przelewów"
-              placeholder="PL78 2323 4333 1234 2333 0000"
-              error={errorHandler('account')}
-              style={{ textTransform: 'uppercase' }}
-            />
-          </InputStyled>
-          {showSwiftWhenIBAN()}
-        </RowOnMediumScreen>
-        <ButtonFormWrapper>
-          <Button disabled={isSubmitting} text="Zapisz i wróć" type="submit" />
-        </ButtonFormWrapper>
-      </Form>
-    </>
+    <Formik enableReinitialize={true} {...{ initialValues, onSubmit, validationSchema }}>
+      {(formikProps) => <SettingsForm {...formikProps} isLoading={isLoading} isIBANNotFromPoland={isIBANNotFromPoland} />}
+    </Formik>
   )
-}
-
-const SettingsFormik = () => {
-  const store = Store.useStore()
-
-  const SettingsWithFormik = withFormik({
-    mapPropsToValues() {
-      return {
-        user: store.get('user') || '',
-        blik: '',
-        account: '',
-        swift: '',
-      }
-    },
-
-    validationSchema: Yup.object().shape({
-      user: Yup.string()
-        .matches(
-          /^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ ]*$/,
-          'Pole nie może zawierać znaków specjalnych, ani cyfr'
-        )
-        .matches(
-          /^[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+\s+[A-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+ ?$/,
-          'Podaj dwa wyrazy'
-        )
-        .min(3, 'Pole musi mieć minimum 3 znaki')
-        .max(50, 'Pole musi mieć maksimum 50 znaków')
-        .required('Wypełnij to pole'),
-      blik: Yup.string()
-        .min(9, 'Pole musi mieć minimum 9 znaków')
-        .max(12, 'Pole musi mieć maksimum 12 znaków')
-        .matches(
-          /^[0-9]{3}[ ]{0,1}[0-9]{3}[ ]{0,1}[0-9]{3} ?$/,
-          'Podaj poprawny, 9-cyfrowy numer telefonu'
-        )
-        .required('Wypełnij to pole'),
-      account: Yup.string()
-        .min(22, 'Pole musi mieć minimum 22 znaków')
-        .max(35, 'Pole musi mieć maksimum 35 znaków')
-        .matches(
-          /^[A-Za-z]{0,2}[0-9]{2}[ ]{0,1}[A-Za-z0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{4}[ ]{0,1}[0-9]{2,4}[ ]{0,1}[0-9]{0,4} ?$/,
-          'Podaj poprawny numer konta'
-        )
-        .required('Wypełnij to pole'),
-      swift: Yup.string()
-        .when('account', {
-          is: (account) =>
-            account
-              ? account.length > 1 &&
-                /^[A-Z]*$/.test(
-                  (account[0] + account[1]).toString().toUpperCase()
-                ) &&
-                (account[0] + account[1]).toString().toUpperCase() !== 'PL'
-              : false,
-          then: Yup.string().required('Wypełnij to pole'),
-        })
-        .min(8, 'Pole musi mieć minimum 8 znaków')
-        .max(11, 'Pole musi mieć maksimum 11 znaków')
-        .matches(
-          /^[A-Za-z0-9]*$/,
-          'Pole musi zawierać tylko duże litery i/lub cyfry'
-        ),
-    }),
-
-    handleSubmit(values, { resetForm, setSubmitting }) {
-      //ToDo Przy wysyłaniu należy zamienić numer konta i Switft/BIC na uppercase
-      setTimeout(() => {
-        console.log(values)
-        setSubmitting(false)
-        resetForm()
-      }, 200)
-    },
-  })(SettingsForm)
-
-  return <SettingsWithFormik />
 }
 
 export default SettingsFormik

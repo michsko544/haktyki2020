@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import BoxContainer from '../../components/BoxContainer'
 import Header from '../../components/BoxContainer/Header'
 import Heroimage from '../../components/Heroimage'
@@ -8,6 +8,10 @@ import GreeterFormik from '../../components/BoxContainer/GreeterForm'
 import { HeaderStyled } from '../../components/BoxContainer/Header'
 
 const Greeter = () => {
+  useEffect(() => {
+    document.title = 'Poznajmy się 🖐🏻🖐🖐🏾 | TeamFood'
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <BoxContainer>
       <Padding30>

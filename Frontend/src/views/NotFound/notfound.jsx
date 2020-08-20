@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import BoxContainer from '../../components/BoxContainer'
 import Header from '../../components/BoxContainer/Header'
@@ -11,6 +11,10 @@ import { FormWrapper } from '../../components/BoxContainer/FormWithLink'
 import Button from '../../components/Button'
 
 const NotFound = () => {
+  useEffect(() => {
+    document.title = 'Uciekaj stąd! ❌ | TeamFood'
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const history = useHistory()
 
   return (

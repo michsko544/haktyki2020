@@ -1,53 +1,48 @@
 package com.hacktyki.Backend.controller;
 
+import com.hacktyki.Backend.model.responses.InformationStatusRestModel;
 import com.hacktyki.Backend.model.responses.UserDetailsRestModel;
+import com.hacktyki.Backend.model.responses.UserFullnameRestModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.hacktyki.Backend.model.service.UserService;
 
-import java.util.List;
-
 @RestController
+@PreAuthorize("hasRole('USER')")
 @RequestMapping("users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping(path = "all")
-    public ResponseEntity<List<UserDetailsRestModel>> listAllUsers(){
-        final List<UserDetailsRestModel> allUsersList = userService.getAll();
-        return ResponseEntity.ok(allUsersList);
-    }
+    @PostMapping(path = "my-fullname",
+                consumes = "application/json")
+    public ResponseEntity<InformationStatusRestModel> setMyFullname(@RequestBody UserFullnameRestModel person) {
 
-    @GetMapping(path = "me")
-    public ResponseEntity<String> getMyLogin(){
-
-        final String username = userService.getAuthenticatedLogin();
-
-        if(username != null) {
-            return new ResponseEntity<>(username, HttpStatus.OK);
+        if(userService.setMyFullname(person.getFullname())){
+            return ResponseEntity.ok(new InformationStatusRestModel("Added your fullname successfully"));
         }
-        return new ResponseEntity<>("Idk who I am", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new InformationStatusRestModel("Could not add your fullname"), HttpStatus.NOT_MODIFIED);
     }
 
-    @GetMapping(path = "details")
+    @GetMapping(path = "my-details")
     public ResponseEntity<UserDetailsRestModel> getMyDetails(){
         return ResponseEntity.ok(userService.getMyDetails());
     }
 
-    @PostMapping(path = "details",
+    @PostMapping(path = "my-details",
                 consumes = "application/json")
-    public ResponseEntity<String> setMyDetails(@RequestBody UserDetailsRestModel userDetails){
+    public ResponseEntity<InformationStatusRestModel> setMyDetails(@RequestBody UserDetailsRestModel userDetails){
 
-        if(userService.changeDetails(userDetails)){
-            return ResponseEntity.ok("Added new details");
+        if(userService.changeMyDetails(userDetails)){
+            return ResponseEntity.ok(new InformationStatusRestModel("Added new details"));
         }
-        return new ResponseEntity<>("Could not add new details", HttpStatus.NOT_MODIFIED);
+        return new ResponseEntity<>(new InformationStatusRestModel("Could not add new details"), HttpStatus.NOT_MODIFIED);
     }
 
 }

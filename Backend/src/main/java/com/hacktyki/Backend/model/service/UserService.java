@@ -3,27 +3,34 @@ package com.hacktyki.Backend.model.service;
 import com.hacktyki.Backend.model.entity.UserEntity;
 import com.hacktyki.Backend.model.repository.UserRepository;
 import com.hacktyki.Backend.model.responses.UserDetailsRestModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final Logger logger;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.logger = LoggerFactory.getLogger(UserService.class);
     }
 
-    public List<UserDetailsRestModel> getAll() {
-        return userRepository.findAll().stream()
-                .map(UserDetailsRestModel::new)
-                .collect(Collectors.toList());
+    public Boolean setMyFullname(String fullname) {
+        UserEntity user = userRepository.findByLogin(getAuthenticatedLogin());
+        if(user != null){
+            user.setFullName(fullname);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
 
     public UserDetailsRestModel getMyDetails() {
@@ -31,14 +38,22 @@ public class UserService {
     }
 
     @Transactional
-    public boolean changeDetails(UserDetailsRestModel userDetails){
+    public boolean changeMyDetails(UserDetailsRestModel userDetails){
         if(userDetails != null){
-
             userRepository.save(mapDetailsRestModel(userDetails));
             return true;
         }
 
         return false;
+    }
+
+    protected long getAuthenticatedId(){
+        String userLogin = getAuthenticatedLogin();
+        if(null != userLogin) {
+            return userRepository.findByLogin(userLogin).getId();
+        } else {
+            throw new NullPointerException("User is not logged in.");
+        }
     }
 
     public String getAuthenticatedLogin(){
@@ -52,12 +67,14 @@ public class UserService {
     }
 
     private UserEntity mapDetailsRestModel(UserDetailsRestModel userDetails){
-        UserEntity user = userRepository.findByLogin(getAuthenticatedLogin());
 
+        UserEntity user = userRepository.findByLogin(getAuthenticatedLogin());
         user.setFullName(userDetails.getFullName());
         user.setPhoneNumber(userDetails.getPhoneNumber());
         user.setCreditCardNumber(userDetails.getCreditCardNumber());
+        user.setSwiftBicCode(userDetails.getSwiftBicCode());
 
         return user;
+
     }
 }

@@ -1,18 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Store from '../../../../App/App.store'
-import { AppBackgroundThemes } from '../../../../App/App.themes'
 import { Title, Info } from './Header.style'
+import { useColors } from '../../../../../utils'
 
 const Header = ({ title, info }) => {
-  const store = Store.useStore()
+  const { mode } = useColors()
 
-  const fontcolor =
-    AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
   return (
     <>
-      <Title fontcolor={fontcolor}>{title}</Title>
-      <Info fontcolor={fontcolor}>{info}</Info>
+      <Title fontcolor={mode.fontColor}>{title}</Title>
+      <Info fontcolor={mode.fontColor}>{info}</Info>
     </>
   )
 }
