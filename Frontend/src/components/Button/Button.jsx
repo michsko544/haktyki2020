@@ -1,22 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { ButtonStyled } from './'
-import Store from './../App/App.store'
-import { AppThemes, AppBackgroundThemes } from './../App/App.themes'
+import { useColors } from '../../utils'
 
 const Button = ({ text, handleOnClick, ...props }) => {
-  const store = Store.useStore()
-
+  const { theme, mode } = useColors()
   return (
     <>
-      <ButtonStyled
-        text={text}
-        firstColor={AppThemes[store.get('themeId')].from}
-        secondColor={AppThemes[store.get('themeId')].to}
-        background={AppBackgroundThemes[store.get('themeBackgroundId')].alternate}
-        onClick={handleOnClick}
-        {...props}
-      />
+      <ButtonStyled text={text} firstColor={theme.from} secondColor={theme.to} background={mode.alternate} onClick={handleOnClick} {...props} />
     </>
   )
 }

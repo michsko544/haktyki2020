@@ -1,13 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { ContainerStyled } from './container.style'
-import Store from './../../../components/App/App.store'
-import { AppBackgroundThemes } from './../../../components/App/App.themes'
+import { useColors } from '../../../utils'
 
 const Container = ({ children, ...props }) => {
-  const store = Store.useStore()
+  const { mode } = useColors()
 
-  return <ContainerStyled background={AppBackgroundThemes[store.get('themeBackgroundId')].alternate} {...props}>{children}</ContainerStyled>
+  return (
+    <ContainerStyled background={mode.alternate} {...props}>
+      {children}
+    </ContainerStyled>
+  )
 }
 
 Container.propTypes = {

@@ -12,16 +12,15 @@ import { GradientBoxContainerStyled } from './GradientBox/gradientbox.container.
 import { ThemeContainerStyled } from './ThemeContainer/theme.container.style'
 import { IconLink } from './../../components/App/App.style'
 import Store from './../../components/App/App.store'
-import {
-  AppThemes,
-  AppBackgroundThemes,
-} from './../../components/App/App.themes'
+import { AppThemes, AppBackgroundThemes } from './../../components/App/App.themes'
 import { NotificationStyled } from './Notifications/notifications.style'
 import firebase from './../../firebase'
 import { ButtonFormWrapper, default as Button } from './../../components/Button'
+import { useColors } from '../../utils'
 
 const Settings = () => {
   const store = Store.useStore()
+  const { mode } = useColors()
   const setThemeId = store.set('themeId')
   const setBackgroundThemeId = store.set('themeBackgroundId')
   const [isNotificationGranted, setIsNotificationGranted] = useState(false)
@@ -60,10 +59,7 @@ const Settings = () => {
 
     return (
       <ButtonFormWrapper>
-        <Button
-          onClick={grantNotificationPermission}
-          text="Włącz powiadomienia"
-        />
+        <Button onClick={grantNotificationPermission} text="Włącz powiadomienia" />
       </ButtonFormWrapper>
     )
   }
@@ -90,18 +86,13 @@ const Settings = () => {
           <IconLink to="/">
             <CloseIcon
               style={{
-                color:
-                  AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+                color: mode.fontColor,
               }}
             />
           </IconLink>
         </div>
       </Header>
-      <ContainerStyled
-        background={
-          AppBackgroundThemes[store.get('themeBackgroundId')].alternate
-        }
-      >
+      <ContainerStyled background={mode.alternate}>
         <NotificationStyled style={{ marginBottom: 20 }}>
           <H4>Powiadomienia</H4>
           {notificationGrantedElement()}
@@ -112,12 +103,7 @@ const Settings = () => {
             <H4>Motyw Aplikacji</H4>
             <GradientBoxContainerStyled>
               {AppThemes.map((theme) => (
-                <GradientBoxStyled
-                  key={theme.id}
-                  from={theme.from}
-                  to={theme.to}
-                  onClick={(e) => gradientClick(theme, e)}
-                />
+                <GradientBoxStyled key={theme.id} from={theme.from} to={theme.to} onClick={(e) => gradientClick(theme, e)} />
               ))}
             </GradientBoxContainerStyled>
           </div>
@@ -125,12 +111,7 @@ const Settings = () => {
             <H4>Kolor Tła</H4>
             <GradientBoxContainerStyled>
               {AppBackgroundThemes.map((theme) => (
-                <GradientBoxStyled
-                  key={theme.id}
-                  from={theme.from}
-                  to={theme.to}
-                  onClick={(e) => backgroundClick(theme, e)}
-                />
+                <GradientBoxStyled key={theme.id} from={theme.from} to={theme.to} onClick={(e) => backgroundClick(theme, e)} />
               ))}
             </GradientBoxContainerStyled>
           </div>

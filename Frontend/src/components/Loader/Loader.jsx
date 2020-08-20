@@ -1,10 +1,10 @@
 import React from 'react'
-import Store from '../App/App.store'
-import { AppBackgroundThemes } from '../App/App.themes'
 import { LoaderStyled } from './Loader.style'
+import { useColors } from '../../utils'
 
 const Loader = ({ ...props }) => {
   const [state, setState] = React.useState(3)
+  const { mode } = useColors()
 
   React.useEffect(() => {
     const timeout = setTimeout(incrementState, 600)
@@ -35,12 +35,8 @@ const Loader = ({ ...props }) => {
     }
   }
 
-  const store = Store.useStore()
-  const fontcolor =
-    AppBackgroundThemes[store.get('themeBackgroundId')].fontColor
-
   return (
-    <LoaderStyled color={fontcolor} {...props}>
+    <LoaderStyled color={mode.fontColor} {...props}>
       Ładowanie{handleDisplayDots()}
     </LoaderStyled>
   )

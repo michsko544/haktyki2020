@@ -18,18 +18,17 @@ import Card from '../../components/FoodCard/foodCard'
 import CardSkeleton from './../../components/FoodCard/foodCard.skeleton'
 import { IconLink } from './../../components/App/App.style'
 
-import { AppBackgroundThemes } from './../../components/App/App.themes'
-
 import OrderDetails from '../../components/OrderDetails'
-import Loader from '../../components/Loader'
 import { BlurChildren } from '../../components/App'
 
 import { messages } from './messages'
 import Message from './message.styled'
+import { useColors } from '../../utils'
 
 const Home = () => {
   const store = Store.useStore()
   const { enqueueSnackbar } = useSnackbar()
+  const { mode } = useColors()
 
   const { fetch: fetchOrders, isLoading: loadingOrders } = useFetch('/orders/all')
   const { fetch: fetchUser } = useFetch('/users/my-details')
@@ -61,7 +60,7 @@ const Home = () => {
     asyncUser()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const refreshOrders = async () => {  
+  const refreshOrders = async () => {
     const handleError = (message) => {
       enqueueSnackbar(message, {
         variant: 'error',
@@ -71,7 +70,7 @@ const Home = () => {
 
     enqueueSnackbar('Odświeżam zamówienia 🥩', {
       variant: 'info',
-      autoHideDuration: 1500
+      autoHideDuration: 1500,
     })
 
     try {
@@ -151,13 +150,13 @@ const Home = () => {
     const getRandomMessage = () => messages[Math.round(Math.random() * (messages.length - 1))]
 
     if (orders.length === 0 && !loadingOrders) {
-      return <Message color={AppBackgroundThemes[store.get('themeBackgroundId')].fontColor}>{getRandomMessage()}</Message>
+      return <Message color={mode.fontColor}>{getRandomMessage()}</Message>
     }
   }
 
   const styleIcon = () => {
     return {
-      color: AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+      color: mode.fontColor,
       cursor: 'pointer',
     }
   }
@@ -193,7 +192,12 @@ const Home = () => {
               ? myOrders
                   .sort((a, b) => orderSort(a, b))
                   .map((order) => <Card key={order.id} details={order} openCallback={() => handleShowCard(order)} />)
-              : loadingOrders && <><CardSkeleton /><CardSkeleton /></>}
+              : loadingOrders && (
+                  <>
+                    <CardSkeleton />
+                    <CardSkeleton />
+                  </>
+                )}
           </div>
           <div className={`available-orders-wrapper ${expandIfEmpty()}`}>
             <H3>Dostępne zamówienia</H3>
@@ -203,7 +207,14 @@ const Home = () => {
                 ? orders
                     .sort((a, b) => orderSort(a, b))
                     .map((order) => <Card key={order.id} details={order} openCallback={() => handleShowCard(order)} />)
-                : loadingOrders && <><CardSkeleton /><CardSkeleton /><CardSkeleton /><CardSkeleton /></>}
+                : loadingOrders && (
+                    <>
+                      <CardSkeleton />
+                      <CardSkeleton />
+                      <CardSkeleton />
+                      <CardSkeleton />
+                    </>
+                  )}
             </div>
           </div>
         </Container>

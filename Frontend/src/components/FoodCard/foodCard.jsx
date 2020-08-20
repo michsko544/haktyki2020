@@ -7,9 +7,8 @@ import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
 import { FoodCardStyled } from './foodCard.style'
 import Store from './../App/App.store'
-import { AppBackgroundThemes } from './../App/App.themes'
 
-import { displayPurchaser, displayDate, displayTime, findLoggedPerson, useResizeObserver } from './../../utils'
+import { displayPurchaser, displayDate, displayTime, findLoggedPerson, useResizeObserver, useColors } from './../../utils'
 
 const useStyles = makeStyles({
   root: {
@@ -23,6 +22,7 @@ const useStyles = makeStyles({
 const FoodCard = ({ details, openCallback, ...props }) => {
   const store = Store.useStore()
   const classes = useStyles()
+  const { mode } = useColors()
 
   const { imageRef, imageUrl, setImage } = useResizeObserver()
 
@@ -57,7 +57,7 @@ const FoodCard = ({ details, openCallback, ...props }) => {
   }, [details.image, setImage])
 
   return (
-    <FoodCardStyled {...props} background={AppBackgroundThemes[store.get('themeBackgroundId')].cardBackground} className={classes.root}>
+    <FoodCardStyled {...props} background={mode.cardBackground} className={classes.root}>
       <CardActionArea onClick={openCallback}>
         <CardMedia className={classes.media} title={details.name} image={imageUrl || details.image} ref={imageRef} />
         <CardContent>
