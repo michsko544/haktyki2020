@@ -4,6 +4,7 @@ import { setTokenIntoHeader, removeTokenFromHeader } from './../../API/ourAPI/AP
 import firebase from './../../firebase'
 import { useSnackbar } from 'notistack'
 import { usePost } from '../../API';
+import { useColors } from './../../utils';
 
 const AppInit = () => {
   const store = Store.useStore()

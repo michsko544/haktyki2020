@@ -1,6 +1,4 @@
 import React from 'react'
-import Store from './../App/App.store'
-import { AppBackgroundThemes } from './../App/App.themes'
 import { makeStyles } from '@material-ui/core/styles'
 import CardActionArea from '@material-ui/core/CardActionArea'
 import CardContent from '@material-ui/core/CardContent'
