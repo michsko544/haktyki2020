@@ -3,8 +3,7 @@ import Store from './App.store'
 import { setTokenIntoHeader, removeTokenFromHeader } from './../../API/ourAPI/API'
 import firebase from './../../firebase'
 import { useSnackbar } from 'notistack'
-import usePost from './../../API/ourAPI/useNPost'
-import { useColors } from '../../utils'
+import { usePost } from '../../API';
 
 const AppInit = () => {
   const store = Store.useStore()
