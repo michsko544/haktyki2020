@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-export const orderFormValidationSchema = ({ isPurchaser }) => {
+export const orderFormValidationSchema = (isPurchaser) => {
   console.log(isPurchaser, 'from validation schema')
   return Yup.object().shape({
     orderContent: Yup.string()

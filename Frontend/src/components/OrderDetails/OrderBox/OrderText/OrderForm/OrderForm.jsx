@@ -40,8 +40,7 @@ const OrderFormik = ({ order, coupon, date, time, payment, orderId, isPurchaser,
     payment: payment || '',
   }
 
-  //console.log(isPurchaser, 'trap')
-  const validationSchema = orderFormValidationSchema(isPurchaser)
+  const validationSchema = () => orderFormValidationSchema(isPurchaser)
 
   const transformValuesForUpadate = (values) => {
     return {
