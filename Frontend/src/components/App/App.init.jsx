@@ -1,18 +1,16 @@
 import { useEffect } from 'react'
 import Store from './App.store'
-import { AppBackgroundThemes } from './App.themes'
-import {
-  setTokenIntoHeader,
-  removeTokenFromHeader,
-} from './../../API/ourAPI/API'
+import { setTokenIntoHeader, removeTokenFromHeader } from './../../API/ourAPI/API'
 import firebase from './../../firebase'
 import { useSnackbar } from 'notistack'
-import usePost from './../../API/ourAPI/useNPost';
+import usePost from './../../API/ourAPI/useNPost'
+import { useColors } from '../../utils'
 
 const AppInit = () => {
   const store = Store.useStore()
   const { send: device } = usePost('/notifications/add-device')
   const { enqueueSnackbar } = useSnackbar()
+  const { mode } = useColors()
 
   useEffect(() => {
     const log = console.log
@@ -36,7 +34,7 @@ const AppInit = () => {
       console.warn = warn
       console.error = error
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * LocalStorage Auth Token check
@@ -60,15 +58,15 @@ const AppInit = () => {
     if (typeof storageAuth === 'string') {
       const login = JSON.parse(storageAuth)
 
-      if(!isTokenValid(login.authToken)) {
+      if (!isTokenValid(login.authToken)) {
         enqueueSnackbar('Twoja sesja wygasła, zaloguj się ponownie', {
           variant: 'warning',
           autoHideDuration: 6000,
         })
-        
+
         return
-      }    
-     
+      }
+
       store.set('authToken')(login.authToken)
       store.set('user')(login.fullname || '')
       store.set('userId')(login.userId)
@@ -114,30 +112,18 @@ const AppInit = () => {
           messaging.onMessage((payload) => {
             console.debug(payload)
 
-            store.set('notifications')([
-              payload.notification,
-              ...store.get('notifications'),
-            ])
-            
-            enqueueSnackbar(
-              `${payload.notification.title} - ${payload.notification.body}`,
-              {
-                variant: 'success',
-                autoHideDuration: 8000,
-              }
-            )
+            store.set('notifications')([payload.notification, ...store.get('notifications')])
+
+            enqueueSnackbar(`${payload.notification.title} - ${payload.notification.body}`, {
+              variant: 'success',
+              autoHideDuration: 8000,
+            })
           })
         }
       } catch (e) {
         console.warn('Firebase is not supported', e)
-        enqueueSnackbar(
-          'Kolego, twoja przeglądarka jest za stara na nasz wspaniały program.',
-          { variant: 'info', autoHideDuration: 8000 }
-        )
-        enqueueSnackbar(
-          'Ściągnij sobie jakiegoś Chromka, Firefoxa czy innego Edga （〃｀ 3′〃）',
-          { variant: 'info', autoHideDuration: 8000 }
-        )
+        enqueueSnackbar('Kolego, twoja przeglądarka jest za stara na nasz wspaniały program.', { variant: 'info', autoHideDuration: 8000 })
+        enqueueSnackbar('Ściągnij sobie jakiegoś Chromka, Firefoxa czy innego Edga （〃｀ 3′〃）', { variant: 'info', autoHideDuration: 8000 })
       }
     }
 
@@ -155,15 +141,11 @@ const AppInit = () => {
       const isTokenValid = token && token !== null && token.length > 0
       const isAuthenticated = store.get('authToken').length > 0
 
-      if (
-        isTokenValid &&
-        isUserValid &&
-        isAuthenticated
-      ) {
+      if (isTokenValid && isUserValid && isAuthenticated) {
         try {
           const response = await device({
             userId: user,
-            token: token
+            token: token,
           })
 
           console.log(response)
@@ -180,9 +162,8 @@ const AppInit = () => {
    * Style body background
    */
   useEffect(() => {
-    window.document.body.style.background =
-      AppBackgroundThemes[store.get('themeBackgroundId')].background
-  }, [store])
+    window.document.body.style.background = mode.background
+  }, [store, mode.background])
 
   return null
 }

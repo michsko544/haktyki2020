@@ -5,11 +5,10 @@ import CloseIcon from '@material-ui/icons/Close'
 import { ContainerStyled } from './Container/container.style'
 import { IconLink } from './../../components/App/App.style'
 import TeamfoodFormik from './teamfood.form'
-import Store from './../../components/App/App.store'
-import { AppBackgroundThemes } from './../../components/App/App.themes'
+import { useColors } from '../../utils'
 
 const Teamfood = () => {
-  const store = Store.useStore()
+  const { mode } = useColors()
 
   useEffect(() => {
     document.title = 'Nowe Zamówienie 🍔 | TeamFood'
@@ -25,19 +24,14 @@ const Teamfood = () => {
           <IconLink to="/">
             <CloseIcon
               style={{
-                color:
-                  AppBackgroundThemes[store.get('themeBackgroundId')].fontColor,
+                color: mode.fontColor,
               }}
             />
           </IconLink>
         </div>
         <H4>Po prostu zamów swoje jedzenie.</H4>
       </Header>
-      <ContainerStyled
-        background={
-          AppBackgroundThemes[store.get('themeBackgroundId')].alternate
-        }
-      >
+      <ContainerStyled background={mode.alternate}>
         <TeamfoodFormik />
       </ContainerStyled>
     </>

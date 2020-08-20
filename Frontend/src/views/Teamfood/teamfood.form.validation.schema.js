@@ -1,21 +1,25 @@
 import * as Yup from 'yup'
 
 export const teamfoodFormValidationSchema = Yup.object().shape({
-  // eslint-disable-next-line
-  restaurant: Yup.string().required('Wypełnij to pole').min(5, 'Wybierz dłuższą nazwę, minimum ${min} znaków').max(191, 'Serwer nie ogarnie! Za długa nazwa'),
+  restaurant: Yup.string()
+    .required('Wypełnij to pole')
+    // eslint-disable-next-line
+    .min(5, 'Wybierz dłuższą nazwę, minimum ${min} znaków')
+    .max(191, 'Serwer nie ogarnie! Za długa nazwa'),
   date: Yup.string()
     .required('Wypełnij to pole')
     .test('datetime-test', 'Data nie może być w przeszłości', function (date) {
       let { time } = this.parent
-      if(typeof time === 'undefined' && new Date(`${date}`) <= new Date()) return false
-      if(typeof time === 'undefined') return true
+      if (typeof time === 'undefined' && new Date(`${date}`) <= new Date()) return false
+      if (typeof time === 'undefined') return true
 
       const datetime = new Date(`${date} ${time}`)
       const now = new Date()
       return datetime > now
-    }).test('datetime-buffer-test', 'Wymagamy 15 minut czasu, żeby inni mogli dołączyć!', function (date) {
+    })
+    .test('datetime-buffer-test', 'Wymagamy 15 minut czasu, żeby inni mogli dołączyć!', function (date) {
       let { time } = this.parent
-      if(typeof time === 'undefined') return true
+      if (typeof time === 'undefined') return true
 
       const datetime = new Date(`${date} ${time}`)
       const now = new Date()
@@ -24,9 +28,12 @@ export const teamfoodFormValidationSchema = Yup.object().shape({
       return datetime > now
     }),
   time: Yup.string().required('Wypełnij to pole'),
-  // eslint-disable-next-line
-  description: Yup.string().required('Wypełnij to pole').min(5, 'Wprowadź dłuższy opis, minimum ${min} znaków').max(191, 'Serwer nie ogarnie! Za długi opis szefuniu'),
-  paymentForm: Yup.string().required('Musisz zaznaczyć jedną z opcji'),
+  description: Yup.string()
+    .required('Wypełnij to pole')
+    // eslint-disable-next-line
+    .min(5, 'Wprowadź dłuższy opis, minimum ${min} znaków')
+    .max(191, 'Serwer nie ogarnie! Za długi opis szefuniu'),
+  paymentForm: Yup.string().required('Zaznacz jedną z opcji'),
   image: Yup.string().required('Wybierz zdjęcie (☞ﾟヮﾟ)☞'),
 })
 

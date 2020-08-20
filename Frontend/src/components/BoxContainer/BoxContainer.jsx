@@ -1,22 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Container, Box, BackgroundSpaceToClick } from './'
-import Store from './../App/App.store'
-import { AppBackgroundThemes } from './../App/App.themes'
+import { useColors } from '../../utils'
 
 const BoxContainer = ({ children, closeCallback }) => {
-  const store = Store.useStore()
+  const { mode } = useColors()
 
   return (
     <Container>
       <BackgroundSpaceToClick onClick={closeCallback} />
-      <Box
-        background={
-          AppBackgroundThemes[store.get('themeBackgroundId')].alternate
-        }
-      >
-        {children}
-      </Box>
+      <Box background={mode.alternate}>{children}</Box>
     </Container>
   )
 }

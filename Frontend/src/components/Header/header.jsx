@@ -1,14 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { HeaderStyled } from './header.style'
-import Store from './../App/App.store'
-import { AppBackgroundThemes } from './../App/App.themes'
+import { useColors } from './../../utils'
 
 const Header = ({ children, ...props }) => {
-  const store = Store.useStore()
+  const { mode } = useColors()
 
   return (
-    <HeaderStyled background={AppBackgroundThemes[store.get('themeBackgroundId')].alternate} {...props}>
+    <HeaderStyled background={mode.alternate} {...props}>
       {children}
     </HeaderStyled>
   )

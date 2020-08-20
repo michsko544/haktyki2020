@@ -31,14 +31,14 @@ const OrderDetails = ({ order, closeCallback }) => {
   const errorToast = (message) => {
     toast(message, {
       variant: 'error',
-      autoHideDuration: 3000
+      autoHideDuration: 3000,
     })
   }
 
   const okToast = (message) => {
     toast(message, {
       variant: 'success',
-      autoHideDuration: 3000
+      autoHideDuration: 3000,
     })
   }
 
@@ -69,9 +69,9 @@ const OrderDetails = ({ order, closeCallback }) => {
           />
         </ButtonWrapper>
       )
-      else if(isFirstStage && isOrderClosed(order) && isLoggedUserPurchaser(store.get('userId'), order) && isDelivered(order)) {
-        return (
-          <>
+    else if (isFirstStage && isOrderClosed(order) && isLoggedUserPurchaser(store.get('userId'), order) && isDelivered(order)) {
+      return (
+        <>
           <ButtonWrapper>
             <Button
               text={'Przypomnij o zapłacie'}
@@ -100,10 +100,9 @@ const OrderDetails = ({ order, closeCallback }) => {
               }}
             />
           </ButtonWrapper>
-          </>
-        )
-      }
-    else return ''
+        </>
+      )
+    } else return ''
   }
 
   const displayCurrentStage = () => {
@@ -138,10 +137,7 @@ const OrderDetails = ({ order, closeCallback }) => {
     return (
       <Margins isFirstStage={isFirstStage.toString()}>
         {order && (
-          <OrderText
-            title={order.restaurant}
-            info={`${displayPurchaser(store.get('userId'), order)} - ${displayDate(order)} ${displayTime(order)}`}
-          >
+          <OrderText title={order.restaurant} info={`${displayPurchaser(store.get('userId'), order)} - ${displayDate(order)} ${displayTime(order)}`}>
             {displayCurrentStage()}
             {showSuitableButton()}
           </OrderText>

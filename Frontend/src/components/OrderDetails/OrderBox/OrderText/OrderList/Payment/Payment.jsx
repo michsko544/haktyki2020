@@ -1,18 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Store from '../../../../../App/App.store'
 import { paymentTypes } from '../../../../../../constants'
-import { AppThemes, AppBackgroundThemes } from '../../../../../App/App.themes'
 import { Number } from './Payment.style'
 import { SmallTitle } from '../../Header'
+import { useColors } from '../../../../../../utils'
 
 const Payment = ({ payment, loggedPersonOrder }) => {
-  const store = Store.useStore()
-  const theme = AppThemes[store.get('themeId')]
-  const backgroundTheme = AppBackgroundThemes[store.get('themeBackgroundId')]
-  const fontcolor = backgroundTheme.fontColor
-  const firstcolor = theme.from
-  const secondcolor = theme.to
+  const { theme, mode } = useColors()
 
   const displayPaymentType = () => {
     switch (payment.type) {
@@ -28,8 +22,8 @@ const Payment = ({ payment, loggedPersonOrder }) => {
   const displaySwift = () =>
     payment.swift ? (
       <>
-        <SmallTitle fontcolor={fontcolor}>Swift/BIC: </SmallTitle>
-        <Number firstcolor={firstcolor} secondcolor={secondcolor}>
+        <SmallTitle fontcolor={mode.fontColor}>Swift/BIC: </SmallTitle>
+        <Number firstcolor={theme.from} secondcolor={theme.to}>
           {payment.swift}
         </Number>
       </>
@@ -41,8 +35,8 @@ const Payment = ({ payment, loggedPersonOrder }) => {
     if (payment.number && loggedPersonOrder?.description) {
       return (
         <>
-          <SmallTitle fontcolor={fontcolor}>na numer: </SmallTitle>
-          <Number firstcolor={firstcolor} secondcolor={secondcolor}>
+          <SmallTitle fontcolor={mode.fontColor}>na numer: </SmallTitle>
+          <Number firstcolor={theme.from} secondcolor={theme.to}>
             {payment.number}
           </Number>
           {displaySwift()}
@@ -54,7 +48,7 @@ const Payment = ({ payment, loggedPersonOrder }) => {
 
   return (
     <div>
-      <SmallTitle fontcolor={fontcolor}>Preferowana forma zwrotu - {displayPaymentType()}</SmallTitle>
+      <SmallTitle fontcolor={mode.fontColor}>Preferowana forma zwrotu - {displayPaymentType()}</SmallTitle>
       {displayPaymentNumber()}
     </div>
   )
