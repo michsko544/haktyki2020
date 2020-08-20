@@ -28,6 +28,12 @@ const GreeterFormik = () => {
     localStorage.setItem('login', JSON.stringify(json))
   }
 
+  const transformRequest = (values) => {
+    return {
+      fullname: capitalizeAllWords(values)
+    }
+  }
+
   const onSubmit = async (values, { setSubmitting }) => {
     enqueueSnackbar('Zapisywanie danych 🤞', {
       variant: 'info',
@@ -35,7 +41,7 @@ const GreeterFormik = () => {
     })
 
     try {
-      const response = await fullname(capitalizeAllWords(values))
+      const response = await fullname(transformRequest(values))
       if (response.statusCode === 200) {
         store.set('user')(capitalizeAllWords(values.name))
         setLocalStorage(values.name)
