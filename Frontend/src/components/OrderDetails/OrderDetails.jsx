@@ -9,7 +9,7 @@ import { ButtonWrapper, Margins } from './OrderBox'
 import Store from '../App/App.store'
 import { isOrderClosed, displayDate, displayTime, findLoggedPerson, isLoggedUserPurchaser, displayPurchaser } from './../../utils'
 import { useSnackbar } from 'notistack'
-import usePost from './../../API/ourAPI/useNPost'
+import { usePost } from '../../API'
 
 const OrderDetails = ({ order, closeCallback }) => {
   const [isFirstStage, setFirstStage] = useState(true)

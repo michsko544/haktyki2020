@@ -3,7 +3,7 @@ import { Formik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useHistory } from 'react-router-dom'
 import Store from '../../App/App.store'
-import usePost from '../../../API/ourAPI/useNPost'
+import { usePost } from '../../../API';
 
 import { validationSchema } from './greeter.form.validation'
 import GreeterForm from './greeter.form.template'

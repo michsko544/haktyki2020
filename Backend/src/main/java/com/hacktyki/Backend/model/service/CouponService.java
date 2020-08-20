@@ -23,7 +23,6 @@ public class CouponService {
 
     public Long addCoupon(CouponRestModel couponRestModel){
         if(couponRestModel != null && couponRestModel.getDescription() != null && couponRestModel.getCode() != null) {
-            logger.info("DB-shot save.");
             DiscountCouponEntity couponEntity = discountCouponRepository.save(new DiscountCouponEntity(couponRestModel));
             return couponEntity.getId();
         }

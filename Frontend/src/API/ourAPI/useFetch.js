@@ -1,39 +1,34 @@
-import React from 'react'
 import axiosAPI from './API'
-import PropTypes from 'prop-types'
+import { useState } from 'react'
 
-const useFetch = (url) => {
-  const [isLoading, setIsLoading] = React.useState(false)
-  const [response, setResponse] = React.useState(null)
-  const [error, setError] = React.useState(null)
+export const useFetch = (url) => {
+  const [isLoading, setIsLoading] = useState(false)
 
-  const getData = async () => {
+  const fetch = async () => {
+    setIsLoading(true)
+    let response
     try {
-      setIsLoading(true)
-      const response = await axiosAPI(url)
-      setResponse({ ...response.data, statusCode: response.status })
-      if (process.env.REACT_APP_DEBUG === 'true') console.log(response.data)
-    } catch (error) {
-      setError({
-        code: error.response?.status || -1,
-        text: 'Coś poszło nie tak',
-      })
-      if (process.env.REACT_APP_DEBUG === 'true') console.log(error.response)
+      response = await axiosAPI.get(url)
+
+      if (process.env.REACT_APP_DEBUG === 'true') {
+        console.log('Response: ', response)
+      }
+    } catch (e) {
+      throw e
     } finally {
       setIsLoading(false)
+    }
+
+    return {
+      ...response.data,
+      statusCode: response.status,
     }
   }
 
   return {
-    response,
-    getData,
+    fetch,
     isLoading,
-    error,
   }
-}
-
-useFetch.propTypes = {
-  url: PropTypes.string.required,
 }
 
 export default useFetch

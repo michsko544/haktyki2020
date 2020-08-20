@@ -3,5 +3,5 @@ export {
   setTokenIntoHeader,
   removeTokenFromHeader,
 } from './API'
-export { default as useFetch } from './useFetch'
-export { default as usePost } from './usePost'
+export { useFetch } from './useFetch'
+export { usePost } from './usePost'

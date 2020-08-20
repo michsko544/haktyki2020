@@ -10,7 +10,7 @@ import { FormWrapper } from './'
 import Store from './../../App/App.store'
 import { Field } from 'formik'
 import { useSnackbar } from 'notistack'
-import usePost from './../../../API/ourAPI/useNPost'
+import { usePost } from '../../../API'
 
 const LoginForm = ({ errors, touched, isSubmitting }) => {
   const errorHandler = (name) => touched[name] && errors[name]
