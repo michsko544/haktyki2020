@@ -1,12 +1,12 @@
 import React from 'react'
 import { Formik } from 'formik'
 import { useSnackbar } from 'notistack'
-import { useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom'
 
 import Store from '../../components/App/App.store'
 import usePost from './../../API/ourAPI/useNPost'
 
-import validationSchema from './teamfood.form.validation.schema';
+import validationSchema from './teamfood.form.validation.schema'
 import TeamfoodForm from './teamfood.form.template'
 
 const TeamfoodFormik = () => {
@@ -41,34 +41,32 @@ const TeamfoodFormik = () => {
   }
 
   const onSubmit = async (values, { setSubmitting }) => {
-    enqueueSnackbar('Dodawanie twojego zamówienia （*＾-＾*）↗　')
+    enqueueSnackbar('Dodawanie twojego zamówienia （*＾-＾*）↗　', {
+      variant: 'info',
+    })
 
     try {
       const response = await addOrder(transformRequest(values))
       console.log('Response: ', response)
-      
-      if(response.statusCode >= 200) {
+
+      if (response.statusCode >= 200) {
         setTimeout(() => history.replace('/'), 1500)
       } else {
         enqueueSnackbar('Szefie, serwer mówi w esperanto. Spróbuj później', {
-          variant: 'warn'
+          variant: 'warn',
         })
       }
 
       setSubmitting(false)
     } catch (error) {
       enqueueSnackbar('Szefuniu, serwer nie chce gadać. Spróbuj ponownie później', {
-        variant: 'error'
+        variant: 'error',
       })
       setSubmitting(false)
     }
   }
 
-  return (
-    <Formik {...{ initialValues, onSubmit, validationSchema }}>
-      {TeamfoodForm}
-    </Formik>
-  )
+  return <Formik {...{ initialValues, onSubmit, validationSchema }}>{TeamfoodForm}</Formik>
 }
 
 export default TeamfoodFormik
