@@ -98,11 +98,9 @@ public class NotificationService {
 
     public boolean addDevice(NotificationDeviceRestModel notificationDevice) throws Exception {
         try {
-            logger.info("DB-shot find.");
             NotificationDeviceEntity notificationDeviceEntity = notificationDeviceRepository.findByTokenAndUserId(notificationDevice.getToken(), notificationDevice.getUserId());
             if(notificationDeviceEntity == null) {
                 notificationDeviceEntity = new NotificationDeviceEntity(notificationDevice.getToken(), notificationDevice.getUserId());
-                logger.info("DB-shot save.");
                 notificationDeviceRepository.save(notificationDeviceEntity);
                 return true;
             }
@@ -124,7 +122,6 @@ public class NotificationService {
             List<NotificationDeviceEntity> notificationDeviceList;
 
             for (Long userId : userIds) {
-                logger.info("DB-shot find.");
                 notificationDeviceList = notificationDeviceRepository.findAllByUserId(userId);
 
                 if (notificationDeviceList != null) {
