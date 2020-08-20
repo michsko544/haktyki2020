@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface OrderDetailsRepository extends JpaRepository<OrderDetailsEntity, OrderDetailsIdentity> {
 
-    public List<OrderDetailsEntity> findAllById_UserId(long Id_UserId);
-    public List<OrderDetailsEntity> findAllById_OrderId(long Id_OrderId);
-    public OrderDetailsEntity findAllById_UserIdAndId_OrderId(Long Id_UserId, Long Id_OrderId);
+    List<OrderDetailsEntity> findAllById_UserId(long Id_UserId);
+    List<OrderDetailsEntity> findAllById_OrderId(long Id_OrderId);
+    OrderDetailsEntity findAllById_UserIdAndId_OrderId(Long Id_UserId, Long Id_OrderId);
 }
