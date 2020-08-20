@@ -30,7 +30,7 @@ const GreeterFormik = () => {
 
   const transformRequest = (values) => {
     return {
-      fullname: capitalizeAllWords(values)
+      fullname: capitalizeAllWords(values.name)
     }
   }
 
