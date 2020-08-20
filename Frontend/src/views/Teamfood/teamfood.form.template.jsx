@@ -7,8 +7,6 @@ import usePhotoSearch from './../../API/unsplashAPI/usePhotoSearch'
 
 import { Input, InputStyled, RadioGroupFormik } from '../../components/Inputs'
 import { ButtonFormWrapper, default as ButtonBig } from '../../components/Button'
-import Loader from '../../components/Loader'
-import ErrorMessage from '../../components/ErrorMessage'
 
 import PhotoSelection from './PhotoSelection/photo.selection'
 import { PhotoSelectionContainer } from './PhotoSelection/photo.selection.container.style'
@@ -68,10 +66,6 @@ export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, se
       setPhotos(images.images)
     }
   }, [images.images])
-
-  const showLoaderIfLoading = () => images.isLoading && <Loader />
-
-  const showErrorIfError = () => images.error && <ErrorMessage error={images.error.code} advice={images.error.text} />
 
   const checkKeywords = () => {
     let matched = []
@@ -140,8 +134,6 @@ export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, se
       </div>
       <div>
         <PhotoSelectionContainer>
-          {showLoaderIfLoading()}
-          {showErrorIfError()}
           {photos.map((photo) => (
             <PhotoSelection key={photo.id} onClick={(e) => photoSelectionHandler(photo, e)} photo={photo} />
           ))}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Store from '../../../../App/App.store'
 import { usePost } from '../../../../../API'
 import { useSnackbar } from 'notistack'
@@ -7,28 +7,10 @@ import OrderForm from './OrderForm.template'
 import { orderFormValidationSchema } from './OrderForm.validation.schema'
 
 const OrderFormik = ({ order, coupon, date, time, payment, orderId, isPurchaser, closeCallback, formAction }) => {
-  const updateData = usePost('/orders/edit')
-  const addData = usePost('/orders/join')
+  const { send: edit } = usePost('/orders/edit')
+  const { send: join } = usePost('/orders/join')
   const { enqueueSnackbar } = useSnackbar()
   const store = Store.useStore()
-
-  useEffect(() => {
-    if (!updateData.isLoading && updateData.response !== null && updateData.response.statusCode === 200) {
-      enqueueSnackbar('Zapisano 👌', {
-        variant: 'success',
-      })
-      closeCallback()
-    }
-  }, [updateData.response, updateData.isLoading, enqueueSnackbar, closeCallback])
-
-  useEffect(() => {
-    if (!addData.isLoading && addData.response !== null && addData.response.statusCode === 201) {
-      enqueueSnackbar('Dołączono 👌', {
-        variant: 'success',
-      })
-      closeCallback()
-    }
-  }, [addData.response, addData.isLoading, enqueueSnackbar, closeCallback])
 
   const initialValues = {
     orderContent: order || '',
@@ -72,10 +54,32 @@ const OrderFormik = ({ order, coupon, date, time, payment, orderId, isPurchaser,
     }
   }
 
+  const showError = () => {
+    enqueueSnackbar('Problem z serwerem. Spróbuj jeszcze raz :/', {
+      variant: 'error',
+    })
+  }
+
   const onSubmit = async (values, { setSubmitting }) => {
     enqueueSnackbar('Zapisywanie 🤞', { variant: 'info', autoHideDuration: 3000 })
-    if (formAction === 'edit') await updateData.sendData(transformValuesForUpadate(values))
-    else await addData.sendData(transformValuesForJoin(values))
+    if (formAction === 'edit') {
+      const response = await edit(transformValuesForUpadate(values))
+      if (response.statusCode === 200) {
+        enqueueSnackbar('Zapisano 👌', {
+          variant: 'success',
+        })
+        setSubmitting(false)
+        closeCallback()
+      } else showError()
+    } else {
+      const response = await join(transformValuesForJoin(values))
+      if (response.statusCode === 201) {
+        enqueueSnackbar('Dołączono 👌', {
+          variant: 'success',
+        })
+        closeCallback()
+      } else showError()
+    }
 
     setSubmitting(false)
   }
