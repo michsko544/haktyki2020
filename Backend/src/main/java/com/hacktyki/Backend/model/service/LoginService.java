@@ -33,7 +33,6 @@ public class LoginService {
             throw new Exception("Email address is already used.");
         }
         else{
-            logger.info("DB-shot save.");
             userRepository.save(mapSignInRestModel(user));
             return "Successfully registered. Now you can log in.";
         }
@@ -41,7 +40,6 @@ public class LoginService {
 
     public void authenticate(UserSignInRestModel userDTO) throws Exception {
 
-        logger.info("DB-shot find.");
         UserEntity user = userRepository.findByLogin(userDTO.getLogin());
         if( user == null || !passwordEncoder.matches(userDTO.getPassword(), user.getPassword()) ) {
             throw new Exception("Used bad credentials or user doesn't exists.");
@@ -49,7 +47,6 @@ public class LoginService {
     }
 
     public LoginRestModel getLoginBody(String userLogin) {
-        logger.info("DB-shot find.");
         UserEntity userEntity = userRepository.findByLogin(userLogin);
 
         LoginRestModel loginResponseBody = new LoginRestModel(userEntity.getId(),
@@ -64,7 +61,6 @@ public class LoginService {
     }
 
     private boolean emailExists(UserSignInRestModel user) {
-        logger.info("DB-shot find.");
         return userRepository.findByLogin(user.getLogin()) != null;
     }
 

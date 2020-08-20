@@ -24,11 +24,9 @@ public class UserService {
     }
 
     public Boolean setMyFullname(String fullname) {
-        logger.info("DB-shot find.");
         UserEntity user = userRepository.findByLogin(getAuthenticatedLogin());
         if(user != null){
             user.setFullName(fullname);
-            logger.info("DB-shot save.");
             userRepository.save(user);
             return true;
         }
@@ -36,14 +34,12 @@ public class UserService {
     }
 
     public UserDetailsRestModel getMyDetails() {
-        logger.info("DB-shot find.");
         return new UserDetailsRestModel(userRepository.findByLogin(getAuthenticatedLogin()));
     }
 
     @Transactional
     public boolean changeMyDetails(UserDetailsRestModel userDetails){
         if(userDetails != null){
-            logger.info("DB-shot save.");
             userRepository.save(mapDetailsRestModel(userDetails));
             return true;
         }
@@ -54,7 +50,6 @@ public class UserService {
     protected long getAuthenticatedId(){
         String userLogin = getAuthenticatedLogin();
         if(null != userLogin) {
-            logger.info("DB-shot find.");
             return userRepository.findByLogin(userLogin).getId();
         } else {
             throw new NullPointerException("User is not logged in.");
@@ -73,7 +68,6 @@ public class UserService {
 
     private UserEntity mapDetailsRestModel(UserDetailsRestModel userDetails){
 
-        logger.info("DB-shot find.");
         UserEntity user = userRepository.findByLogin(getAuthenticatedLogin());
         user.setFullName(userDetails.getFullName());
         user.setPhoneNumber(userDetails.getPhoneNumber());
