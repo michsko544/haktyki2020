@@ -22,7 +22,7 @@ const SettingsFormik = () => {
     } catch (error) {
       enqueueSnackbar('Nie udało się pobrać twoich danych z serwera (⓿_⓿)', {
         variant: 'warn',
-        autoHideDuration: 3000
+        autoHideDuration: 3000,
       })
     }
   }
@@ -38,7 +38,6 @@ const SettingsFormik = () => {
     account: user?.creditCardNumber || '',
     swift: user?.swiftBicCode || '',
   }
-
 
   const isPolishIBAN = (accountNumber) => {
     const IBAN = (accountNumber[0] + accountNumber[1]).toString().toUpperCase()
@@ -57,6 +56,7 @@ const SettingsFormik = () => {
   }
 
   const insertSpaces = (input, howOften, whenStart) => {
+    //When there is no whenStart, adding space should start at howOften index
     whenStart = whenStart < 1 ? howOften : whenStart
     const START = whenStart || howOften
 
@@ -64,17 +64,24 @@ const SettingsFormik = () => {
 
     let spacesCounter = 0
     let i = 0
+    //pointer is index of last suspect element in input array (string)
     let pointer = START + i * howOften
+    //suspect is a fragment of input (suspect.length = howOften + 1)
     let suspect = input.substring(0, START + 1)
-    while (pointer <= input.length) {
+
+    while (pointer - howOften <= input.length) {
       if (i === 0 && suspect[START] !== ' ') {
+        //only first suspect check
         output = output + suspect.substring(0, suspect.length - 1) + ' '
       } else if (suspect[howOften] !== ' ' && suspect[howOften] !== undefined) {
+        //if last char in suspect is not space add there space
         output = output + suspect.substring(0, suspect.length - 1) + ' '
       } else {
+        //else add without space
         output += suspect
         ++spacesCounter
       }
+
       ++i
       pointer = START + i * howOften + spacesCounter
       suspect = input.substring(pointer - howOften, pointer + 1)
@@ -100,14 +107,14 @@ const SettingsFormik = () => {
       await update(transformValues(values))
       enqueueSnackbar('Zapisano 👌', {
         variant: 'success',
-        autoHideDuration: 1500
+        autoHideDuration: 1500,
       })
-      
+
       setTimeout(() => history.push('/'), 1500)
-    } catch(error) {
+    } catch (error) {
       enqueueSnackbar('Serwer się sypnął, daj znać adminowi ;/', {
         variant: 'error',
-        autoHideDuration: 3000
+        autoHideDuration: 3000,
       })
     }
 
