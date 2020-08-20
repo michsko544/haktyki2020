@@ -24,7 +24,6 @@ import { BlurChildren } from '../../components/App'
 import { messages } from './messages'
 import Message from './message.styled'
 import { useColors } from '../../utils'
-import { FormControlLabelStyled } from '../Teamfood/form.control.label.style'
 
 const Home = () => {
   const store = Store.useStore()
