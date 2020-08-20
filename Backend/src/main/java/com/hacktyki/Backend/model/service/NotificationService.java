@@ -32,7 +32,7 @@ public class NotificationService {
 
         try {
             String messageTitle = orderService.getOrderById(orderId).getRestaurant();
-            String messageBody = "Oddawaj hajs! (╯°□°）╯︵ ┻━┻            ( ◍•㉦•◍ )";//"Pamiętaj by zapłacić zamawiającemu ( ͡• ͜ʖ ͡• )";
+            String messageBody = "Nie zapomnij uregulować płatności 😉";
 
             ArrayList<String> tokensList = getTokensForOrderNotification(orderId);
 
@@ -66,7 +66,7 @@ public class NotificationService {
 
         try {
             String messageTitle = orderService.getOrderById(orderId).getRestaurant();
-            String messageBody = "Twoje zamówienie już na ciebie czeka :)";
+            String messageBody = "Twoje zamówienie już na ciebie czeka 🙂";
 
             ArrayList<String> tokensList = getTokensForOrderNotification(orderId);
 
