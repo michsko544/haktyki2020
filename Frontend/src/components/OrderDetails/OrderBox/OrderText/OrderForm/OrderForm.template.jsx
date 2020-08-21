@@ -10,10 +10,14 @@ import { ButtonWrapper, TextDisplayer } from '../../'
 import { RadioGroupFormik } from '../../../../Inputs'
 import { useColors } from '../../../../../utils'
 
-const OrderForm = ({ values, touched, errors, isSubmitting, handleChange, isPurchaser }) => {
+const OrderForm = ({ values, touched, errors, isSubmitting, handleChange, handleSubmit, isPurchaser }) => {
   const { mode } = useColors()
 
   const errorHandler = (name) => touched[name] && errors[name]
+
+  const handleEnter = (event) => {
+    if (event.key === 'Enter') handleSubmit()
+  }
 
   const showCouponInput = () =>
     !values.hasCoupon ? (
@@ -24,7 +28,7 @@ const OrderForm = ({ values, touched, errors, isSubmitting, handleChange, isPurc
     ) : (
       <>
         <InputStyled>
-          <Field type="text" label="Kod kuponu" name="coupon" component={Input} />
+          <Field type="text" label="Kod kuponu" name="coupon" component={Input} aria-label="coupon-code" aria-required="true" />
         </InputStyled>
         <InputStyled>
           <Field
@@ -33,7 +37,9 @@ const OrderForm = ({ values, touched, errors, isSubmitting, handleChange, isPurc
             label="Informacje o kuponie"
             name="couponDescription"
             component={Input}
-            error={errors.couponDescription}
+            error={errorHandler('couponDescription')}
+            aria-label="coupon-description"
+            aria-required="true"
           />
         </InputStyled>
       </>
@@ -44,10 +50,28 @@ const OrderForm = ({ values, touched, errors, isSubmitting, handleChange, isPurc
       isPurchaser && (
         <DoubleInputStyled>
           <InputStyled>
-            <Field type="date" name="date" label="Kiedy?" placeholder="Dzisiaj" component={Input} error={errorHandler('date')} />
+            <Field
+              type="date"
+              name="date"
+              label="Kiedy?"
+              placeholder="Dzisiaj"
+              component={Input}
+              error={errorHandler('date')}
+              aria-label="date"
+              aria-required="true"
+            />
           </InputStyled>
           <InputStyled>
-            <Field type="time" name="hour" label="O której?" placeholder="17:00" component={Input} error={errorHandler('hour')} />
+            <Field
+              type="time"
+              name="hour"
+              label="O której?"
+              placeholder="17:00"
+              component={Input}
+              error={errorHandler('hour')}
+              aria-label="time"
+              aria-required="true"
+            />
           </InputStyled>
         </DoubleInputStyled>
       )
@@ -69,6 +93,7 @@ const OrderForm = ({ values, touched, errors, isSubmitting, handleChange, isPurc
             label={'Forma Płatności'}
             component={RadioGroupFormik}
             aria-label="payment"
+            aria-required="true"
           />
         </InputStyled>
       )
@@ -76,7 +101,7 @@ const OrderForm = ({ values, touched, errors, isSubmitting, handleChange, isPurc
   }
 
   return (
-    <Form>
+    <Form onKeyPress={handleEnter}>
       <SmallTitle fontcolor={mode.fontColor}>Co chcesz zamówić?</SmallTitle>
       <TextDisplayer>
         <InputStyled>
@@ -88,6 +113,8 @@ const OrderForm = ({ values, touched, errors, isSubmitting, handleChange, isPurc
             style={{ height: 77 }}
             error={errorHandler('orderContent')}
             placeholder="Penne z boczkiem i brokułami w sosie śmietanowym, kompot, zestaw sztućców"
+            aria-label="order"
+            aria-required="true"
           />
         </InputStyled>
         {showCouponInput()}
@@ -95,7 +122,7 @@ const OrderForm = ({ values, touched, errors, isSubmitting, handleChange, isPurc
         {showPaymentFormIfPurchaser()}
       </TextDisplayer>
       <ButtonWrapper>
-        <Button text="Zapisz" type="submit" disabled={isSubmitting} />
+        <Button text="Zapisz" type="submit" disabled={isSubmitting} aria-label="submit" aria-required="true" />
       </ButtonWrapper>
     </Form>
   )

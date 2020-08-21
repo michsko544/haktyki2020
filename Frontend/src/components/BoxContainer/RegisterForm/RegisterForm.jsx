@@ -10,12 +10,16 @@ import { FormWrapper } from '../LoginForm'
 import { useSnackbar } from 'notistack'
 import { usePost } from '../../../API'
 
-const RegisterForm = ({ errors, touched, isSubmitting }) => {
+const RegisterForm = ({ errors, touched, isSubmitting, handleSubmit }) => {
   const errorHandler = (name) => touched[name] && errors[name]
+
+  const handleEnter = (event) => {
+    if (event.key === 'Enter') handleSubmit()
+  }
 
   return (
     <FormWrapper>
-      <Form>
+      <Form onKeyPress={handleEnter}>
         <InputStyled>
           <Field
             component={Input}
@@ -25,6 +29,8 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             placeholder="XxTomekXx@gmail.com"
             error={errorHandler('user')}
             disabled={isSubmitting}
+            aria-label="email"
+            aria-required="true"
           />
         </InputStyled>
         <InputStyled>
@@ -36,6 +42,8 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             placeholder="**************"
             error={errorHandler('password')}
             disabled={isSubmitting}
+            aria-label="password"
+            aria-required="true"
           />
         </InputStyled>
         <ButtonFormWrapper>
@@ -43,6 +51,8 @@ const RegisterForm = ({ errors, touched, isSubmitting }) => {
             disabled={isSubmitting}
             text={isSubmitting ? 'Rejestrowanie...' : 'Rejestruj'}
             type="submit"
+            aria-label="submit"
+            aria-required="true"
           />
         </ButtonFormWrapper>
       </Form>
@@ -63,7 +73,7 @@ const RegisterFormik = () => {
   const transformValues = (values) => {
     return {
       login: values.user,
-      password: values.password
+      password: values.password,
     }
   }
 
@@ -89,7 +99,9 @@ const RegisterFormik = () => {
           autoHideDuration: 3000,
         })
 
-        setTimeout(() => { history.replace('/') }, 1500)
+        setTimeout(() => {
+          history.replace('/')
+        }, 1500)
       }
     } catch (e) {
       console.warn('HTTP Error: ', e)
@@ -104,25 +116,15 @@ const RegisterFormik = () => {
   }
 
   const validationSchema = Yup.object().shape({
-    user: Yup.string()
-      .email('Podaj prawidłowy adres email')
-      .max(50, 'Email musi mieć maksimum 50 znaków')
-      .required('Wypełnij to pole'),
+    user: Yup.string().email('Podaj prawidłowy adres email').max(50, 'Email musi mieć maksimum 50 znaków').required('Wypełnij to pole'),
     password: Yup.string()
       .min(8, 'Hasło musi mieć minimum 8 znaków')
       .max(30, 'Hasło musi mieć maksimum 30 znaki')
-      .matches(
-        /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/,
-        'Hasło musi mieć conajmniej jedną małą literę, dużą oraz cyfrę'
-      )
+      .matches(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/, 'Hasło musi mieć conajmniej jedną małą literę, dużą oraz cyfrę')
       .required('Wypełnij to pole'),
   })
 
-  return (
-    <Formik {...{ initialValues, onSubmit, validationSchema }}>
-      {RegisterForm}
-    </Formik>
-  )
+  return <Formik {...{ initialValues, onSubmit, validationSchema }}>{RegisterForm}</Formik>
 }
 
 export default RegisterFormik

@@ -18,7 +18,7 @@ import { FoodKeywords } from './teamfood.keywords'
 import { TeamfoodDefaultImages } from './teamfood.default.images'
 import { useColors } from '../../utils'
 
-export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, setValues }) => {
+export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, handleSubmit, values, setValues }) => {
   const { mode } = useColors()
   const errorHandler = (name) => touched[name] && errors[name]
   const images = usePhotoSearch()
@@ -92,28 +92,62 @@ export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, se
 
   useEffect(checkKeywords, [values])
 
+  const handleEnter = (event) => {
+    if (event.key === 'Enter') handleSubmit()
+  }
+
   return (
-    <FormStyled>
+    <FormStyled onKeyPress={handleEnter}>
       <div>
         <InputStyled>
-          <Field component={Input} type="text" name="restaurant" label="Skąd?" placeholder="Nazwa miejsca" error={errorHandler('restaurant')} />
+          <Field
+            component={Input}
+            type="text"
+            name="restaurant"
+            label="Skąd?"
+            placeholder="Nazwa miejsca"
+            error={errorHandler('restaurant')}
+            aria-label="restaurant"
+            aria-required="true"
+          />
         </InputStyled>
         <DoubleInputStyled>
           <InputStyled>
-            <Field component={Input} type="date" name="date" label="Kiedy?" placeholder="Dzisiaj" error={errorHandler('date')} />
+            <Field
+              component={Input}
+              type="date"
+              name="date"
+              label="Kiedy?"
+              placeholder="Dzisiaj"
+              error={errorHandler('date')}
+              aria-label="date"
+              aria-required="true"
+            />
           </InputStyled>
           <InputStyled>
-            <Field component={Input} type="time" name="time" label="O której?" placeholder="17:00" error={errorHandler('time')} />
+            <Field
+              component={Input}
+              type="time"
+              name="time"
+              label="O której?"
+              placeholder="17:00"
+              error={errorHandler('time')}
+              aria-label="time"
+              aria-required="true"
+            />
           </InputStyled>
         </DoubleInputStyled>
         <InputStyled>
           <Field
             component={Input}
+            componentType="textarea"
             type="text"
             name="description"
             label="Co zamawiasz?"
             placeholder="Twoje zamówienie"
             error={errorHandler('description')}
+            aria-label="order"
+            aria-required="true"
           />
         </InputStyled>
         <Field
@@ -127,9 +161,10 @@ export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, se
           label={'Forma Płatności'}
           component={RadioGroupFormik}
           aria-label="payment"
+          aria-required="true"
         />
         <ButtonFormWrapper>
-          <ButtonBig disabled={isSubmitting} text="Dodaj" type="submit" />
+          <ButtonBig disabled={isSubmitting} text="Dodaj" type="submit" aria-label="submit" aria-required="true" />
         </ButtonFormWrapper>
       </div>
       <div>
@@ -147,7 +182,9 @@ export const TeamfoodFormTemplate = ({ errors, touched, isSubmitting, values, se
           >
             {errorHandler('image')}
           </p>
-          <Button onClick={newPhotosHandler}>Wylosuj nowe</Button>
+          <Button onClick={newPhotosHandler} aria-label="draw-photo" aria-required="true">
+            Wylosuj nowe
+          </Button>
         </PhotoSelectionContainer>
       </div>
     </FormStyled>

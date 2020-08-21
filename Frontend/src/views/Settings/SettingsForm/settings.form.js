@@ -103,6 +103,15 @@ const SettingsFormik = () => {
     }
   }
 
+  const setLocalStorage = (fullname) => {
+    const login = localStorage.getItem('login')
+    if (login === null) return
+    const json = JSON.parse(login)
+
+    json.fullname = fullname
+    localStorage.setItem('login', JSON.stringify(json))
+  }
+
   const onSubmit = async (values, { setSubmitting }) => {
     enqueueSnackbar('Zapisywanie 🤞', { variant: 'info', autoHideDuration: 1500 })
 
@@ -113,6 +122,7 @@ const SettingsFormik = () => {
         autoHideDuration: 1500,
       })
       store.set('user')(capitalizeAllWords(values.user))
+      setLocalStorage(capitalizeAllWords(values.user))
 
       setTimeout(() => history.push('/'), 1500)
     } catch (error) {

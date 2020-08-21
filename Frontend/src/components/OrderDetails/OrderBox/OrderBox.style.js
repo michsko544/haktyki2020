@@ -31,6 +31,7 @@ export const Margins = styled.div`
 export const TextDisplayer = styled.div`
   height: 100%;
   width: 100%;
+  overflow-x: hidden;
 
   @media (min-width: 1024px) {
     height: fit-content;

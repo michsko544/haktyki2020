@@ -7,36 +7,44 @@ import { InputStyled } from '../../Inputs'
 import { FormWrapper } from '../LoginForm'
 import { FormContainer } from '../BoxContainer.style'
 
-const GreeterFormTemplate = ({ errors, touched, isSubmitting }) => {
-    const errorHandler = (name) => touched[name] && errors[name]
-  
-    return (
-      <FormContainer>
-        <FormWrapper>
-          <Form>
-            <InputStyled>
-              <Field
-                component={Input}
-                type="text"
-                name="name"
-                label="Twoje imię i nazwisko"
-                placeholder="Jan Nowak"
-                error={errorHandler('name')}
-                style={{ textTransform: 'capitalize' }}
-                disabled={isSubmitting}
-              />
-            </InputStyled>
-            <ButtonFormWrapper>
-              <Button
-                disabled={isSubmitting}
-                text={isSubmitting ? 'Zapisywanie...' : 'Przejdź do aplikacji'}
-                type="submit"
-              />
-            </ButtonFormWrapper>
-          </Form>
-        </FormWrapper>
-      </FormContainer>
-    )
+const GreeterFormTemplate = ({ errors, touched, isSubmitting, handleSubmit }) => {
+  const errorHandler = (name) => touched[name] && errors[name]
+
+  const handleEnter = (event) => {
+    if (event.key === 'Enter') handleSubmit()
   }
 
-  export default GreeterFormTemplate
+  return (
+    <FormContainer>
+      <FormWrapper>
+        <Form onKeyPress={handleEnter}>
+          <InputStyled>
+            <Field
+              component={Input}
+              type="text"
+              name="name"
+              label="Twoje imię i nazwisko"
+              placeholder="Jan Nowak"
+              error={errorHandler('name')}
+              style={{ textTransform: 'capitalize' }}
+              disabled={isSubmitting}
+              aria-label="fullname"
+              aria-required="true"
+            />
+          </InputStyled>
+          <ButtonFormWrapper>
+            <Button
+              disabled={isSubmitting}
+              text={isSubmitting ? 'Zapisywanie...' : 'Przejdź do aplikacji'}
+              type="submit"
+              aria-label="submit"
+              aria-required="true"
+            />
+          </ButtonFormWrapper>
+        </Form>
+      </FormWrapper>
+    </FormContainer>
+  )
+}
+
+export default GreeterFormTemplate
