@@ -8,7 +8,12 @@ export const orderFormValidationSchema = (isPurchaser) => {
       .max(191, 'Pole może zawierać maksymalnie 190 znaków')
       .required('Wypełnij to pole'),
     coupon: Yup.string().max(20, 'Pole może zawierać maksymalnie 20 znaków'),
-    couponDescription: Yup.string().max(100, 'Pole może zawierać maksymalnie 100 znaków'),
+    couponDescription: Yup.string()
+      .when('coupon', {
+        is: (coupon) => coupon?.length > 0,
+        then: Yup.string().required('Dodaj opis do kuponu!'),
+      })
+      .max(100, 'Pole może zawierać maksymalnie 100 znaków'),
     date: isPurchaser ? Yup.string().required('Wypełnij to pole') : Yup.string(),
     hour: isPurchaser ? Yup.string().required('Wypełnij to pole') : Yup.string(),
     payment: isPurchaser ? Yup.string().required('Zaznacz to pole') : Yup.string(),
