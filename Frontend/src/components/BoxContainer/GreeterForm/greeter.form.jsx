@@ -3,7 +3,7 @@ import { Formik } from 'formik'
 import { useSnackbar } from 'notistack'
 import { useHistory } from 'react-router-dom'
 import Store from '../../App/App.store'
-import { usePost } from '../../../API';
+import { usePost } from '../../../API'
 
 import { validationSchema } from './greeter.form.validation'
 import GreeterForm from './greeter.form.template'
@@ -30,7 +30,7 @@ const GreeterFormik = () => {
 
   const transformRequest = (values) => {
     return {
-      fullname: capitalizeAllWords(values.name)
+      fullname: capitalizeAllWords(values.name),
     }
   }
 
@@ -44,7 +44,7 @@ const GreeterFormik = () => {
       const response = await fullname(transformRequest(values))
       if (response.statusCode === 200) {
         store.set('user')(capitalizeAllWords(values.name))
-        setLocalStorage(values.name)
+        setLocalStorage(capitalizeAllWords(values.name))
         setSubmitting(false)
         history.push('/')
       }
