@@ -12,21 +12,27 @@ import { Field } from 'formik'
 import { useSnackbar } from 'notistack'
 import { usePost } from '../../../API'
 
-const LoginForm = ({ errors, touched, isSubmitting }) => {
+const LoginForm = ({ errors, touched, isSubmitting, handleSubmit, ...args }) => {
   const errorHandler = (name) => touched[name] && errors[name]
+
+  const handleEnter = (event) => {
+    if (event.key === 'Enter') handleSubmit()
+  }
 
   return (
     <FormWrapper>
-      <Form autoComplete={'on'}>
+      <Form autoComplete={'on'} onKeyPress={handleEnter}>
         <InputStyled>
           <Field
             component={Input}
             disabled={isSubmitting}
             type="email"
-            name="user"
+            name="email"
             label="E-mail"
             placeholder="XxTomekXx@gmail.com"
-            error={errorHandler('user')}
+            error={errorHandler('email')}
+            aria-label="email"
+            aria-required="true"
           />
         </InputStyled>
         <InputStyled>
@@ -38,14 +44,12 @@ const LoginForm = ({ errors, touched, isSubmitting }) => {
             label="Hasło"
             placeholder="**************"
             error={errorHandler('password')}
+            aria-label="password"
+            aria-required="true"
           />
         </InputStyled>
         <ButtonFormWrapper>
-          <Button
-            disabled={isSubmitting}
-            text={isSubmitting ? 'Logowanie...' : 'Zaloguj'}
-            type="submit"
-          />
+          <Button disabled={isSubmitting} text={isSubmitting ? 'Logowanie...' : 'Zaloguj'} type="submit" aria-label="submit" aria-required="true" />
         </ButtonFormWrapper>
       </Form>
     </FormWrapper>
@@ -59,7 +63,7 @@ const LoginFormik = () => {
   const { enqueueSnackbar } = useSnackbar()
 
   const initialValues = {
-    user: '',
+    email: '',
     password: '',
   }
 
@@ -68,7 +72,7 @@ const LoginFormik = () => {
   }
 
   const transformValues = (values) => {
-    return { login: values.user, password: values.password }
+    return { login: values.email, password: values.password }
   }
 
   const handleError = (message) => {
@@ -104,22 +108,16 @@ const LoginFormik = () => {
         handleError('Bardzo mocne ojej! Spadliśmy właśnie z planszy (╯‵□′)╯︵┻━┻')
       }
     }
-    
+
     setSubmitting(false)
   }
 
   const validationSchema = Yup.object().shape({
-    user: Yup.string()
-      .email('Podaj poprawny email')
-      .required('Wypełnij to pole'),
+    email: Yup.string().email('Podaj poprawny email').required('Wypełnij to pole'),
     password: Yup.string().required('Wypełnij to pole'),
   })
 
-  return (
-    <Formik {...{ initialValues, onSubmit, validationSchema }}>
-      {LoginForm}
-    </Formik>
-  )
+  return <Formik {...{ initialValues, onSubmit, validationSchema }}>{LoginForm}</Formik>
 }
 
 export default LoginFormik

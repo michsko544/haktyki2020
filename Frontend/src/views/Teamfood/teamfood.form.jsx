@@ -41,7 +41,7 @@ const TeamfoodFormik = () => {
   }
 
   const onSubmit = async (values, { setSubmitting }) => {
-    enqueueSnackbar('Dodawanie twojego zamówienia （*＾-＾*）↗　', {
+    enqueueSnackbar('Dodawanie twojego zamówienia 🤞', {
       variant: 'info',
     })
 
@@ -50,6 +50,9 @@ const TeamfoodFormik = () => {
       console.log('Response: ', response)
 
       if (response.statusCode >= 200) {
+        enqueueSnackbar('Szefunciu, zamówienie zostało dodane （*＾-＾*）↗', {
+          variant: 'success',
+        })
         setTimeout(() => history.replace('/'), 1500)
       } else {
         enqueueSnackbar('Szefie, serwer mówi w esperanto. Spróbuj później', {

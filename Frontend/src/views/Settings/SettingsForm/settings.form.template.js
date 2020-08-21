@@ -3,8 +3,12 @@ import { Form, Field } from 'formik'
 import { Input, InputStyled, SmallerInputStyled, RowOnMediumScreen } from './../../../components/Inputs'
 import { ButtonFormWrapper, default as Button } from './../../../components/Button'
 
-export const SettingsFormTemplate = ({ errors, touched, isSubmitting, isLoading, isIBANNotFromPoland, values }) => {
+export const SettingsFormTemplate = ({ errors, touched, isSubmitting, handleSubmit, isLoading, isIBANNotFromPoland, values }) => {
   const errorHandler = (name) => touched[name] && errors[name]
+
+  const handleEnter = (event) => {
+    if (event.key === 'Enter') handleSubmit()
+  }
 
   const showSwiftWhenIBAN = () => {
     return (
@@ -18,6 +22,8 @@ export const SettingsFormTemplate = ({ errors, touched, isSubmitting, isLoading,
             placeholder="REVOGB21XXX"
             error={errorHandler('swift')}
             style={{ textTransform: 'uppercase' }}
+            aria-label="swift-bic"
+            aria-required="true"
           />
         </SmallerInputStyled>
       )
@@ -28,7 +34,7 @@ export const SettingsFormTemplate = ({ errors, touched, isSubmitting, isLoading,
 
   return (
     <>
-      <Form>
+      <Form onKeyPress={handleEnter}>
         <InputStyled>
           <Field
             component={Input}
@@ -39,6 +45,8 @@ export const SettingsFormTemplate = ({ errors, touched, isSubmitting, isLoading,
             error={errorHandler('user')}
             style={{ textTransform: 'capitalize' }}
             disabled={isLoading}
+            aria-label="fullname"
+            aria-required="true"
           />
         </InputStyled>
         <InputStyled>
@@ -50,6 +58,8 @@ export const SettingsFormTemplate = ({ errors, touched, isSubmitting, isLoading,
             placeholder={superHolder('420 420 420')}
             error={errorHandler('blik')}
             disabled={isLoading}
+            aria-label="phone-number"
+            aria-required="true"
           />
         </InputStyled>
         <RowOnMediumScreen>
@@ -62,6 +72,8 @@ export const SettingsFormTemplate = ({ errors, touched, isSubmitting, isLoading,
               placeholder={superHolder('GB78 S3XY 2323 1234 2333 0000 1234')}
               error={errorHandler('account')}
               style={!isLoading ? { textTransform: 'uppercase' } : null}
+              aria-label="bank-number"
+              aria-required="true"
             />
           </InputStyled>
           {showSwiftWhenIBAN()}
