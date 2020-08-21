@@ -96,10 +96,10 @@ const SettingsFormik = () => {
     return {
       fullName: capitalizeAllWords(values.user),
       creditCardNumber: isIBANNotFromPoland(values.account)
-        ? insertSpaces(values.account.toUpperCase(), 4)
-        : insertSpaces(deletePolishIBAN(values.account.toUpperCase()), 4, 2),
+        ? insertSpaces(values.account.toUpperCase(), 4).trim()
+        : insertSpaces(deletePolishIBAN(values.account.toUpperCase()), 4, 2).trim(),
       swiftBicCode: isIBANNotFromPoland(values.account) ? values.swift.toUpperCase() : '',
-      phoneNumber: insertSpaces(values.blik.toString(), 3),
+      phoneNumber: insertSpaces(values.blik.toString(), 3).trim(),
     }
   }
 
