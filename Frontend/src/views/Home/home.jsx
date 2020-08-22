@@ -118,7 +118,7 @@ const Home = () => {
   const orderSort = (a, b) => new Date(`${a.date} ${a.time}`) > new Date(`${b.date} ${b.time}`)
 
   const renderOrderButton = () => {
-    const hasUserData = () => user.fullName && user.phoneNumber && user.creditCardNumber
+    const hasUserData = () => user.fullName && (user.phoneNumber || user.creditCardNumber)
 
     if (user) {
       if (hasUserData())
